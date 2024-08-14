@@ -1,0 +1,15 @@
+.parent {
+    -fx-background-color: #fff;
+}
+.sidebar {
+    -fx-background-color: #212c65;
+}
+.list {
+      -fx-background-color:  #364bbf;
+}
+.btn {
+       -fx-background-color:  #364bbf;
+}
+.dashboard {
+     -fx-background-color:  #d9d9d9;
+}
