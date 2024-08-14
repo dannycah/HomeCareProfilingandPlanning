@@ -3,29 +3,28 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-
-<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/20.0.1" fx:controller="hcp_pb.WelcomPageController">
+<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="hcp_pb.WelcomPageController">
    <children>
-      <Label layoutX="208.0" layoutY="103.0" prefHeight="50.0" prefWidth="182.0" text="Home Care">
-         <font>
-            <Font name="System Bold" size="34.0" />
-         </font>
-      </Label>
-      <Button fx:id="regBtn" layoutX="169.0" layoutY="231.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="103.0" style="-fx-background-color: black;" text="Register" textFill="WHITE" />
-      <Button fx:id="loginBtn" layoutX="326.0" layoutY="231.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="103.0" style="-fx-background-color: black;" text="Login" textFill="WHITE" />
-      <Label layoutX="116.0" layoutY="149.0" prefHeight="50.0" prefWidth="366.0" text="Profiling and Planning">
-         <font>
-            <Font name="System Bold" size="34.0" />
-         </font>
-      </Label>
-      <Label layoutX="244.0" layoutY="337.0" prefHeight="39.0" prefWidth="112.0" text="All rights reserved 2024">
-         <font>
-            <Font size="10.0" />
-         </font>
-      </Label>
-      <Label fx:id="adminLbl" layoutX="519.0" layoutY="14.0" prefHeight="26.0" prefWidth="66.0" text="Administrator">
+      <Pane prefHeight="200.0" prefWidth="600.0" style="-fx-background-color: #212c65;">
+         <children>
+            <Label layoutX="62.0" layoutY="85.0" text="Welcome to" textFill="WHITE">
+               <font>
+                  <Font size="15.0" />
+               </font>
+            </Label>
+            <Label layoutX="62.0" layoutY="102.0" text="Home Care Client Profiling and Planning" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="25.0" />
+               </font>
+            </Label>
+         </children>
+      </Pane>
+      <Button fx:id="regBtn" layoutX="150.0" layoutY="272.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="133.0" style="-fx-background-color: black;" text="Register" textFill="WHITE" />
+      <Button fx:id="loginBtn" layoutX="318.0" layoutY="272.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="142.0" style="-fx-background-color: black;" text="Login" textFill="WHITE" />
+      <Label fx:id="adminLbl" layoutX="525.0" layoutY="369.0" prefHeight="26.0" prefWidth="66.0" text="Administrator">
          <font>
             <Font size="10.0" />
          </font>
