@@ -12,7 +12,7 @@
 <?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" stylesheets="@../../java/hcp_pb/styles.css" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="hcp_pb.DashboardController">
+<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1024.0" stylesheets="@../../java/hcp_pb/styles.css" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="hcp_pb.DashboardController">
    <children>
       <VBox prefHeight="600.0" prefWidth="300.0" style="-fx-background-color: #212c65;">
          <children>
@@ -30,7 +30,7 @@
                   <Button layoutX="235.0" layoutY="8.0" mnemonicParsing="false" style="-fx-background-color: #364bbf;" text="Search" textFill="WHITE" />
                </children>
             </Pane>
-            <Label prefHeight="35.0" prefWidth="300.0" text="Manage Cases" textFill="#a9a6a6">
+            <Label fx:id="manageCaseLbl" prefHeight="35.0" prefWidth="300.0" text="Manage Cases" textFill="#a9a6a6">
                <font>
                   <Font size="15.0" />
                </font>
@@ -41,7 +41,7 @@
                   <Insets left="20.0" />
                </padding>
             </Label>
-            <Label prefHeight="35.0" prefWidth="300.0" text="View Requests" textFill="#a9a6a6">
+            <Label fx:id="viewRequestsLbl" prefHeight="35.0" prefWidth="300.0" text="View Requests" textFill="#a9a6a6">
                <font>
                   <Font size="15.0" />
                </font>
@@ -52,7 +52,7 @@
                   <Insets left="20.0" />
                </padding>
             </Label>
-            <Label prefHeight="35.0" prefWidth="300.0" text="Create Case" textFill="#a9a6a6">
+            <Label fx:id="createCaseLbl" prefHeight="35.0" prefWidth="300.0" text="Create Case" textFill="#a9a6a6">
                <font>
                   <Font size="15.0" />
                </font>
@@ -63,7 +63,7 @@
                   <Insets left="20.0" />
                </padding>
             </Label>
-            <Label prefHeight="35.0" prefWidth="300.0" text="Care Plans" textFill="#a9a6a6">
+            <Label fx:id="carePlanlbl" prefHeight="35.0" prefWidth="300.0" text="Care Plans" textFill="#a9a6a6">
                <font>
                   <Font size="15.0" />
                </font>
@@ -74,7 +74,7 @@
                   <Insets left="20.0" />
                </padding>
             </Label>
-            <Label prefHeight="35.0" prefWidth="300.0" text="Budget" textFill="#a9a6a6">
+            <Label fx:id="budgetLbl" prefHeight="35.0" prefWidth="300.0" text="Budget" textFill="#a9a6a6">
                <font>
                   <Font size="15.0" />
                </font>
@@ -85,7 +85,7 @@
                   <Insets left="20.0" />
                </padding>
             </Label>
-            <Label prefHeight="35.0" prefWidth="300.0" text="Reports" textFill="#a9a6a6">
+            <Label fx:id="reportsLbl" prefHeight="35.0" prefWidth="300.0" text="Reports" textFill="#a9a6a6">
                <font>
                   <Font size="15.0" />
                </font>
