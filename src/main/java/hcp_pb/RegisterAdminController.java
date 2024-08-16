@@ -12,6 +12,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDate;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -28,6 +29,7 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+
 /**
  * FXML Controller class
  *
@@ -35,9 +37,9 @@ import javafx.stage.Stage;
  */
 public class RegisterAdminController implements Initializable {
 
-  @FXML
-  private Label lblId;
-@FXML
+    @FXML
+    private Label lblId;
+    @FXML
     private TextField eid;
     @FXML
     private TextField fName;
@@ -69,22 +71,21 @@ public class RegisterAdminController implements Initializable {
     private static final String DB_URL = "jdbc:mysql://localhost:3306/HCP_PBP";
     private static final String DB_USER = "root";
     private static final String DB_PASSWORD = "!Student1";
+
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-       getTheMaxUid();
+        getTheMaxUid();
+         bDay.setValue(LocalDate.now());
     }
 
-
-
-       @FXML
+    @FXML
     private void registerButton(ActionEvent event) throws IOException {
-        
-        
+
         String uid = lblId.getText();
-  String empID = eid.getText();
+        String empID = eid.getText();
         String firstName = fName.getText();
         String lastName = lName.getText();
         String birthDate = bDay.getValue() != null ? bDay.getValue().toString() : "";
@@ -96,8 +97,8 @@ public class RegisterAdminController implements Initializable {
         String user = username.getText();
         String pass = password.getText();
 
-        
-         if (!validateInput(empID, firstName, lastName, email, mobile, addr, zip, user, pass)) {
+        //validate input (call validateinput method)
+        if (!validateInput(empID, firstName, lastName, email, mobile, addr, zip, user, pass)) {
             return;
         }
 
@@ -110,21 +111,23 @@ public class RegisterAdminController implements Initializable {
             return;
         }
 
-        
-         String insertQuery = "INSERT INTO userAccounts (userID, employeeID, fName, lName, bDay, userEmail, userMobile, userAddress, userZip, userType, userName, userPass) "
+        //insert to db
+        String insertUser = "INSERT INTO userAccounts (userID, employeeID, fName, lName, bDay, userEmail, userMobile, userAddress, userZip, userType, userName, userPass,isActive) "
                 + "VALUES ('" + uid + "','" + empID + "', '" + firstName + "', '" + lastName + "', "
-                + "'" + birthDate + "', '" +  email + "', "
-                + "'" +  mobile + "', '" +   addr + "', '" +  zip + "', "
-                + "'" +  role + "', '" + user + "', '" + pass + "')";
+                + "'" + birthDate + "', '" + email + "', "
+                + "'" + mobile + "', '" + addr + "', '" + zip + "', "
+                + "'" + role + "', '" + user + "', '" + pass + "','1')";
 
-         
-         
-          
-          
+        String fullName = firstName + " " + lastName;
+        String insertEmp = "INSERT INTO employeeList (employeeId, fullname, activeFlag) "
+                + "VALUES ('" + empID + "','" + fullName + "','1')";
+
         try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD); Statement stmt = conn.createStatement()) {
 
             // Execute the query
-            int rowsAffected = stmt.executeUpdate(insertQuery);
+            int rowsAffected = stmt.executeUpdate(insertUser);
+              int empRowsAffected = stmt.executeUpdate(insertEmp);
+            
             if (rowsAffected > 0) {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Success");
@@ -132,13 +135,15 @@ public class RegisterAdminController implements Initializable {
                 alert.setContentText("System Administrator Created");
                 alert.showAndWait();
 
-               
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("welcomPage.fxml"));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("welcomeHCP.fxml"));
                 Parent root = loader.load();
-                
+
                 Scene scene = new Scene(root);
                 Stage stage = (Stage) registerButton.getScene().getWindow();
                 stage.setScene(scene);
+                stage.setResizable(false);
+                stage.setWidth(680);  // Set the width 
+                stage.setHeight(520);
                 stage.show();
 
             }
@@ -147,15 +152,14 @@ public class RegisterAdminController implements Initializable {
             e.printStackTrace();
             System.err.println("Failed to save data to the database");
         }
-          
-        
+
     }
-    
- private boolean validateInput(String empID, String firstName, String lastName, String email, String mobile, String addr, String zip, String user, String pass) {
+
+    private boolean validateInput(String empID, String firstName, String lastName, String email, String mobile, String addr, String zip, String user, String pass) {
         String numeric = "\\d+";
 
-        if (empID.isEmpty() || firstName.isEmpty() || lastName.isEmpty() || email.isEmpty() ||
-            mobile.isEmpty() || addr.isEmpty() || zip.isEmpty() || user.isEmpty() || pass.isEmpty()) {
+        if (empID.isEmpty() || firstName.isEmpty() || lastName.isEmpty() || email.isEmpty()
+                || mobile.isEmpty() || addr.isEmpty() || zip.isEmpty() || user.isEmpty() || pass.isEmpty()) {
             showAlert(Alert.AlertType.ERROR, "Error", "All fields are required!");
             return false;
         }
@@ -189,8 +193,7 @@ public class RegisterAdminController implements Initializable {
     private boolean isUsernameExists(String user) {
         String query = "SELECT COUNT(*) FROM userAccounts WHERE userName = ?";
 
-        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
-             PreparedStatement pstmt = conn.prepareStatement(query)) {
+        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD); PreparedStatement pstmt = conn.prepareStatement(query)) {
 
             pstmt.setString(1, user);
             try (ResultSet rs = pstmt.executeQuery()) {
@@ -204,28 +207,23 @@ public class RegisterAdminController implements Initializable {
         }
         return false;
     }
-    
-    
-    
-        private void getTheMaxUid() {
+
+    private void getTheMaxUid() {
 
         String query = "SELECT userID FROM useraccounts ORDER BY userID DESC LIMIT 1";
-            
+
         try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD); Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery(query)) {
-   //hidden placeholder for next userid
+            //hidden placeholder for next userid
             if (rs.next()) {
                 int lastUser = rs.getInt("userID");
-                lblId.setText(String.valueOf(lastUser + 1)); 
+                lblId.setText(String.valueOf(lastUser + 1));
             } else {
-                lblId.setText("10010"); 
+                lblId.setText("10010");
             }
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
-    
-        
-        
-    
+
 }
