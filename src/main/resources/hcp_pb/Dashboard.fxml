@@ -16,7 +16,7 @@
    <children>
       <VBox prefHeight="600.0" prefWidth="300.0" style="-fx-background-color: #212c65;">
          <children>
-            <Label prefHeight="75.0" prefWidth="300.0" style="-fx-background-color: #364bbf;" text="Hello, Case Manager!" textFill="WHITE">
+            <Label fx:id="headerLbl" prefHeight="75.0" prefWidth="300.0" style="-fx-background-color: #364bbf;" text="Hello, Case Manager!" textFill="WHITE">
                <padding>
                   <Insets left="10.0" />
                </padding>
@@ -41,7 +41,7 @@
                   <Insets left="20.0" />
                </padding>
             </Label>
-            <Label fx:id="viewRequestsLbl" prefHeight="35.0" prefWidth="300.0" text="View Requests" textFill="#a9a6a6">
+            <Label fx:id="viewRequestsLbl" prefHeight="35.0" prefWidth="300.0" text="Assessments" textFill="#a9a6a6">
                <font>
                   <Font size="15.0" />
                </font>
