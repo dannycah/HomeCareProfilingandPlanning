@@ -7,6 +7,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import javafx.stage.StageStyle;
 
 /**
  * JavaFX App
@@ -17,10 +18,13 @@ public class App extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-       scene = new Scene(loadFXML("SplashScreen"), 515, 336);
-        //scene = new Scene(loadFXML("welcomeHCP"), 670, 490);
+      scene = new Scene(loadFXML("SplashScreen"), 515, 336);
+//        scene = new Scene(loadFXML("Dashboard"), 1064, 600);
+//        scene = new Scene(loadFXML("welcomeHCP"), 670, 490);
+//         scene = new Scene(loadFXML("NewClient"),520, 600);
         stage.setScene(scene);
-       
+        
+      // stage.initStyle(StageStyle.UNDECORATED);
         stage.setTitle("Home Care Client Profiling and Planning");
         stage.setResizable(false);
         stage.show();
