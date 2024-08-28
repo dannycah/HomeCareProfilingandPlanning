@@ -93,7 +93,7 @@ public class WelcomeHCPController implements Initializable {
 
     private static final String DB_URL = "jdbc:mysql://localhost:3306/HCP_PBP";
     private static final String DB_USER = "root";
-    private static final String DB_PASSWORD = "!Student1";
+    private static final String DB_PASSWORD = "mymyel14";
 
     /**
      * Initializes the controller class.
@@ -139,14 +139,15 @@ private void loginBtn(ActionEvent event) throws IOException {
                         loader = new FXMLLoader(getClass().getResource("adminDashboard.fxml"));
                     } else {
                         loader = new FXMLLoader(getClass().getResource("dashboard.fxml"));
+                            // Get the controller instance and pass user details
+                    DashboardController dashboardController = loader.getController();
+                    dashboardController.setUser(userID);
                     }
 
                     Parent welcomePage = loader.load();
                     Scene welcomeScene = new Scene(welcomePage);
 
-                    // Get the controller instance and pass user details
-                    DashboardController dashboardController = loader.getController();
-                    dashboardController.setUser(userID);
+                
 
                     // Set new scene
                     Stage stage = (Stage) loginBtn.getScene().getWindow();
@@ -167,83 +168,6 @@ private void loginBtn(ActionEvent event) throws IOException {
 }
 
 
-//    @FXML
-//    private void loginBtn(ActionEvent event) throws IOException, SQLException {
-//        String username = usnField.getText();
-//        String password = pwdField.getText();
-//
-//        // Validate username and password
-//        if (isValidCredentials(username, password)) {
-//
-//            // flag session log in
-//            Connection c = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
-//            Statement s = c.createStatement();
-//            //Prepare the SQL statement to update the active status of the user
-//
-//            String sql = "UPDATE userAccounts SET stats = '2' WHERE userName = '" + username + "'";
-//            //PreparedStatement p = c.prepareStatement(sql);
-//
-//            // Execute the update statement
-//            int row = s.executeUpdate(sql);
-//
-//            // Close the statement and connection
-//            s.close();
-//            c.close();
-//
-//            String query = "SELECT userID, roleID FROM userAccounts WHERE username = ?";
-//            try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD); PreparedStatement statement = connection.prepareStatement(query)) {
-//
-//                // Set the username parameter
-//                statement.setString(1, username);
-//
-//                try (ResultSet resultSet = statement.executeQuery()) {
-//                    if (resultSet.next()) {
-//                        // Check if the user's access is active
-//                        String userID = resultSet.getString("userID");
-//                        String roleID = resultSet.getString("roleID");
-//                        
-//                        
-//                        
-//                        FXMLLoader loader;
-//                        Parent welcomePage;
-//                        Scene welcomeScene;
-//
-//                        if ("3".equals(roleID)) {
-//                            loader = new FXMLLoader(getClass().getResource("adminDashboard.fxml"));
-//                        } else {
-//                            loader = new FXMLLoader(getClass().getResource("Dashboard.fxml"));
-//
-//                                 // Get the controller instance
-//            DashboardController dashboardController = loader.getController();
-//
-//             // Pass the userID and roleID values to the dashboard controller
-//            
-//                //Do this
-//                            
-//         
-//                        }
-//
-//                        welcomePage = loader.load();
-//                        welcomeScene = new Scene(welcomePage);
-//
-//                        // Get the current stage and set the new scene
-//                        Stage stage = (Stage) loginBtn.getScene().getWindow();
-//                        stage.setScene(welcomeScene);
-//                        stage.setTitle("Home Care Clients Profiling and Planning");
-//                        stage.setResizable(false);
-//                        stage.setWidth(1038);  // Set the width 
-//                        stage.setHeight(632); // Set the height
-//                    }
-//                }
-//            } catch (SQLException e) {
-//                e.printStackTrace();
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//
-//        }
-//
-//    }
     private boolean isValidCredentials(String username, String password) {
         String query = "SELECT * FROM userAccounts WHERE userName = ? AND userPass = ?";
         try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD); PreparedStatement statement = connection.prepareStatement(query)) {
