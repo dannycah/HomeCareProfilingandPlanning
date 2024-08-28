@@ -2,9 +2,12 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
@@ -14,171 +17,418 @@
 
 <AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1024.0" stylesheets="@../../java/hcp_pb/styles.css" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="hcp_pb.DashboardController">
    <children>
-      <VBox prefHeight="600.0" prefWidth="300.0" style="-fx-background-color: #212c65;">
+      <Pane fx:id="caseManagerPane" prefHeight="600.0" prefWidth="1024.0">
          <children>
-            <Label fx:id="headerLbl" prefHeight="75.0" prefWidth="300.0" style="-fx-background-color: #364bbf;" text="Hello, Case Manager!" textFill="WHITE">
-               <padding>
-                  <Insets left="10.0" />
-               </padding>
-               <font>
-                  <Font name="System Bold" size="20.0" />
-               </font>
-            </Label>
-            <Pane prefHeight="43.0" prefWidth="300.0">
+            <VBox prefHeight="606.0" prefWidth="300.0" style="-fx-background-color: #212c65;">
                <children>
-                  <TextField layoutX="13.0" layoutY="8.0" prefHeight="25.0" prefWidth="209.0" promptText="Search Case" />
-                  <Button layoutX="235.0" layoutY="8.0" mnemonicParsing="false" style="-fx-background-color: #364bbf;" text="Search" textFill="WHITE" />
-               </children>
-            </Pane>
-            <Label fx:id="manageCaseLbl" prefHeight="35.0" prefWidth="300.0" text="Manage Cases" textFill="#a9a6a6">
-               <font>
-                  <Font size="15.0" />
-               </font>
-               <opaqueInsets>
-                  <Insets />
-               </opaqueInsets>
-               <padding>
-                  <Insets left="20.0" />
-               </padding>
-            </Label>
-            <Label fx:id="viewRequestsLbl" prefHeight="35.0" prefWidth="300.0" text="Assessments" textFill="#a9a6a6">
-               <font>
-                  <Font size="15.0" />
-               </font>
-               <opaqueInsets>
-                  <Insets />
-               </opaqueInsets>
-               <padding>
-                  <Insets left="20.0" />
-               </padding>
-            </Label>
-            <Label fx:id="createCaseLbl" prefHeight="35.0" prefWidth="300.0" text="Create Case" textFill="#a9a6a6">
-               <font>
-                  <Font size="15.0" />
-               </font>
-               <opaqueInsets>
-                  <Insets />
-               </opaqueInsets>
-               <padding>
-                  <Insets left="20.0" />
-               </padding>
-            </Label>
-            <Label fx:id="carePlanlbl" prefHeight="35.0" prefWidth="300.0" text="Care Plans" textFill="#a9a6a6">
-               <font>
-                  <Font size="15.0" />
-               </font>
-               <opaqueInsets>
-                  <Insets />
-               </opaqueInsets>
-               <padding>
-                  <Insets left="20.0" />
-               </padding>
-            </Label>
-            <Label fx:id="budgetLbl" prefHeight="35.0" prefWidth="300.0" text="Budget" textFill="#a9a6a6">
-               <font>
-                  <Font size="15.0" />
-               </font>
-               <opaqueInsets>
-                  <Insets />
-               </opaqueInsets>
-               <padding>
-                  <Insets left="20.0" />
-               </padding>
-            </Label>
-            <Label fx:id="reportsLbl" prefHeight="35.0" prefWidth="300.0" text="Reports" textFill="#a9a6a6">
-               <font>
-                  <Font size="15.0" />
-               </font>
-               <opaqueInsets>
-                  <Insets />
-               </opaqueInsets>
-               <padding>
-                  <Insets left="20.0" />
-               </padding>
-            </Label>
-            <Pane prefHeight="267.0" prefWidth="300.0">
-               <children>
-                  <TableView layoutX="23.0" layoutY="50.0" prefHeight="169.0" prefWidth="255.0">
-                    <columns>
-                      <TableColumn prefWidth="75.0" text="C1" />
-                      <TableColumn prefWidth="75.0" text="C2" />
-                    </columns>
-                  </TableView>
-                  <Label layoutX="23.0" layoutY="26.0" text="Active Users:" textFill="#dfdddd">
+                  <Label fx:id="headerLbl" prefHeight="75.0" prefWidth="300.0" style="-fx-background-color: #364bbf;" text="Hi User!" textFill="WHITE">
+                     <padding>
+                        <Insets left="10.0" />
+                     </padding>
                      <font>
-                        <Font name="System Bold" size="12.0" />
-                     </font></Label>
-                  <Button layoutX="84.0" layoutY="229.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="132.0" style="-fx-background-color: #364bbf;" text="Add Member" textFill="WHITE" />
-                  <Line endX="169.79998779296875" endY="5.7220458984375E-6" layoutX="115.0" layoutY="14.0" startX="-100.0" stroke="WHITE" strokeLineCap="ROUND" strokeLineJoin="ROUND" strokeWidth="5.0" />
-               </children>
-            </Pane>
-         </children></VBox>
-      <VBox layoutX="300.0" prefHeight="600.0" prefWidth="724.0">
-         <children>
-            <VBox prefHeight="600.0" prefWidth="724.0" styleClass="dashboard">
-               <children>
-                  <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="724.0">
+                        <Font name="System Bold" size="20.0" />
+                     </font>
+                  </Label>
+                  <Pane prefHeight="40.0" prefWidth="300.0">
                      <children>
-                        <Label layoutX="14.0" layoutY="11.0" text="Dashboard" textFill="#847e7e">
-                           <font>
-                              <Font name="System Bold" size="19.0" />
-                           </font>
-                        </Label>
+                        <TextField fx:id="searchField" layoutX="12.0" layoutY="10.0" prefHeight="25.0" prefWidth="211.0" promptText="Search Case" />
+                        <Button fx:id="searchBtn" layoutX="236.0" layoutY="10.0" mnemonicParsing="false" style="-fx-background-color: #364bbf;" text="Search" textFill="WHITE" />
                      </children>
                   </Pane>
-                  <Pane prefHeight="273.0" prefWidth="724.0" styleClass="dashboard">
+                  <VBox prefHeight="224.0" prefWidth="300.0">
                      <children>
-                        <Pane layoutX="14.0" layoutY="14.0" prefHeight="200.0" prefWidth="181.0" style="-fx-background-color: #364bbf;" />
-                        <Pane layoutX="390.0" layoutY="14.0" prefHeight="200.0" prefWidth="324.0" style="-fx-background-color: #364bbf;" />
-                        <Label layoutX="390.0" layoutY="222.0" text="Active Cases" textFill="#a9a6a6">
+                        <Pane fx:id="cmPane" prefHeight="23.0" prefWidth="300.0" visible="false">
+                           <children>
+                              <Label fx:id="dashboardLbl" layoutY="7.0" onMouseClicked="#dashboardLbl" prefHeight="35.0" prefWidth="300.0" text="Dashboard" textFill="#a9a6a6">
+                                 <font>
+                                    <Font size="15.0" />
+                                 </font>
+                                 <opaqueInsets>
+                                    <Insets />
+                                 </opaqueInsets>
+                                 <padding>
+                                    <Insets left="20.0" />
+                                 </padding>
+                              </Label>
+                              <Label fx:id="manageCaseLbl" layoutY="42.0" onMouseClicked="#manageCaseLbl" prefHeight="35.0" prefWidth="300.0" text="Manage Cases" textFill="#a9a6a6">
+                                 <font>
+                                    <Font size="15.0" />
+                                 </font>
+                                 <opaqueInsets>
+                                    <Insets />
+                                 </opaqueInsets>
+                                 <padding>
+                                    <Insets left="20.0" />
+                                 </padding>
+                              </Label>
+                              <Label fx:id="createCaseLbl" layoutY="77.0" onMouseClicked="#createCaseLbl" prefHeight="35.0" prefWidth="300.0" text="Create Cases" textFill="#a9a6a6">
+                                 <font>
+                                    <Font size="15.0" />
+                                 </font>
+                                 <opaqueInsets>
+                                    <Insets />
+                                 </opaqueInsets>
+                                 <padding>
+                                    <Insets left="20.0" />
+                                 </padding>
+                              </Label>
+                              <Label fx:id="assessmentLbl" layoutY="112.0" onMouseClicked="#assessmentLbl" prefHeight="35.0" prefWidth="300.0" text="Assessments" textFill="#a9a6a6">
+                                 <font>
+                                    <Font size="15.0" />
+                                 </font>
+                                 <opaqueInsets>
+                                    <Insets />
+                                 </opaqueInsets>
+                                 <padding>
+                                    <Insets left="20.0" />
+                                 </padding>
+                              </Label>
+                              <Label fx:id="carePlanLbl" layoutY="147.0" onMouseClicked="#carePlanLbl" prefHeight="35.0" prefWidth="300.0" text="Care Plan" textFill="#a9a6a6">
+                                 <font>
+                                    <Font size="15.0" />
+                                 </font>
+                                 <opaqueInsets>
+                                    <Insets />
+                                 </opaqueInsets>
+                                 <padding>
+                                    <Insets left="20.0" />
+                                 </padding>
+                              </Label>
+                              <Label fx:id="budgetPlanLbl" layoutY="182.0" onMouseClicked="#budgetPlanLbl" prefHeight="35.0" prefWidth="300.0" text="Budget Plan" textFill="#a9a6a6">
+                                 <font>
+                                    <Font size="15.0" />
+                                 </font>
+                                 <opaqueInsets>
+                                    <Insets />
+                                 </opaqueInsets>
+                                 <padding>
+                                    <Insets left="20.0" />
+                                 </padding>
+                              </Label>
+                           </children>
+                        </Pane>
+                        <Pane fx:id="csoPane" layoutX="10.0" layoutY="10.0" prefHeight="516.0" prefWidth="300.0">
+                           <children>
+                              <Label fx:id="csoDashboardLbl" layoutY="7.0" onMouseClicked="#csoDashboardLbl" prefHeight="35.0" prefWidth="300.0" text="Dashboard" textFill="#a9a6a6">
+                                 <font>
+                                    <Font size="15.0" />
+                                 </font>
+                                 <opaqueInsets>
+                                    <Insets />
+                                 </opaqueInsets>
+                                 <padding>
+                                    <Insets left="20.0" />
+                                 </padding>
+                              </Label>
+                              <Label fx:id="myCaseLbl" layoutY="42.0" onMouseClicked="#myCaseLbl" prefHeight="35.0" prefWidth="300.0" text="My Cases" textFill="#a9a6a6">
+                                 <font>
+                                    <Font size="15.0" />
+                                 </font>
+                                 <opaqueInsets>
+                                    <Insets />
+                                 </opaqueInsets>
+                                 <padding>
+                                    <Insets left="20.0" />
+                                 </padding>
+                              </Label>
+                              <Label fx:id="manageClientLbl" layoutY="77.0" onMouseClicked="#manageClientLbl" prefHeight="35.0" prefWidth="300.0" text="Manage Clients" textFill="#a9a6a6">
+                                 <font>
+                                    <Font size="15.0" />
+                                 </font>
+                                 <opaqueInsets>
+                                    <Insets />
+                                 </opaqueInsets>
+                                 <padding>
+                                    <Insets left="20.0" />
+                                 </padding>
+                              </Label>
+                              <Label fx:id="newClientLbl" layoutY="112.0" onMouseClicked="#newClientLbl" prefHeight="35.0" prefWidth="300.0" text="New Client" textFill="#a9a6a6">
+                                 <font>
+                                    <Font size="15.0" />
+                                 </font>
+                                 <opaqueInsets>
+                                    <Insets />
+                                 </opaqueInsets>
+                                 <padding>
+                                    <Insets left="20.0" />
+                                 </padding>
+                              </Label>
+                              <Label fx:id="reportsLbl" layoutY="147.0" onMouseClicked="#reportsLbl" prefHeight="35.0" prefWidth="300.0" text="Reports" textFill="#a9a6a6">
+                                 <font>
+                                    <Font size="15.0" />
+                                 </font>
+                                 <opaqueInsets>
+                                    <Insets />
+                                 </opaqueInsets>
+                                 <padding>
+                                    <Insets left="20.0" />
+                                 </padding>
+                              </Label>
+                              <Label fx:id="requestsLbl" layoutY="182.0" onMouseClicked="#requestsLbl" prefHeight="35.0" prefWidth="300.0" text="Requests" textFill="#a9a6a6">
+                                 <font>
+                                    <Font size="15.0" />
+                                 </font>
+                                 <opaqueInsets>
+                                    <Insets />
+                                 </opaqueInsets>
+                                 <padding>
+                                    <Insets left="20.0" />
+                                 </padding>
+                              </Label>
+                           </children>
+                        </Pane>
+                     </children>
+                  </VBox>
+                  <Pane prefHeight="268.0" prefWidth="300.0">
+                     <children>
+                        <TableView fx:id="user" layoutX="23.0" layoutY="50.0" prefHeight="169.0" prefWidth="255.0">
+                          <columns>
+                            <TableColumn prefWidth="75.0" text="C1" />
+                            <TableColumn prefWidth="75.0" text="C2" />
+                          </columns>
+                        </TableView>
+                        <Label layoutX="23.0" layoutY="26.0" text="Active Users:" textFill="#dfdddd">
                            <font>
-                              <Font name="System Bold" size="14.0" />
+                              <Font name="System Bold" size="12.0" />
                            </font>
                         </Label>
-                        <Label layoutX="206.0" layoutY="222.0" text="Active Cases" textFill="#a9a6a6">
-                           <font>
-                              <Font name="System Bold" size="14.0" />
-                           </font>
-                        </Label>
-                        <Label layoutX="14.0" layoutY="222.0" text="Active Cases" textFill="#a9a6a6">
-                           <font>
-                              <Font name="System Bold" size="14.0" />
-                           </font>
-                        </Label>
-                        <Pane layoutX="206.0" layoutY="14.0" prefHeight="200.0" prefWidth="173.0" style="-fx-background-color: #364bbf;" />
+                        <Button fx:id="addUserBtn" layoutX="84.0" layoutY="229.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="132.0" style="-fx-background-color: #364bbf;" text="Add Member" textFill="WHITE" />
+                        <Line endX="169.79998779296875" endY="5.7220458984375E-6" layoutX="115.0" layoutY="14.0" startX="-100.0" stroke="WHITE" strokeLineCap="ROUND" strokeLineJoin="ROUND" strokeWidth="5.0" />
                      </children>
                   </Pane>
                </children>
             </VBox>
-            <Pane prefHeight="554.0" prefWidth="724.0" styleClass="dashboard">
+            <VBox layoutX="300.0" layoutY="3.0" prefHeight="600.0" prefWidth="724.0">
                <children>
-                  <TableView layoutX="14.0" layoutY="43.0" prefHeight="181.0" prefWidth="424.0">
-                     <columns>
-                        <TableColumn prefWidth="75.0" text="C1" />
-                        <TableColumn prefWidth="75.0" text="C2" />
-                     </columns>
-                  </TableView>
-                  <Label layoutX="14.0" layoutY="16.0" text="Active Cases" textFill="#a9a6a6">
-                     <font>
-                        <Font name="System Bold" size="14.0" />
-                     </font>
-                  </Label>
-                  <Button layoutX="208.0" layoutY="232.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="111.0" style="-fx-background-color: #364bbf;" text="Button" textFill="WHITE" />
-                  <Button layoutX="327.0" layoutY="232.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="111.0" style="-fx-background-color: #364bbf;" text="Button" textFill="WHITE" />
-                  <TableView layoutX="453.0" layoutY="43.0" prefHeight="181.0" prefWidth="263.0">
-                     <columns>
-                        <TableColumn prefWidth="75.0" text="C1" />
-                        <TableColumn prefWidth="75.0" text="C2" />
-                     </columns>
-                  </TableView>
-                  <Button layoutX="605.0" layoutY="232.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="111.0" style="-fx-background-color: #364bbf;" text="Button" textFill="WHITE" />
-                  <Label layoutX="464.0" layoutY="15.0" text="Active Cases" textFill="#a9a6a6">
-                     <font>
-                        <Font name="System Bold" size="14.0" />
-                     </font>
-                  </Label>
+                  <Pane prefHeight="50.0" prefWidth="724.0">
+                     <children>
+                        <Label fx:id="headLbl" layoutX="12.0" layoutY="12.0" text="Dashboard" textFill="#847e7e">
+                           <font>
+                              <Font name="System Bold" size="19.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="userHolder" layoutX="644.0" layoutY="15.0" text="Label" visible="false" />
+                     </children>
+                  </Pane>
+                  <Pane fx:id="motherPane" prefHeight="556.0" prefWidth="724.0" style="-fx-background-color: d9d9d9;">
+                     <children>
+                        <Pane fx:id="dashboardPane" prefHeight="556.0" prefWidth="724.0">
+                           <children>
+                              <Pane layoutX="190.0" layoutY="15.0" prefHeight="200.0" prefWidth="181.0" style="-fx-background-color: #364bbf;" />
+                              <TableView layoutX="380.0" layoutY="15.0" prefHeight="200.0" prefWidth="336.0">
+                                 <columns>
+                                    <TableColumn prefWidth="75.0" text="C1" />
+                                    <TableColumn prefWidth="75.0" text="C2" />
+                                 </columns>
+                              </TableView>
+                              <Label layoutX="380.0" layoutY="222.0" text="User Accounts" textFill="#a9a6a6">
+                                 <font>
+                                    <Font name="System Bold" size="14.0" />
+                                 </font>
+                              </Label>
+                              <Label layoutX="14.0" layoutY="222.0" text="Active Users" textFill="#a9a6a6">
+                                 <font>
+                                    <Font name="System Bold" size="14.0" />
+                                 </font>
+                              </Label>
+                              <Label layoutX="199.0" layoutY="222.0" text="Lockouts" textFill="#a9a6a6">
+                                 <font>
+                                    <Font name="System Bold" size="14.0" />
+                                 </font>
+                              </Label>
+                              <Pane layoutX="8.0" layoutY="15.0" prefHeight="200.0" prefWidth="173.0" style="-fx-background-color: #364bbf;" />
+                              <Button layoutX="619.0" layoutY="220.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="97.0" style="-fx-background-color: #364bbf;" text="Deactivate" textFill="WHITE" />
+                           </children>
+                        </Pane>
+                        <Pane fx:id="manageCasePane" layoutX="-7.0" layoutY="-3.0" prefHeight="556.0" prefWidth="731.0" visible="false">
+                           <children>
+                              <Pane layoutX="376.0" layoutY="38.0" prefHeight="425.0" prefWidth="340.0" style="-fx-border-color: black; -fx-background-color: d9d9d9;">
+                                 <children>
+                                    <Label layoutX="47.0" layoutY="82.0" prefHeight="17.0" prefWidth="117.0" text="First Name:" />
+                                    <Label layoutX="48.0" layoutY="115.0" prefHeight="17.0" prefWidth="117.0" text="Last Name:" />
+                                    <Label layoutX="64.0" layoutY="211.0" prefHeight="17.0" prefWidth="100.0" text="Contact:" />
+                                    <Label layoutX="58.0" layoutY="51.0" prefHeight="17.0" prefWidth="117.0" text="Client ID:" />
+                                    <Label layoutX="41.0" layoutY="179.0" prefHeight="17.0" prefWidth="73.0" text="Medicare ID:" />
+                                    <Label layoutX="61.0" layoutY="146.0" prefHeight="17.0" prefWidth="100.0" text="Birthday:" />
+                                    <Label layoutX="63.0" layoutY="243.0" prefHeight="17.0" prefWidth="100.0" text="Address:" />
+                                    <TextField fx:id="cID" disable="true" layoutX="113.0" layoutY="47.0" prefHeight="25.0" prefWidth="193.0" />
+                                    <TextField fx:id="fName" disable="true" layoutX="113.0" layoutY="78.0" prefHeight="25.0" prefWidth="193.0" />
+                                    <TextField fx:id="lName" disable="true" layoutX="113.0" layoutY="110.0" prefHeight="25.0" prefWidth="193.0" />
+                                    <DatePicker fx:id="bDay" disable="true" layoutX="115.0" layoutY="142.0" prefHeight="25.0" prefWidth="193.0" />
+                                    <TextField fx:id="mediCare" disable="true" layoutX="113.0" layoutY="175.0" prefHeight="25.0" prefWidth="193.0" />
+                                    <TextField fx:id="mobileNum" disable="true" layoutX="113.0" layoutY="207.0" prefHeight="25.0" prefWidth="193.0" />
+                                    <TextField fx:id="address" disable="true" layoutX="113.0" layoutY="239.0" prefHeight="25.0" prefWidth="193.0" />
+                                    <Label layoutX="32.0" layoutY="21.0" prefHeight="17.0" prefWidth="117.0" text="Case Number:" />
+                                    <TextField fx:id="csID" disable="true" editable="false" layoutX="113.0" layoutY="17.0" prefHeight="25.0" prefWidth="193.0" />
+                                    <Line endX="206.99993896484375" layoutX="116.0" layoutY="279.0" startX="-100.0" />
+                                    <Label layoutX="15.0" layoutY="289.0" prefHeight="17.0" prefWidth="100.0" text="Assessment Type:" />
+                                    <Label layoutX="67.0" layoutY="351.0" prefHeight="17.0" prefWidth="47.0" text="Priority:" />
+                                    <Label layoutX="30.0" layoutY="381.0" prefHeight="17.0" prefWidth="82.0" text="Assigned CSO:" />
+                                    <Label layoutX="36.0" layoutY="323.0" prefHeight="17.0" prefWidth="82.0" text="Date Created:" />
+                                    <ComboBox fx:id="cmbAssessment" disable="true" layoutX="115.0" layoutY="285.0" prefHeight="25.0" prefWidth="193.0" />
+                                    <DatePicker fx:id="dateCreate" disable="true" layoutX="116.0" layoutY="316.0" prefHeight="25.0" prefWidth="193.0" />
+                                    <ComboBox fx:id="cmbPriority" disable="true" layoutX="115.0" layoutY="347.0" prefHeight="25.0" prefWidth="193.0" />
+                                    <TextField fx:id="textCSO" disable="true" layoutX="116.0" layoutY="377.0" prefHeight="25.0" prefWidth="193.0" />
+                                 </children>
+                              </Pane>
+                              <Button fx:id="updateCase" layoutX="18.0" layoutY="477.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="91.0" style="-fx-background-color: #364bbf;" text="Update" textFill="WHITE" />
+                              <Button fx:id="reassignBtn" layoutX="117.0" layoutY="478.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="100.0" style="-fx-background-color: #364bbf;" text="Re-assign" textFill="WHITE" />
+                              <Button fx:id="finaliseBtn" layoutX="226.0" layoutY="478.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="91.0" style="-fx-background-color: #364bbf;" text="Finalise" textFill="WHITE" />
+                              <Button fx:id="myRecSave" disable="true" layoutX="527.0" layoutY="477.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="91.0" style="-fx-background-color: #364bbf;" text="Save" textFill="WHITE" />
+                              <Button fx:id="myRecCancel" disable="true" layoutX="625.0" layoutY="477.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="91.0" style="-fx-background-color: #364bbf;" text="Cancel" textFill="WHITE" />
+                              <Label layoutX="379.0" layoutY="483.0" text="View Assessment &gt;&gt;" />
+                              <TextField layoutX="16.0" layoutY="32.0" prefHeight="25.0" prefWidth="261.0" promptText="Search Case" />
+                              <Button layoutX="283.0" layoutY="32.0" mnemonicParsing="false" prefHeight="17.0" prefWidth="82.0" style="-fx-background-color: #364bbf;" text="Search" textFill="WHITE" />
+                              <TableView fx:id="casesTbl" layoutX="16.0" layoutY="65.0" prefHeight="400.0" prefWidth="349.0">
+                                 <columns>
+                                    <TableColumn fx:id="caseID" text="Case Number" />
+                                    <TableColumn fx:id="clientName" text="Full Name" />
+                                    <TableColumn fx:id="caseType" text="Position" />
+                                    <TableColumn fx:id="assignedCSO" text="assignedCSO" />
+                                    <TableColumn fx:id="status" text="Status" />
+                                 </columns>
+                              </TableView>
+                           </children>
+                        </Pane>
+                        <Pane fx:id="myCasePane" layoutX="-4.0" layoutY="-2.0" prefHeight="565.0" prefWidth="731.0" visible="false">
+                           <children>
+                              <Label layoutX="16.0" layoutY="16.0" text="List of assigned Cases">
+                                 <font>
+                                    <Font size="13.0" />
+                                 </font>
+                              </Label>
+                              <TextField layoutX="361.0" layoutY="13.0" prefHeight="25.0" prefWidth="255.0" promptText="Search Case" />
+                              <Button layoutX="624.0" layoutY="13.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="91.0" style="-fx-background-color: #364bbf;" text="Search" textFill="WHITE" />
+                              <Pane layoutX="16.0" layoutY="261.0" prefHeight="255.0" prefWidth="340.0" style="-fx-background-color: d9d9d9; -fx-border-color: black;">
+                                 <children>
+                                    <Label layoutX="31.0" layoutY="54.0" prefHeight="17.0" prefWidth="117.0" text="First Name:" />
+                                    <Label layoutX="31.0" layoutY="87.0" prefHeight="17.0" prefWidth="117.0" text="Last Name:" />
+                                    <Label layoutX="47.0" layoutY="182.0" prefHeight="17.0" prefWidth="100.0" text="Contact:" />
+                                    <Label layoutX="43.0" layoutY="22.0" prefHeight="17.0" prefWidth="117.0" text="Client ID:" />
+                                    <Label layoutX="23.0" layoutY="152.0" prefHeight="17.0" prefWidth="73.0" text="Medicare ID:" />
+                                    <Label layoutX="43.0" layoutY="117.0" prefHeight="17.0" prefWidth="100.0" text="Birthday:" />
+                                    <Label layoutX="45.0" layoutY="214.0" prefHeight="17.0" prefWidth="100.0" text="Address:" />
+                                    <TextField fx:id="myClientID" layoutX="94.0" layoutY="19.0" prefHeight="25.0" prefWidth="193.0" />
+                                    <TextField fx:id="myClientFname" layoutX="95.0" layoutY="51.0" prefHeight="25.0" prefWidth="193.0" />
+                                    <TextField fx:id="myClientLname" layoutX="95.0" layoutY="83.0" prefHeight="25.0" prefWidth="193.0" />
+                                    <DatePicker fx:id="myClientBday" layoutX="95.0" layoutY="114.0" prefHeight="25.0" prefWidth="193.0" />
+                                    <TextField fx:id="myClientMedicare" layoutX="96.0" layoutY="147.0" prefHeight="25.0" prefWidth="193.0" />
+                                    <TextField fx:id="myClientContact" layoutX="96.0" layoutY="179.0" prefHeight="25.0" prefWidth="193.0" />
+                                    <TextField fx:id="myClientAddress" layoutX="96.0" layoutY="211.0" prefHeight="25.0" prefWidth="193.0" />
+                                 </children>
+                              </Pane>
+                              <Button layoutX="411.0" layoutY="447.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="121.0" style="-fx-background-color: #364bbf;" text="Start Assessment" textFill="WHITE" />
+                              <Button layoutX="559.0" layoutY="447.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="121.0" style="-fx-background-color: #364bbf;" text="Dis-engage" textFill="WHITE" />
+                              <Pane layoutX="368.0" layoutY="261.0" prefHeight="169.0" prefWidth="349.0" style="-fx-border-color: black;">
+                                 <children>
+                                    <Label layoutX="36.0" layoutY="11.0" prefHeight="17.0" prefWidth="100.0" text="Client  Status:" />
+                                    <Label layoutX="35.0" layoutY="43.0" prefHeight="17.0" prefWidth="82.0" text="Date Created:" />
+                                    <Label layoutX="18.0" layoutY="73.0" prefHeight="17.0" prefWidth="117.0" text="Assessment Type:" />
+                                    <Label layoutX="70.0" layoutY="103.0" prefHeight="17.0" prefWidth="47.0" text="Priority:" />
+                                    <Label layoutX="10.0" layoutY="132.0" prefHeight="17.0" prefWidth="110.0" text="Target Completion:" />
+                                    <TextField layoutX="117.0" layoutY="7.0" prefHeight="25.0" prefWidth="193.0" />
+                                    <TextField layoutX="117.0" layoutY="38.0" prefHeight="25.0" prefWidth="193.0" />
+                                    <TextField layoutX="117.0" layoutY="69.0" prefHeight="25.0" prefWidth="193.0" />
+                                    <TextField layoutX="117.0" layoutY="99.0" prefHeight="25.0" prefWidth="193.0" />
+                                    <TextField layoutX="117.0" layoutY="129.0" prefHeight="25.0" prefWidth="193.0" />
+                                 </children>
+                              </Pane>
+                              <Button layoutX="411.0" layoutY="483.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="121.0" style="-fx-background-color: #364bbf;" text="Remarks" textFill="WHITE" />
+                              <Button layoutX="559.0" layoutY="481.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="121.0" style="-fx-background-color: #364bbf;" text="Close" textFill="WHITE" />
+                              <TableView fx:id="myCaseTbl" layoutX="16.0" layoutY="44.0" prefHeight="200.0" prefWidth="700.0">
+                                <columns>
+        <TableColumn fx:id="case_ID" text="Case ID" />
+         <TableColumn fx:id="client_ID" text="Client ID" />
+               <TableColumn fx:id="client_Name" text="Client Name" />
+        <TableColumn fx:id="case_Type" text="Case Type" />
+        <TableColumn fx:id="case_Priority" text="Case Priority" />
+    </columns>
+                              </TableView>
+                           </children>
+                        </Pane>
+                        <Pane fx:id="manageClientPane" prefHeight="553.0" prefWidth="724.0" visible="false">
+                           <children>
+                              <TableView layoutX="14.0" layoutY="42.0" prefHeight="502.0" prefWidth="275.0">
+                                <columns>
+                                  <TableColumn prefWidth="75.0" text="C1" />
+                                  <TableColumn prefWidth="75.0" text="C2" />
+                                </columns>
+                              </TableView>
+                              <TextField layoutX="14.0" layoutY="13.0" prefHeight="25.0" prefWidth="211.0" promptText="Search Client" />
+                              <Button layoutX="229.0" layoutY="13.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="59.0" style="-fx-background-color: #364bbf;" text="Search" textFill="WHITE" />
+                              <Pane layoutX="295.0" layoutY="14.0" prefHeight="180.0" prefWidth="418.0" style="-fx-border-color: black;">
+                                 <children>
+                                    <Label layoutX="29.0" layoutY="33.0" text="Client ID:" />
+                                    <Label layoutX="17.0" layoutY="60.0" text="First Name:" />
+                                    <Label layoutX="215.0" layoutY="61.0" text="Last Name:" />
+                                    <Label layoutX="29.0" layoutY="89.0" text="Birthday:" />
+                                    <Label layoutX="30.0" layoutY="120.0" text="Address:" />
+                                    <Label layoutX="36.0" layoutY="147.0" text="Mobile:" />
+                                    <Label layoutX="217.0" layoutY="148.0" text="Email:" />
+                                    <Label layoutX="223.0" layoutY="33.0" text="Medicare:" />
+                                    <Label layoutX="8.0" layoutY="6.0" text="Personal Information">
+                                       <font>
+                                          <Font name="System Bold" size="12.0" />
+                                       </font>
+                                    </Label>
+                                    <TextField layoutX="82.0" layoutY="29.0" prefHeight="25.0" prefWidth="124.0" />
+                                    <TextField layoutX="278.0" layoutY="29.0" prefHeight="25.0" prefWidth="132.0" />
+                                    <TextField layoutX="82.0" layoutY="58.0" prefHeight="25.0" prefWidth="124.0" />
+                                    <TextField layoutX="278.0" layoutY="58.0" prefHeight="25.0" prefWidth="132.0" />
+                                    <DatePicker layoutX="82.0" layoutY="87.0" prefHeight="25.0" prefWidth="124.0" />
+                                    <TextField layoutX="82.0" layoutY="116.0" prefHeight="25.0" prefWidth="327.0" />
+                                    <TextField layoutX="82.0" layoutY="145.0" prefHeight="25.0" prefWidth="124.0" />
+                                    <TextField layoutX="252.0" layoutY="145.0" prefHeight="25.0" prefWidth="157.0" />
+                                 </children>
+                              </Pane>
+                              <Pane layoutX="295.0" layoutY="294.0" prefHeight="135.0" prefWidth="418.0" style="-fx-border-color: black;">
+                                 <children>
+                                    <Label layoutX="14.0" layoutY="31.0" text="Funding Level:" />
+                                    <Label layoutX="187.0" layoutY="31.0" text="Last Assessment:" />
+                                    <Label layoutX="227.0" layoutY="61.0" text="Assessor:" />
+                                    <Label layoutX="12.0" layoutY="59.0" text="Case Manager:" />
+                                    <Label layoutX="37.0" layoutY="87.0" text="Outcome:" />
+                                    <Label layoutX="8.0" layoutY="6.0" text="Funding Details">
+                                       <font>
+                                          <Font name="System Bold" size="12.0" />
+                                       </font>
+                                    </Label>
+                                    <ComboBox layoutX="97.0" layoutY="27.0" prefHeight="25.0" prefWidth="82.0" />
+                                    <TextField layoutX="283.0" layoutY="27.0" prefHeight="25.0" prefWidth="124.0" />
+                                    <TextField layoutX="97.0" layoutY="57.0" prefHeight="25.0" prefWidth="124.0" />
+                                    <TextField layoutX="283.0" layoutY="57.0" prefHeight="25.0" prefWidth="124.0" />
+                                    <TextArea layoutX="98.0" layoutY="87.0" prefHeight="40.0" prefWidth="308.0" />
+                                 </children>
+                              </Pane>
+                              <Pane layoutX="295.0" layoutY="199.0" prefHeight="90.0" prefWidth="418.0" style="-fx-border-color: black;">
+                                 <children>
+                                    <Label layoutX="9.0" layoutY="5.0" text="Emergency Contact">
+                                       <font>
+                                          <Font name="System Bold" size="12.0" />
+                                       </font>
+                                    </Label>
+                                    <Label layoutX="214.0" layoutY="31.0" text="Relationship:" />
+                                    <Label layoutX="12.0" layoutY="60.0" text="Mobile:" />
+                                    <Label layoutX="17.0" layoutY="31.0" text="Name:" />
+                                    <TextField layoutX="57.0" layoutY="27.0" prefHeight="25.0" prefWidth="149.0" />
+                                    <TextField layoutX="286.0" layoutY="27.0" prefHeight="25.0" prefWidth="121.0" />
+                                    <TextField layoutX="57.0" layoutY="56.0" prefHeight="1.0" prefWidth="149.0" />
+                                    <Label layoutX="219.0" layoutY="58.0" text="Email:" />
+                                    <TextField layoutX="258.0" layoutY="55.0" prefHeight="25.0" prefWidth="149.0" />
+                                 </children>
+                              </Pane>
+                              <Button layoutX="295.0" layoutY="438.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="97.0" style="-fx-background-color: #364bbf;" text="Update" textFill="WHITE" />
+                              <Button layoutX="401.0" layoutY="438.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="97.0" style="-fx-background-color: #364bbf;" text="Deactivate" textFill="WHITE" />
+                              <Button layoutX="645.0" layoutY="438.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="68.0" style="-fx-background-color: #364bbf;" text="Cancel" textFill="WHITE" />
+                              <Button layoutX="570.0" layoutY="438.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="68.0" style="-fx-background-color: #364bbf;" text="Save" textFill="WHITE" />
+                              <Button layoutX="295.0" layoutY="514.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="68.0" style="-fx-background-color: #364bbf;" textFill="WHITE" />
+                           </children>
+                        </Pane>
+                     </children>
+                  </Pane>
                </children>
-            </Pane>
-         </children></VBox>
+            </VBox>
+         </children>
+      </Pane>
    </children>
 </AnchorPane>
