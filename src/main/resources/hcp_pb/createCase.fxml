@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.shape.Line?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane id="AnchorPane" prefHeight="580.0" prefWidth="679.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="hcp_pb.CreateCaseController">
+   <children>
+      <Pane prefHeight="80.0" prefWidth="682.0" style="-fx-background-color: #212c65;">
+         <effect>
+            <DropShadow blurType="ONE_PASS_BOX" />
+         </effect>
+         <children>
+            <Label layoutX="14.0" layoutY="26.0" prefHeight="34.0" prefWidth="351.0" text="New Case" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="23.0" />
+               </font>
+            </Label>
+            <Label fx:id="lblId" layoutX="437.0" layoutY="41.0" text="." textFill="#212c65" />
+            <Label layoutX="471.0" layoutY="25.0" prefHeight="17.0" prefWidth="204.0" text="Create a new Case Profile for client" textFill="WHITE" />
+            <Label layoutX="471.0" layoutY="41.0" prefHeight="17.0" prefWidth="204.0" text="Danica Balibalos, 4567586" textFill="WHITE" />
+         </children>
+      </Pane>
+      <TableView layoutX="12.0" layoutY="123.0" prefHeight="170.0" prefWidth="658.0">
+         <columns>
+            <TableColumn prefWidth="75.0" text="C1" />
+            <TableColumn prefWidth="75.0" text="C2" />
+         </columns>
+      </TableView>
+      <TextField layoutX="12.0" layoutY="91.0" prefHeight="25.0" prefWidth="255.0" promptText="Search Client" />
+      <Button layoutX="274.0" layoutY="91.0" mnemonicParsing="false" prefHeight="17.0" prefWidth="82.0" style="-fx-background-color: #364bbf;" text="Search" textFill="WHITE" />
+      <Label layoutX="381.0" layoutY="95.0" prefHeight="17.0" prefWidth="117.0" text="Case Number:" />
+      <TextField fx:id="uid1" editable="false" layoutX="467.0" layoutY="91.0" prefHeight="26.0" prefWidth="204.0" />
+      <Pane layoutX="12.0" layoutY="313.0" prefHeight="255.0" prefWidth="308.0" style="-fx-background-color: d9d9d9; -fx-border-color: black;">
+         <children>
+            <Label layoutX="31.0" layoutY="54.0" prefHeight="17.0" prefWidth="117.0" text="First Name:" />
+            <Label layoutX="31.0" layoutY="87.0" prefHeight="17.0" prefWidth="117.0" text="Last Name:" />
+            <Label layoutX="47.0" layoutY="182.0" prefHeight="17.0" prefWidth="100.0" text="Contact:" />
+            <Label layoutX="43.0" layoutY="22.0" prefHeight="17.0" prefWidth="117.0" text="Client ID:" />
+            <Label layoutX="23.0" layoutY="152.0" prefHeight="17.0" prefWidth="73.0" text="Medicare ID:" />
+            <Label layoutX="43.0" layoutY="117.0" prefHeight="17.0" prefWidth="100.0" text="Birthday:" />
+            <Label layoutX="45.0" layoutY="214.0" prefHeight="17.0" prefWidth="100.0" text="Address:" />
+            <TextField fx:id="eid1" layoutX="94.0" layoutY="19.0" prefHeight="25.0" prefWidth="193.0" />
+            <TextField fx:id="fName1" layoutX="95.0" layoutY="51.0" prefHeight="25.0" prefWidth="193.0" />
+            <TextField fx:id="lName1" layoutX="95.0" layoutY="83.0" prefHeight="25.0" prefWidth="193.0" />
+            <DatePicker fx:id="bDay1" layoutX="95.0" layoutY="114.0" prefHeight="25.0" prefWidth="193.0" />
+            <TextField fx:id="eMail1" layoutX="96.0" layoutY="147.0" prefHeight="25.0" prefWidth="193.0" />
+            <TextField fx:id="mobileNum1" layoutX="96.0" layoutY="179.0" prefHeight="25.0" prefWidth="193.0" />
+            <TextField fx:id="address1" layoutX="96.0" layoutY="211.0" prefHeight="25.0" prefWidth="193.0" />
+         </children>
+      </Pane>
+      <Line endX="555.0" layoutX="114.0" layoutY="302.0" startX="-100.0" />
+      <Label layoutX="373.0" layoutY="351.0" prefHeight="17.0" prefWidth="100.0" text="Client  Status:" />
+      <Label layoutX="373.0" layoutY="382.0" prefHeight="17.0" prefWidth="82.0" text="Date Created:" />
+      <ComboBox layoutX="461.0" layoutY="347.0" prefHeight="25.0" prefWidth="193.0" />
+      <DatePicker layoutX="461.0" layoutY="378.0" prefHeight="25.0" prefWidth="193.0" />
+      <Label layoutX="349.0" layoutY="322.0" prefHeight="17.0" prefWidth="117.0" text="Assessment Type:" />
+      <ComboBox layoutX="461.0" layoutY="316.0" prefHeight="25.0" prefWidth="193.0" />
+      <Pane layoutX="329.0" layoutY="415.0" prefHeight="106.0" prefWidth="340.0" style="-fx-border-color: black; -fx-background-color: d9d9d9;">
+         <children>
+            <Label layoutX="76.0" layoutY="11.0" prefHeight="17.0" prefWidth="47.0" text="Priority:" />
+            <Label layoutX="25.0" layoutY="41.0" prefHeight="17.0" prefWidth="110.0" text="CSO Assignment:" />
+            <ComboBox layoutX="132.0" layoutY="7.0" prefHeight="25.0" prefWidth="193.0" />
+            <ComboBox layoutX="133.0" layoutY="37.0" prefHeight="25.0" prefWidth="193.0" />
+            <Label layoutX="15.0" layoutY="73.0" prefHeight="17.0" prefWidth="110.0" text="Target Completion:" />
+            <DatePicker layoutX="134.0" layoutY="69.0" prefHeight="25.0" prefWidth="193.0" />
+         </children>
+      </Pane>
+      <Button layoutX="329.0" layoutY="535.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="100.0" style="-fx-background-color: #364bbf;" text="Create" textFill="WHITE" />
+      <Button layoutX="439.0" layoutY="535.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="110.0" style="-fx-background-color: #364bbf;" text="Clear" textFill="WHITE" />
+      <Button layoutX="558.0" layoutY="535.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="110.0" style="-fx-background-color: #364bbf;" text="Cancel" textFill="WHITE" />
+   </children>
+</AnchorPane>

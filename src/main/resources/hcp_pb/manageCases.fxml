@@ -33,13 +33,13 @@
          <children>
             <Pane layoutX="334.0" layoutY="14.0" prefHeight="425.0" prefWidth="340.0" style="-fx-border-color: black; -fx-background-color: d9d9d9;">
                <children>
-                  <Label layoutX="47.0" layoutY="82.0" prefHeight="17.0" prefWidth="117.0" text="First Name:" />
-                  <Label layoutX="48.0" layoutY="115.0" prefHeight="17.0" prefWidth="117.0" text="Last Name:" />
-                  <Label layoutX="64.0" layoutY="211.0" prefHeight="17.0" prefWidth="100.0" text="Contact:" />
-                  <Label layoutX="58.0" layoutY="51.0" prefHeight="17.0" prefWidth="117.0" text="Client ID:" />
-                  <Label layoutX="41.0" layoutY="179.0" prefHeight="17.0" prefWidth="73.0" text="Medicare ID:" />
-                  <Label layoutX="61.0" layoutY="146.0" prefHeight="17.0" prefWidth="100.0" text="Birthday:" />
-                  <Label layoutX="63.0" layoutY="243.0" prefHeight="17.0" prefWidth="100.0" text="Address:" />
+                  <Label layoutX="34.0" layoutY="77.0" prefHeight="17.0" prefWidth="117.0" text="First Name:" />
+                  <Label layoutX="35.0" layoutY="110.0" prefHeight="17.0" prefWidth="117.0" text="Last Name:" />
+                  <Label layoutX="51.0" layoutY="206.0" prefHeight="17.0" prefWidth="100.0" text="Contact:" />
+                  <Label layoutX="45.0" layoutY="46.0" prefHeight="17.0" prefWidth="117.0" text="Client ID:" />
+                  <Label layoutX="28.0" layoutY="174.0" prefHeight="17.0" prefWidth="73.0" text="Medicare ID:" />
+                  <Label layoutX="48.0" layoutY="141.0" prefHeight="17.0" prefWidth="100.0" text="Birthday:" />
+                  <Label layoutX="50.0" layoutY="238.0" prefHeight="17.0" prefWidth="100.0" text="Address:" />
                   <TextField fx:id="eid" layoutX="113.0" layoutY="47.0" prefHeight="25.0" prefWidth="193.0" />
                   <TextField fx:id="fName" layoutX="113.0" layoutY="78.0" prefHeight="25.0" prefWidth="193.0" />
                   <TextField fx:id="lName" layoutX="113.0" layoutY="110.0" prefHeight="25.0" prefWidth="193.0" />
@@ -47,7 +47,7 @@
                   <TextField fx:id="eMail" layoutX="113.0" layoutY="175.0" prefHeight="25.0" prefWidth="193.0" />
                   <TextField fx:id="mobileNum" layoutX="113.0" layoutY="207.0" prefHeight="25.0" prefWidth="193.0" />
                   <TextField fx:id="address" layoutX="113.0" layoutY="239.0" prefHeight="25.0" prefWidth="193.0" />
-                  <Label layoutX="32.0" layoutY="21.0" prefHeight="17.0" prefWidth="117.0" text="Case Number:" />
+                  <Label layoutX="19.0" layoutY="16.0" prefHeight="17.0" prefWidth="117.0" text="Case Number:" />
                   <TextField fx:id="uid" editable="false" layoutX="113.0" layoutY="17.0" prefHeight="25.0" prefWidth="193.0" />
                   <Line endX="206.99993896484375" layoutX="116.0" layoutY="279.0" startX="-100.0" />
                   <Label layoutX="15.0" layoutY="289.0" prefHeight="17.0" prefWidth="100.0" text="Assessment Type:" />
