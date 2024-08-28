@@ -93,7 +93,7 @@ public class RegisterAdminController implements Initializable {
         String mobile = mobileNum.getText();
         String addr = address.getText();
         String zip = zipCode.getText();
-        String role = "System Administrator";
+        String role = "3";
         String user = username.getText();
         String pass = password.getText();
 
@@ -112,7 +112,7 @@ public class RegisterAdminController implements Initializable {
         }
 
         //insert to db
-        String insertUser = "INSERT INTO userAccounts (userID, employeeID, fName, lName, bDay, userEmail, userMobile, userAddress, userZip, userType, userName, userPass,isActive) "
+        String insertUser = "INSERT INTO userAccounts (userID, employeeID, fName, lName, bDay, userEmail, userMobile, userAddress, userZip, roleID, userName, userPass,isActive) "
                 + "VALUES ('" + uid + "','" + empID + "', '" + firstName + "', '" + lastName + "', "
                 + "'" + birthDate + "', '" + email + "', "
                 + "'" + mobile + "', '" + addr + "', '" + zip + "', "

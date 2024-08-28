@@ -37,6 +37,12 @@ public class SplashScreenController implements Initializable {
             + "monthlyFund DECIMAL(10, 2), "
             + "monthlyITF DECIMAL(10, 2), "
             + "dementiaFlag BOOLEAN)";
+    
+    
+          private final String TABLE_USER_ROLES = "CREATE TABLE IF NOT EXISTS userRoles ("
+            + "roleID INT PRIMARY KEY, "
+            + "roleDesc  VARCHAR(50), "
+            + "dateAdded DATE) ";
 
     private final String TABLE_USER_ACCOUNTS = "CREATE TABLE IF NOT EXISTS userAccounts ("
             + "userID INT PRIMARY KEY, "
@@ -48,7 +54,7 @@ public class SplashScreenController implements Initializable {
             + "userMobile VARCHAR(20), "
             + "userAddress VARCHAR(250), "
             + "userZip VARCHAR(20), "
-            + "userType VARCHAR(20), "
+            + "roleID VARCHAR(20), "
             + "userName VARCHAR(20) NOT NULL, "
             + "userPass VARCHAR(20) NOT NULL, "
             + "isActive int, "
@@ -424,6 +430,7 @@ public class SplashScreenController implements Initializable {
                                 // Create tables if they do not exist
                                 try (Statement statement = dbConnection.createStatement()) {
                                     statement.executeUpdate(TABLE_FUNDING_LEVEL);
+                                    statement.executeUpdate(TABLE_USER_ROLES);
                                     statement.executeUpdate(TABLE_USER_ACCOUNTS);
                                     statement.executeUpdate(TABLE_LOGIN_ATTEMPTS);
                                     statement.executeUpdate(TABLE_EMPLOYEE_LIST);
