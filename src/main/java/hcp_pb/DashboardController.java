@@ -18,6 +18,7 @@ import java.time.format.DateTimeParseException;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -61,7 +62,7 @@ public class DashboardController implements Initializable {
 
     @FXML
     private Label manageCaseLbl;
-  @FXML
+    @FXML
     private Pane manageCasePane;
 
     @FXML
@@ -180,7 +181,7 @@ public class DashboardController implements Initializable {
 
     private static final String DB_URL = "jdbc:mysql://localhost:3306/HCP_PBP";
     private static final String DB_USER = "root";
-    private static final String DB_PASSWORD = "!Student1";
+    private static final String DB_PASSWORD = "mymyel14";
     @FXML
     private Pane caseManagerPane;
     @FXML
@@ -290,25 +291,66 @@ public class DashboardController implements Initializable {
 
     }
 
-    public void setUser(String userID) throws SQLException {
+//    public void setUser(String userID) throws SQLException {
+//        this.userID = userID;
+//        System.out.println("Setting User Details: userID=" + userID);
+//        userHolder.setText(userID);
+//
+//        String query = "SELECT userID, roleID FROM userAccounts WHERE userID = ?";
+//        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD); PreparedStatement statement = connection.prepareStatement(query)) {
+//            statement.setString(1, userID); // Set the parameter for the userID
+//            try (ResultSet resultSet = statement.executeQuery()) {
+//                if (resultSet.next()) {
+//                    String roleID = resultSet.getString("roleID");
+//                    System.out.println("Setting User Details: roleID=" + roleID);
+//                    updateUIForRole(roleID);
+//                }
+//            }
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//    }
+    
+        public void setUser(String userID) {
         this.userID = userID;
         System.out.println("Setting User Details: userID=" + userID);
-        //userHolder.setText(userID);
 
         String query = "SELECT userID, roleID FROM userAccounts WHERE userID = ?";
-        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD); PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setString(1, userID); // Set the parameter for the userID
-            try (ResultSet resultSet = statement.executeQuery()) {
-                if (resultSet.next()) {
-                    String roleID = resultSet.getString("roleID");
-                    System.out.println("Setting User Details: roleID=" + roleID);
-                    updateUIForRole(roleID);
+        // Run database query on a background thread to avoid blocking the JavaFX Application Thread
+        new Thread(() -> {
+            try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+                 PreparedStatement statement = connection.prepareStatement(query)) {
+                statement.setString(1, userID); // Set the parameter for the userID
+
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    if (resultSet.next()) {
+                        String roleID = resultSet.getString("roleID");
+                        System.out.println("Setting User Details: roleID=" + roleID);
+                        // Update UI safely on the JavaFX Application Thread
+                        Platform.runLater(() -> updateUIForRole(roleID));
+                    } else {
+                        Platform.runLater(() -> handleNoUserFound());
+                    }
                 }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                Platform.runLater(() -> handleDatabaseError(e));
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        }).start();
     }
+
+
+    private void handleNoUserFound() {
+        // Handle case where no user was found with the provided userID
+        System.err.println("No user found with userID: " + userID);
+    }
+
+    private void handleDatabaseError(SQLException e) {
+        // Handle database errors
+        System.err.println("Database error occurred: " + e.getMessage());
+    }
+
+
 
     private void initComboBox() {
 
@@ -755,7 +797,7 @@ public class DashboardController implements Initializable {
 
         headLbl.setText("Manage Cases");
         manageCasePane.setVisible(true);
-        
+
         dashboardPane.setVisible(false);
 
     }

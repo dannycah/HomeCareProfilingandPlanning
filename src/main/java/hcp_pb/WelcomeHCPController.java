@@ -32,6 +32,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import javax.crypto.SecretKey;
 
 /**
  * FXML Controller class
@@ -103,70 +104,107 @@ public class WelcomeHCPController implements Initializable {
         getTheMaxUid();
         bDay.setValue(LocalDate.now());
 
-        roleCombo.setItems(FXCollections.observableArrayList("System Administrator", "Case Manager", "Caser Service Officer"));
+        roleCombo.setItems(FXCollections.observableArrayList("System Administrator", "Case Manager", "Care Service Officer"));
         roleCombo.getSelectionModel().selectFirst();
     }
 
     @FXML
-private void loginBtn(ActionEvent event) throws IOException {
-    String username = usnField.getText();
-    String password = pwdField.getText();
+    private void loginBtn(ActionEvent event) throws IOException {
+        String username = usnField.getText();
+        String password = pwdField.getText();
 
-    if (!isValidCredentials(username, password)) {
-        showAlert(Alert.AlertType.ERROR, "Login Failed", "Invalid username or password.");
-        return;
-    }
+        // Retrieve the encrypted password from the database
+        String encryptedPassword = getEncryptedPasswordFromDB(username);
 
-    try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
-        // Update user status
-        try (PreparedStatement updateStmt = connection.prepareStatement("UPDATE userAccounts SET stats = '2' WHERE userName = ?")) {
-            updateStmt.setString(1, username);
-            updateStmt.executeUpdate();
+        if (encryptedPassword == null) {
+            showAlert(Alert.AlertType.ERROR, "Login Failed", "Invalid username or password.");
+            return;
         }
 
-        // Fetch user details
-        String query = "SELECT userID, roleID FROM userAccounts WHERE userName = ?";
-        try (PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setString(1, username);
+        try {
+            // Decrypt the password
+            SecretKey key = EncryptionUtil.getKeyFromBytes(EncryptionUtil.getKeyBytes());
+            String decryptedPassword = EncryptionUtil.decrypt(encryptedPassword, key);
 
+            // Check if the decrypted password matches the provided password
+            if (!password.equals(decryptedPassword)) {
+                showAlert(Alert.AlertType.ERROR, "Login Failed", "Invalid username or password.");
+                return;
+            }
+
+            try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
+                // Update user status
+                try (PreparedStatement updateStmt = connection.prepareStatement("UPDATE userAccounts SET stats = '2' WHERE userName = ?")) {
+                    updateStmt.setString(1, username);
+                    updateStmt.executeUpdate();
+                }
+
+                // Fetch user details
+                String query = "SELECT userID, roleID FROM userAccounts WHERE userName = ?";
+                try (PreparedStatement statement = connection.prepareStatement(query)) {
+                    statement.setString(1, username);
+
+                    try (ResultSet resultSet = statement.executeQuery()) {
+                        if (resultSet.next()) {
+                            String userID = resultSet.getString("userID");
+                            String roleID = resultSet.getString("roleID");
+
+                            FXMLLoader loader;
+                            if ("3".equals(roleID)) {
+                                loader = new FXMLLoader(getClass().getResource("adminDashboard.fxml"));
+                            } else {
+                                loader = new FXMLLoader(getClass().getResource("dashboard.fxml"));
+                            }
+
+                            Parent welcomePage = loader.load();
+
+                            if (!"3".equals(roleID)) {
+                                // Ensure DashboardController is initialized
+                                DashboardController dashboardController = loader.getController();
+                                if (dashboardController != null) {
+                                    dashboardController.setUser(userID);
+                                } else {
+                                    throw new IllegalStateException("DashboardController not initialized");
+                                }
+                            }
+                            Scene welcomeScene = new Scene(welcomePage);
+
+                            // Set new scene
+                            Stage stage = (Stage) loginBtn.getScene().getWindow();
+                            stage.setScene(welcomeScene);
+                            stage.setTitle("Home Care Clients Profiling and Planning");
+                            stage.setResizable(false);
+                            stage.setWidth(1038);
+                            stage.setHeight(632);
+                        } else {
+                            showAlert(Alert.AlertType.ERROR, "Login Failed", "Invalid username or password.");
+                        }
+                    }
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                showAlert(Alert.AlertType.ERROR, "Database Error", "An error occurred while accessing the database.");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Decryption Error", "An error occurred while decrypting the password.");
+        }
+    }
+
+    private String getEncryptedPasswordFromDB(String username) {
+        String query = "SELECT userPass FROM userAccounts WHERE userName = ?";
+        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD); PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setString(1, username);
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
-                    String userID = resultSet.getString("userID");
-                    String roleID = resultSet.getString("roleID");
-
-                    FXMLLoader loader;
-                    if ("3".equals(roleID)) {
-                        loader = new FXMLLoader(getClass().getResource("adminDashboard.fxml"));
-                    } else {
-                        loader = new FXMLLoader(getClass().getResource("dashboard.fxml"));
-                            // Get the controller instance and pass user details
-                    DashboardController dashboardController = loader.getController();
-                    dashboardController.setUser(userID);
-                    }
-
-                    Parent welcomePage = loader.load();
-                    Scene welcomeScene = new Scene(welcomePage);
-
-                
-
-                    // Set new scene
-                    Stage stage = (Stage) loginBtn.getScene().getWindow();
-                    stage.setScene(welcomeScene);
-                    stage.setTitle("Home Care Clients Profiling and Planning");
-                    stage.setResizable(false);
-                    stage.setWidth(1038);
-                    stage.setHeight(632);
-                } else {
-                    showAlert(Alert.AlertType.ERROR, "Login Failed", "Invalid username or password.");
+                    return resultSet.getString("userPass");
                 }
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-    } catch (SQLException e) {
-        e.printStackTrace();
-        showAlert(Alert.AlertType.ERROR, "Database Error", "An error occurred while accessing the database.");
+        return null;
     }
-}
-
 
     private boolean isValidCredentials(String username, String password) {
         String query = "SELECT * FROM userAccounts WHERE userName = ? AND userPass = ?";
@@ -247,9 +285,18 @@ private void loginBtn(ActionEvent event) throws IOException {
         String mobile = mobileNum.getText();
         String addr = address.getText();
         String zip = zipCode.getText();
-        String role = roleCombo.getValue();
         String user = username.getText();
         String pass = password.getText();
+
+        String selectedRole = roleCombo.getValue();
+        String role = "";
+        if (selectedRole.equals("Case Manager")) {
+            role = "1";
+        } else if (selectedRole.equals("Care Service Officer")) {
+            role = "2";
+        } else if (selectedRole.equals("System Administrator")) {
+            role = "3";
+        }
 
         //validate input (call validateinput method)
         if (!validateInput(empID, firstName, lastName, email, mobile, addr, zip, user, pass)) {
@@ -266,12 +313,23 @@ private void loginBtn(ActionEvent event) throws IOException {
             return;
         }
 
+        // Encrypt the password
+        String encryptedPassword;
+        try {
+            SecretKey key = EncryptionUtil.getKeyFromBytes(EncryptionUtil.getKeyBytes()); // Adjust as necessary
+            encryptedPassword = EncryptionUtil.encrypt(pass, key);
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Encryption Error", "An error occurred while encrypting the password.");
+            return;
+        }
+
         //insert to db
-        String insertQuery = "INSERT INTO userAccounts (userID, employeeID, fName, lName, bDay, userEmail, userMobile, userAddress, userZip, userType, userName, userPass,isActive) "
+        String insertQuery = "INSERT INTO userAccounts (userID, employeeID, fName, lName, bDay, userEmail, userMobile, userAddress, userZip, roleID, userName, userPass,isActive) "
                 + "VALUES ('" + uid + "','" + empID + "', '" + firstName + "', '" + lastName + "', "
                 + "'" + birthDate + "', '" + email + "', "
                 + "'" + mobile + "', '" + addr + "', '" + zip + "', "
-                + "'" + role + "', '" + user + "', '" + pass + "','1')";
+                + "'" + role + "', '" + user + "', '" + encryptedPassword + "','1')";
 
         try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD); Statement stmt = conn.createStatement()) {
 
@@ -286,17 +344,6 @@ private void loginBtn(ActionEvent event) throws IOException {
 
                 loginPanel.setVisible(true);
                 regPanel.setVisible(false);
-
-//                FXMLLoader loader = new FXMLLoader(getClass().getResource("welcomHCP.fxml"));
-//                Parent root = loader.load();
-//
-//                Scene scene = new Scene(root);
-//                Stage stage = (Stage) userRegBtn.getScene().getWindow();
-//                stage.setScene(scene);
-//                stage.setResizable(false);
-//                stage.setWidth(680);  // Set the width 
-//                stage.setHeight(520);
-//                stage.show();
             }
 
         } catch (SQLException e) {
