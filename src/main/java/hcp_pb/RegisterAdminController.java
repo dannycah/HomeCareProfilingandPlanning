@@ -13,6 +13,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDate;
+import java.time.Period;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -70,7 +71,7 @@ public class RegisterAdminController implements Initializable {
 
     private static final String DB_URL = "jdbc:mysql://localhost:3306/HCP_PBP";
     private static final String DB_USER = "root";
-    private static final String DB_PASSWORD = "!Student1";
+    private static final String DB_PASSWORD = "password";
 
     /**
      * Initializes the controller class.
@@ -155,27 +156,63 @@ public class RegisterAdminController implements Initializable {
 
     }
 
-    private boolean validateInput(String empID, String firstName, String lastName, String email, String mobile, String addr, String zip, String user, String pass) {
+  private boolean validateInput(String empID, String firstName, String lastName, String email, String mobile, String addr, String zip, String user, String pass) {
         String numeric = "\\d+";
 
         if (empID.isEmpty() || firstName.isEmpty() || lastName.isEmpty() || email.isEmpty()
                 || mobile.isEmpty() || addr.isEmpty() || zip.isEmpty() || user.isEmpty() || pass.isEmpty()) {
-            showAlert(Alert.AlertType.ERROR, "Error", "All fields are required!");
-            return false;
-        }
-
-        if (!mobile.matches(numeric)) {
-            showAlert(Alert.AlertType.ERROR, "Error", "Contact should contain only numbers!");
+            showAlert(Alert.AlertType.ERROR, "Error", "All fields are required.");
             return false;
         }
 
         if (!empID.matches(numeric)) {
-            showAlert(Alert.AlertType.ERROR, "Error", "Employee ID should contain only numbers!");
+            showAlert(Alert.AlertType.ERROR, "Error", "Employee ID must contain numbers only.");
             return false;
         }
 
-        if (!zip.matches(numeric)) {
-            showAlert(Alert.AlertType.ERROR, "Error", "Zip Code should contain only numbers!");
+        // Check if the Admin is at least 18 years old
+        LocalDate today = LocalDate.now();
+        Period age = Period.between(bDay.getValue(), today);
+
+        if (age.getYears() < 18) {
+            showAlert(Alert.AlertType.ERROR, "Error", "Admin must be at least 18 years old.");
+            return false;
+        }
+
+        // Regular expression for validating email
+        String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@"
+                + "(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
+
+        if (email == null || !email.matches(emailRegex)) {
+            showAlert(Alert.AlertType.ERROR, "Error", "Please enter a valid email address.");
+            return false;
+        }
+
+        if (!mobile.matches("\\d{10}")) {
+            showAlert(Alert.AlertType.ERROR, "Error", "Mobile number must contain 10 digits.");
+            return false;
+        }
+
+        if (!zip.matches("\\d{4}")) {
+            showAlert(Alert.AlertType.ERROR, "Error", "Zip code must contain 4 digits.");
+            return false;
+        }
+
+        String usernameRegex = "^[a-zA-Z0-9]{6,16}$";
+
+        if (!user.matches(usernameRegex)) {
+            showAlert(Alert.AlertType.ERROR, "Error", "Username must be 6-16 characters long and can only contain letters, and numbers.");
+            return false;
+        }
+
+        // Regular expression for validating password
+        // - At least 8 characters
+        // - At least one alphabetic character (a-z or A-Z)
+        // - At least one numeric character (0-9)
+        String passwordRegex = "^(?=.*[a-zA-Z])(?=.*\\d)(?=.*[@#$%^&+=!]).{8,}$";
+
+        if (!pass.matches(passwordRegex)) {
+            showAlert(Alert.AlertType.ERROR, "Error", "Password must have at least 8 characters, one letter, one number, and one special character.");
             return false;
         }
 
