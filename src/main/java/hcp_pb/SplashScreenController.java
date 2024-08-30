@@ -55,8 +55,8 @@ public class SplashScreenController implements Initializable {
             + "userAddress VARCHAR(250), "
             + "userZip VARCHAR(20), "
             + "roleID VARCHAR(20), "
-            + "userName VARCHAR(20) NOT NULL, "
-            + "userPass VARCHAR(20) NOT NULL, "
+            + "userName VARCHAR(100) NOT NULL, "
+            + "userPass VARCHAR(100) NOT NULL, "
             + "isActive int, "
             + "stats int) ";
     
