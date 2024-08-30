@@ -77,8 +77,8 @@ public class NewClientController implements Initializable {
                   @FXML
                           private Button
                           saveNewClientBtn;
-                                 
-                         
+                        @FXML          
+                     private Button cancelClientReg      ;
            
            
                   
@@ -228,7 +228,7 @@ stage.close();
         }
 
         if (!mediCare.matches(numeric)) {
-            showAlert(Alert.AlertType.ERROR, "Error", "Zip Code should contain only numbers!");
+            showAlert(Alert.AlertType.ERROR, "Error", "Medicare Number should contain only numbers!");
             return false;
         }
 
@@ -245,5 +245,40 @@ stage.close();
     }
 	
     
+             
+             
+       @FXML
+    private void clearRegClient(ActionEvent event) throws IOException {
+   
+             
+                    // cID.setText("");
+        cMedicare.setText("");
+        cFname.setText("");
+        cLname.setText("");
+        cAddress.setText("");
+        cMobile.setText("");
+        cEmail.setText("");
+        cEmergencyName.setText("");
+        cRelation.setText("");
+        cEmergencyMob.setText("");
+        cEmergencyMail.setText("");
+             
+
+    }       
     
+        @FXML
+    private void cancelClientReg() {
+        // Get the current stage (window)
+        Stage stage = (Stage) cancelClientReg.getScene().getWindow();
+        // Close the stage
+        stage.close();
+    }
+             
+             
+             
+             
+             
+             
+             
+             
 }

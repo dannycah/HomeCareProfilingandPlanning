@@ -42,7 +42,7 @@
                   <Font name="System Bold" size="12.0" />
                </font>
             </Label>
-            <TextField fx:id="cID" editable="false" layoutX="112.0" layoutY="29.0" prefHeight="25.0" prefWidth="124.0" />
+            <TextField fx:id="cID" disable="true" editable="false" layoutX="112.0" layoutY="29.0" prefHeight="25.0" prefWidth="124.0" />
             <TextField fx:id="cMedicare" layoutX="308.0" layoutY="29.0" prefHeight="25.0" prefWidth="132.0" />
             <TextField fx:id="cFname" layoutX="112.0" layoutY="58.0" prefHeight="25.0" prefWidth="124.0" />
             <TextField fx:id="cLname" layoutX="308.0" layoutY="58.0" prefHeight="25.0" prefWidth="132.0" />
@@ -89,7 +89,7 @@
          </children>
       </Pane>
       <Button fx:id="saveNewClientBtn" layoutX="196.0" layoutY="527.0" mnemonicParsing="false" onAction="#saveNewClientBtn" prefHeight="26.0" prefWidth="99.0" style="-fx-background-color: #364bbf;" text="Save" textFill="WHITE" />
-      <Button layoutX="301.0" layoutY="527.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="99.0" style="-fx-background-color: #364bbf;" text="Clear" textFill="WHITE" />
-      <Button layoutX="406.0" layoutY="527.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="99.0" style="-fx-background-color: #364bbf;" text="Cancel" textFill="WHITE" />
+      <Button fx:id="clearRegClient" layoutX="301.0" layoutY="527.0" mnemonicParsing="false" onAction="#clearRegClient" prefHeight="26.0" prefWidth="99.0" style="-fx-background-color: #364bbf;" text="Clear" textFill="WHITE" />
+      <Button fx:id="cancelClientReg" layoutX="406.0" layoutY="527.0" mnemonicParsing="false" onAction="#cancelClientReg" prefHeight="26.0" prefWidth="99.0" style="-fx-background-color: #364bbf;" text="Cancel" textFill="WHITE" />
    </children>
 </AnchorPane>
