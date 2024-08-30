@@ -18,20 +18,26 @@ import java.time.format.DateTimeParseException;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
@@ -46,9 +52,96 @@ import javafx.stage.Stage;
  */
 public class DashboardController implements Initializable {
 
+     @FXML
+    private Button
+    searchCase;
+     
+       @FXML
+    private Button sCase;
+      @FXML
+    private  Hyperlink logoutBtn;
+     
+      @FXML
+    private Button
+     reassignBtn;
+      
+         @FXML
+    private Button
+      finaliseBtn;
+    @FXML
+    private TextField aClientID;
+
+    @FXML
+    private TextField aMedicare;
+
+    @FXML
+    private TextField aFname;
+
+    @FXML
+    private TextField aLname;
+
+    @FXML
+    private TextField aAddress;
+
+    @FXML
+    private TextField aMobile;
+
+    @FXML
+    private TextField aEmail;
+
+    @FXML
+    private TextField aZip;
+
+    @FXML
+    private DatePicker aBday;
+
+    @FXML
+    private ComboBox<String> aFundLevelCombo;
+
+    @FXML
+    private TextField aAssessmentDate;
+
+    @FXML
+    private TextField aCSO;
+
+    @FXML
+    private TextArea aOutcome;
+
+    @FXML
+    private ComboBox<String> aCMCombo;
+
+    @FXML
+    private TextField aEContact;
+
+    @FXML
+    private TextField aERelation;
+
+    @FXML
+    private TextField aEMobile;
+
+    @FXML
+    private TextField aEMail;
+
+    @FXML
+    private Button aDeactClient;
+    @FXML
+    private Button
+    completeTaskBtn;
+     @FXML
+    private Button  clientSearch;
+
+    @FXML
+    private Button aSaveUpdate;
+
+    @FXML
+    private Button aCancelUpdate;
+
+    @FXML
+    private Button aUpdateClient;
+
     @FXML
     private Label headLbl;
-
+    @FXML
     private Label userHolder;
     @FXML
     private Pane dashboardPane;
@@ -61,7 +154,7 @@ public class DashboardController implements Initializable {
 
     @FXML
     private Label manageCaseLbl;
-  @FXML
+    @FXML
     private Pane manageCasePane;
 
     @FXML
@@ -72,7 +165,7 @@ public class DashboardController implements Initializable {
 
     @FXML
     private Label budgetPlanLbl;
-
+    @FXML
     private Pane myCasePane;
 
     @FXML
@@ -80,7 +173,7 @@ public class DashboardController implements Initializable {
 
     @FXML
     private Label manageClientLbl;
-
+    @FXML
     private Pane manageClientPane;
 
     @FXML
@@ -124,6 +217,15 @@ public class DashboardController implements Initializable {
     private TableColumn<MyCases, String> case_Type;
     @FXML
     private TableColumn<MyCases, String> case_Priority;
+
+    @FXML
+    private TableView<Clients> tblClient;
+
+    @FXML
+    private TableColumn<Clients, Integer> acID;
+
+    @FXML
+    private TableColumn<Clients, String> acName;
 
     @FXML
     private TextField myClientID;
@@ -173,10 +275,7 @@ public class DashboardController implements Initializable {
     private Button myRecCancel;
     @FXML
     private Button updateCase;
-    @FXML
-    private Button finaliseBtn;
-    @FXML
-    private Button reassignBtn;
+
 
     private static final String DB_URL = "jdbc:mysql://localhost:3306/HCP_PBP";
     private static final String DB_USER = "root";
@@ -208,7 +307,7 @@ public class DashboardController implements Initializable {
     @FXML
     private Button resetPass;
     @FXML
-    private TableView<?> tab1;
+    private TableView<String> tab1;
     @FXML
     private Pane empRecords;
     @FXML
@@ -227,6 +326,10 @@ public class DashboardController implements Initializable {
     private TextField address1;
     @FXML
     private Pane viewLogs;
+    
+    
+    @FXML
+            private Button clientAssessment;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -243,11 +346,17 @@ public class DashboardController implements Initializable {
         case_Type.setCellValueFactory(new PropertyValueFactory<>("caseType"));
         case_Priority.setCellValueFactory(new PropertyValueFactory<>("casePriority"));
 
+        acID.setCellValueFactory(new PropertyValueFactory<>("acID"));
+        acName.setCellValueFactory(new PropertyValueFactory<>("acName"));
+
         loadCases();
+        loadClients();
+        initClientComboBox();
 
         initComboBox();
         dateCreate.setValue(LocalDate.now());
 
+        //CM case table
         // Add listener to the table for row selection
         casesTbl.setOnMouseClicked(event -> {
             try {
@@ -267,10 +376,12 @@ public class DashboardController implements Initializable {
             }
         }
 
+        //CSO - Mycasetable
 // Set up the mouse click event handler for the TableView
         myCaseTbl.setOnMouseClicked(event -> {
             try {
                 handlMyCaseSelection(event);
+
             } catch (SQLException ex) {
                 Logger.getLogger(DashboardController.class.getName()).log(Level.SEVERE, "Error handling row selection", ex);
             }
@@ -288,12 +399,88 @@ public class DashboardController implements Initializable {
             }
         }
 
+        //CSO client table
+        // Set up the mouse click event handler for the TableView
+        tblClient.setOnMouseClicked(event -> {
+            try {
+                handleClientSelect(event);
+
+            } catch (SQLException ex) {
+                Logger.getLogger(DashboardController.class.getName()).log(Level.SEVERE, "Error handling row selection", ex);
+            }
+        });
+
+// Select the first record if available
+        if (!tblClient.getItems().isEmpty()) {
+            // Select the first item in the TableView
+            tblClient.getSelectionModel().selectFirst();
+            try {
+                // Manually trigger the row selection handler to load details
+                handleClientSelect(null);
+            } catch (SQLException ex) {
+                Logger.getLogger(DashboardController.class.getName()).log(Level.SEVERE, "Error handling initial row selection", ex);
+            }
+        }
+
+        // tblClient
     }
 
+    
+    //Encryption - FDV
+    
+//     public void setUser(String userID) {
+//        this.userID = userID;
+//        System.out.println("Setting User Details: userID=" + userID);
+//        //userHolder.setText(userID);
+//
+//        String query = "SELECT userID, roleID FROM userAccounts WHERE userID = ?";
+//       
+//        // Run database query on a background thread to avoid blocking the JavaFX Application Thread
+//        new Thread(() -> {
+//            try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+//                 PreparedStatement statement = connection.prepareStatement(query)) {
+//                statement.setString(1, userID); // Set the parameter for the userID
+//
+//                try (ResultSet resultSet = statement.executeQuery()) {
+//                    if (resultSet.next()) {
+//                        String roleID = resultSet.getString("roleID");
+//                        System.out.println("Setting User Details: roleID=" + roleID);
+//                        // Update UI safely on the JavaFX Application Thread
+//                        Platform.runLater(() -> updateUIForRole(roleID));
+//                    } else {
+//                        Platform.runLater(() -> handleNoUserFound());
+//                    }
+//                }
+//            } catch (SQLException e) {
+//                e.printStackTrace();
+//                Platform.runLater(() -> handleDatabaseError(e));
+//            }
+//        
+//        }).start();
+//    }
+//        
+//     
+//
+//
+//    private void handleNoUserFound() {
+//        // Handle case where no user was found with the provided userID
+//        System.err.println("No user found with userID: " + userID);
+//    }
+//
+//    private void handleDatabaseError(SQLException e) {
+//        // Handle database errors
+//        System.err.println("Database error occurred: " + e.getMessage());
+//    }
+
+
+    
+    
+    
+//    CSO client table
     public void setUser(String userID) throws SQLException {
         this.userID = userID;
         System.out.println("Setting User Details: userID=" + userID);
-        //userHolder.setText(userID);
+        userHolder.setText(userID);
 
         String query = "SELECT userID, roleID FROM userAccounts WHERE userID = ?";
         try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD); PreparedStatement statement = connection.prepareStatement(query)) {
@@ -303,6 +490,14 @@ public class DashboardController implements Initializable {
                     String roleID = resultSet.getString("roleID");
                     System.out.println("Setting User Details: roleID=" + roleID);
                     updateUIForRole(roleID);
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
                 }
             }
         } catch (SQLException e) {
@@ -321,7 +516,7 @@ public class DashboardController implements Initializable {
 //        comboRole.setItems(FXCollections.observableArrayList("Mid-Level", "Senior Level", "Manager", "Supervisor"));
 //        comboRole.getSelectionModel().selectFirst();
     }
-
+@FXML
     private void reassignBtn(ActionEvent event) {
 
         Alert noRecordSelectedAlert = new Alert(Alert.AlertType.INFORMATION);
@@ -330,7 +525,7 @@ public class DashboardController implements Initializable {
         noRecordSelectedAlert.setContentText("Under Development.");
         noRecordSelectedAlert.showAndWait();
     }
-
+@FXML
     private void finaliseBtn(ActionEvent event) {
 
         Alert noRecordSelectedAlert = new Alert(Alert.AlertType.INFORMATION);
@@ -339,7 +534,7 @@ public class DashboardController implements Initializable {
         noRecordSelectedAlert.setContentText("Under Development.");
         noRecordSelectedAlert.showAndWait();
     }
-
+@FXML
     private void myRecSave(ActionEvent event) {
 
         Alert noRecordSelectedAlert = new Alert(Alert.AlertType.INFORMATION);
@@ -364,6 +559,7 @@ public class DashboardController implements Initializable {
         updateCase.setDisable(false);
         finaliseBtn.setDisable(false);
         reassignBtn.setDisable(false);
+             casesTbl.setDisable(true);
 
     }
 
@@ -441,6 +637,44 @@ public class DashboardController implements Initializable {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    private void loadClients() {
+
+        // SQL query
+        String query = "SELECT clientID, CONCAT(fName, ' ', lName) AS fullName FROM clientData";
+
+        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD); Statement statement = connection.createStatement(); ResultSet resultSet = statement.executeQuery(query)) {
+
+            // Clear existing data
+            tblClient.getItems().clear();
+
+            // Process the result set and populate the TableView
+            while (resultSet.next()) {
+                int acID = resultSet.getInt("clientID");
+                String acName = resultSet.getString("fullName");
+
+                // Create a Management object
+                Clients clients = new Clients(acID, acName);
+
+                // Add the Management object to the TableView
+                tblClient.getItems().add(clients);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private void initClientComboBox() {
+
+//         Initialize combo boxes
+        aFundLevelCombo.setItems(FXCollections.observableArrayList("Level 1", "Level 2", "Level 3"));
+        aFundLevelCombo.getSelectionModel().selectFirst();
+
+        aCMCombo.setItems(FXCollections.observableArrayList("Joylyn Espinosa", "Joylyn Espinosa", "Joylyn Espinosa", "Joylyn Espinosa"));
+        aCMCombo.getSelectionModel().selectFirst();
+//        
     }
 
 //    
@@ -582,6 +816,53 @@ public class DashboardController implements Initializable {
         }
     }
 
+    private void handleClientSelect(MouseEvent event) throws SQLException {
+        if (event == null || event.getClickCount() == 1) { // Single-click detection
+            Clients selectedClient = tblClient.getSelectionModel().getSelectedItem();
+            if (selectedClient != null) {
+                loadClientDetails(selectedClient.getAcID());
+            }
+        }
+    }
+
+    private void loadClientDetails(int clientID) {
+        String query = "SELECT * FROM clientData WHERE clientID = ?";
+        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD); PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+
+            preparedStatement.setInt(1, clientID);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    aClientID.setText(resultSet.getString("clientID"));
+                    aFname.setText(resultSet.getString("fName"));
+                    aLname.setText(resultSet.getString("lName"));
+                    aMedicare.setText(resultSet.getString("clientMedicare"));
+                    aAddress.setText(resultSet.getString("clientAddress"));
+                    aMobile.setText(resultSet.getString("clientMobile"));
+                    // aEmail.setText(resultSet.getString("clientEmail"));
+
+                    String birthdayStr = resultSet.getString("clientBday");
+                    if (birthdayStr != null && !birthdayStr.isEmpty()) {
+                        LocalDate birthday = LocalDate.parse(birthdayStr);
+                        aBday.setValue(birthday);
+                        
+                        
+                  aEContact.setText(resultSet.getString("emergencyContactPerson"));
+              aERelation.setText(resultSet.getString("relationship"));
+         aEMobile.setText(resultSet.getString("emergencyContactNumber"));
+//           aEMail.getText();
+                        
+                        
+                        
+                        
+                    }
+
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+@FXML
     private void updateCase(ActionEvent event) {
         // Check if a row is selected in the table
         Cases mycase = casesTbl.getSelectionModel().getSelectedItem();
@@ -612,8 +893,9 @@ public class DashboardController implements Initializable {
         updateCase.setDisable(true);
         finaliseBtn.setDisable(true);
         reassignBtn.setDisable(true);
+        casesTbl.setDisable(true);
     }
-
+@FXML
     private void myRecCancel(ActionEvent event) {
 
         csID.setDisable(true);
@@ -632,7 +914,7 @@ public class DashboardController implements Initializable {
         updateCase.setDisable(false);
         finaliseBtn.setDisable(false);
         reassignBtn.setDisable(false);
-
+     casesTbl.setDisable(false);
     }
 
     private void updateUIForRole(String roleID) {
@@ -752,10 +1034,10 @@ public class DashboardController implements Initializable {
 
     @FXML
     private void manageCaseLbl(MouseEvent event) {
-
+loadCases();
         headLbl.setText("Manage Cases");
         manageCasePane.setVisible(true);
-        
+
         dashboardPane.setVisible(false);
 
     }
@@ -783,9 +1065,22 @@ public class DashboardController implements Initializable {
         }
     }
 
+   
+    
     @FXML
-    private void assessmentLbl(MouseEvent event) {
-
+    private void viewAssessment(MouseEvent event) {
+        
+        
+   // Check if a record is selected in casetbl
+    if (casesTbl.getSelectionModel().isEmpty()) {
+        // If no record is selected, show an alert and return
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle("No Selection");
+        alert.setHeaderText(null);
+        alert.setContentText("Please select a case from the table first.");
+        alert.showAndWait();
+        return;
+    }
         try {
             // Load the FXML file
             FXMLLoader loader = new FXMLLoader(getClass().getResource("assessmentForm.fxml"));
@@ -794,17 +1089,21 @@ public class DashboardController implements Initializable {
             // Create a new stage
             Stage stage = new Stage();
             stage.initModality(Modality.APPLICATION_MODAL);
-            stage.setTitle("HCP - Assessments");
+            stage.setTitle("HCP - Care Planning");
             stage.setScene(new Scene(root));
             stage.setResizable(false);
-//                                                stage.setWidth(679);  // Set the width 
-//                                                stage.setHeight(580); // Set the height
+                                                stage.setWidth(840);  // Set the width 
+                                                stage.setHeight(645); // Set the height
 
             stage.showAndWait(); // Wait for the dialog to close before continuing with main window
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+    
+    
+    
+    
 
     @FXML
     private void carePlanLbl(MouseEvent event) {
@@ -948,5 +1247,337 @@ public class DashboardController implements Initializable {
             e.printStackTrace();
         }
     }
+
+    //manage client
+    @FXML
+    private void aUpdateClient(ActionEvent event) {
+
+        // aClientID.setDisable(false);
+        aMedicare.setDisable(false);
+        aFname.setDisable(false);
+        aLname.setDisable(false);
+        aAddress.setDisable(false);
+        aMobile.setDisable(false);
+        aEmail.setDisable(false);
+        aZip.setDisable(false);
+        aBday.setDisable(false);
+        aFundLevelCombo.setDisable(false);
+        aAssessmentDate.setDisable(false);
+        aCSO.setDisable(false);
+        aOutcome.setDisable(false);
+        aCMCombo.setDisable(false);
+        aEContact.setDisable(false);
+        aERelation.setDisable(false);
+        aEMobile.setDisable(false);
+        aEMail.setDisable(false);
+        aSaveUpdate.setDisable(false);
+        aCancelUpdate.setDisable(false);
+        aUpdateClient.setDisable(true);
+        aDeactClient.setDisable(true);
+        tblClient.setDisable(true);
+    }
+    
+    
+
+    @FXML
+    private void aCancelUpdate(ActionEvent event) {
+
+        // aClientID.setDisable(true);
+        aMedicare.setDisable(true);
+        aFname.setDisable(true);
+        aLname.setDisable(true);
+        aAddress.setDisable(true);
+        aMobile.setDisable(true);
+        aEmail.setDisable(true);
+        aZip.setDisable(true);
+        aBday.setDisable(true);
+        aFundLevelCombo.setDisable(true);
+        aAssessmentDate.setDisable(true);
+        aCSO.setDisable(true);
+        aOutcome.setDisable(true);
+        aCMCombo.setDisable(true);
+        aEContact.setDisable(true);
+        aERelation.setDisable(true);
+        aEMobile.setDisable(true);
+        aEMail.setDisable(true);
+        aSaveUpdate.setDisable(true);
+        aCancelUpdate.setDisable(true);
+        aUpdateClient.setDisable(false);
+        aDeactClient.setDisable(false);
+        tblClient.setDisable(false);
+
+    }
+
+    @FXML
+    private void aSaveUpdate(ActionEvent event) {
+        
+            // Retrieve data from text fields
+            String clientIDValue = aClientID.getText();
+            String fnameValue = aFname.getText();
+            String lnameValue = aLname.getText();
+            String medicareValue = aMedicare.getText();
+            String addressValue = aAddress.getText();
+            String mobileValue = aMobile.getText();
+            String emailValue = aEmail.getText();
+            LocalDate bdayValue = aBday.getValue();
+            String ERContact = aEContact.getText();
+              String ERRelation = aERelation.getText();
+              String ERMobile = aEMobile.getText();
+              String EREMail = aEMail.getText();
+                      
+
+// Validate required fields
+            if (fnameValue == null || fnameValue.isEmpty()
+                    || lnameValue == null || lnameValue.isEmpty()
+                    || medicareValue == null || medicareValue.isEmpty()
+                    || addressValue == null || addressValue.isEmpty()
+                    || mobileValue == null || mobileValue.isEmpty()
+                     || ERContact == null || ERContact.isEmpty()
+                     || ERRelation == null || ERRelation.isEmpty()
+                     || ERMobile == null || ERMobile.isEmpty()
+                     || mobileValue == null || mobileValue.isEmpty()
+                    || EREMail == null || EREMail.isEmpty()) {
+
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error");
+                alert.setHeaderText(null);
+                alert.setContentText("All fields are required!");
+                alert.showAndWait();
+                return;
+            }
+
+            // Validate mobile field as numeric
+            String numeric = "\\d+";
+            if (!mobileValue.matches(numeric)) {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error");
+                alert.setHeaderText(null);
+                alert.setContentText("Contact should contain only numbers!");
+                alert.showAndWait();
+                return;
+            }
+
+            // Construct the SQL UPDATE query
+            String updateClient = "UPDATE clientData SET fName = '" + fnameValue + "', lName = '" + lnameValue + "', clientMedicare = '" + medicareValue + "', clientAddress = '" + addressValue + "', clientMobile = '" + mobileValue + "',"
+                    + "emergencyContactPerson = '" + ERContact + "', emergencyContactNumber = '" + ERMobile + "', relationship = '" + ERRelation + "',clientBday = '" + bdayValue + "' WHERE clientID = '" + clientIDValue + "'";
+
+////        String updateQuery = "UPDATE clientData SET clientID =  '" + clientIDValue + "', fName = '" + fnameValue + "', lName = '" + lnameValue + "', clientMedicare = '" + medicareValue + "', clientAddress = '" + addressValue + "', clientMobile = '" + mobileValue + "', clientEmail = '" + emailValue + "', clientBday = '" + bdayValue + "' WHERE clientID = '" + clientIDValue + "'";
+            try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD); Statement statement = connection.createStatement()) {
+                // Execute the update query
+                int clientRowsUpdated = statement.executeUpdate(updateClient);
+
+                // Check if the update was successful
+                if (clientRowsUpdated > 0) {
+                    // Display success alert
+                    Alert successAlert = new Alert(Alert.AlertType.INFORMATION);
+                    successAlert.setTitle("Success");
+                    successAlert.setHeaderText(null);
+                    successAlert.setContentText("Client record updated successfully.");
+                    successAlert.showAndWait();
+
+loadClients();
+                }
+                
+            } catch (SQLException e) {
+                e.printStackTrace();
+
+            }
+
+        
+                  aMedicare.setDisable(true);
+                    aFname.setDisable(true);
+                    aLname.setDisable(true);
+                    aAddress.setDisable(true);
+                    aMobile.setDisable(true);
+                    aEmail.setDisable(true);
+                    aZip.setDisable(true);
+                    aBday.setDisable(true);
+                    aFundLevelCombo.setDisable(true);
+                    aAssessmentDate.setDisable(true);
+                    aCSO.setDisable(true);
+                    aOutcome.setDisable(true);
+                    aCMCombo.setDisable(true);
+                    aEContact.setDisable(true);
+                    aERelation.setDisable(true);
+                    aEMobile.setDisable(true);
+                    aEMail.setDisable(true);
+                    aSaveUpdate.setDisable(true);
+                    aCancelUpdate.setDisable(true);
+                    aUpdateClient.setDisable(false);
+                    aDeactClient.setDisable(false);
+                    tblClient.setDisable(false);
+    }
+    
+  
+    
+    @FXML
+private void logoutBtn(MouseEvent event) {
+    // Get the current stage (window) from the logout button
+    Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+
+    if (stage != null) {
+        Alert confirmation = new Alert(Alert.AlertType.CONFIRMATION);
+        confirmation.setTitle("Logout");
+        confirmation.setHeaderText("Are you sure you want to logout?");
+        confirmation.setContentText("Click OK to confirm logout or Cancel to stay.");
+
+        // Show the confirmation dialog and wait for the user's response
+        confirmation.showAndWait().ifPresent(response -> {
+            if (response == javafx.scene.control.ButtonType.OK) {
+                try {
+        
+                    // Load the WelcomeHCP.fxml file
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("WelcomeHCP.fxml"));
+                    Parent root = loader.load();
+
+                    // Set the new scene to the stage
+                    Scene scene = new Scene(root);
+                    stage.setScene(scene);
+                    
+                         stage.setWidth(680);  // Set the width 
+                                                    stage.setHeight(520); // Set the height
+                    stage.show();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+}
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+       @FXML
+    private void clientAssessment(ActionEvent event) {
+      // Check if a record is selected
+        if (myCaseTbl.getSelectionModel().getSelectedItem() == null) {
+            // Show an alert if no record is selected
+            Alert alert = new Alert(AlertType.WARNING, "Please select a client to assess.", ButtonType.OK);
+            alert.setHeaderText("No Selection");
+            alert.showAndWait();
+            return; // Exit the method if no record is selected
+        }
+        try {
+            // Load the FXML file
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("assessmentForm.fxml"));
+            Parent root = loader.load();
+
+            // Create a new stage
+            Stage stage = new Stage();
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setTitle("Client Assessment");
+            stage.setScene(new Scene(root));
+            stage.setResizable(false);
+            stage.setWidth(840);  // Set the width 
+            stage.setHeight(640); // Set the height
+   
+
+            stage.showAndWait(); // Wait for the dialog to close before continuing with main window
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+      
+       @FXML
+    private void addUserBtn(ActionEvent event) {
+        showUnderDevelopmentAlert();
+    }
+         @FXML
+    private void searchCase(ActionEvent event) {
+        showUnderDevelopmentAlert();
+    }
+    
+          
+       @FXML
+    private void searchBtn(ActionEvent event) {
+        showUnderDevelopmentAlert();
+    }
+    
+     @FXML
+    private void assessmentLbl(MouseEvent event) {
+
+        showUnderDevelopmentAlert();
+    }
+    
+        @FXML
+    private void searchCase(MouseEvent event) {
+
+        showUnderDevelopmentAlert();
+    }
+    
+    
+    
+//          @FXML
+//    private void reassignBtn(ActionEvent event) {
+//
+//        showUnderDevelopmentAlert();
+//    }
+    
+    
+//            @FXML
+//    private void finaliseBtn(ActionEvent event) {
+//
+//        showUnderDevelopmentAlert();
+//    }
+    
+                @FXML
+    private void aDeactClient(ActionEvent event) {
+
+        showUnderDevelopmentAlert();
+    }
+   
+    
+      
+                @FXML
+    private void clientSearch(ActionEvent event) {
+
+        showUnderDevelopmentAlert();
+    }
+         
+                @FXML
+    private void completeTaskBtn(ActionEvent event) {
+
+        showUnderDevelopmentAlert();
+    }
+    
+    
+                    @FXML
+    private void sCase(ActionEvent event) {
+
+        showUnderDevelopmentAlert();
+    }
+    
+    
+    
+       private void showUnderDevelopmentAlert() {
+        // Create and configure the alert
+        Alert alert = new Alert(AlertType.INFORMATION);
+        alert.setTitle("Developer's Notice");
+        alert.setHeaderText(null);
+        alert.setContentText("This feature is currently under development.");
+
+        // Show the alert
+        alert.showAndWait();
+    }
+    
 
 }
