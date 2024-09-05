@@ -196,7 +196,7 @@
       </VBox>
       <Pane fx:id="mainPanel" layoutX="300.0" layoutY="-3.0" prefHeight="606.0" prefWidth="533.0" style="-fx-background-color: white;">
          <children>
-            <Pane fx:id="clientDetsPane" layoutX="19.0" layoutY="14.0" prefHeight="219.0" prefWidth="495.0" style="-fx-border-color: black; -fx-background-color: d9d9d9;">
+            <Pane fx:id="clientDetsPane" layoutX="19.0" layoutY="14.0" prefHeight="219.0" prefWidth="495.0" style="-fx-border-color: black; -fx-background-color: d9d9d9;" visible="false">
                <children>
                   <Label layoutX="59.0" layoutY="33.0" text="Client ID:" />
                   <Label layoutX="47.0" layoutY="60.0" text="First Name:" />
@@ -218,7 +218,7 @@
                   <Button fx:id="startAssesmentBtn" layoutX="194.0" layoutY="153.0" mnemonicParsing="false" onAction="#startAssesmentBtn" style="-fx-background-color: #364bbf;" text="Start Assessment" textFill="WHITE" />
                </children>
             </Pane>
-            <Pane fx:id="paneClientHygiene" layoutX="-1.0" layoutY="1.0" prefHeight="607.0" prefWidth="540.0" style="-fx-background-color: FFFF;" visible="false">
+            <Pane fx:id="paneClientHygiene" layoutX="7.0" layoutY="1.0" prefHeight="607.0" prefWidth="548.0" style="-fx-background-color: FFFF;">
                <children>
                   <Pane layoutX="6.0" layoutY="500.0" prefHeight="67.0" prefWidth="231.0" style="-fx-background-color: #d9d9d9; -fx-border-color: #000000;" />
                   <Pane layoutX="7.0" layoutY="263.0" prefHeight="30.0" prefWidth="231.0" style="-fx-background-color: #d9d9d9; -fx-border-color: #000000;" />

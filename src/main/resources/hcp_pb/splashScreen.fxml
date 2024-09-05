@@ -21,7 +21,7 @@
                   <Font name="System Bold" size="30.0" />
                </font>
             </Label>
-            <Label layoutX="43.0" layoutY="125.0" prefHeight="53.0" prefWidth="494.0" text="Developed by: Danica Balibalos, Billy Bausin, Mark Ello, Joy Espinoza" textFill="WHITE">
+            <Label layoutX="43.0" layoutY="125.0" prefHeight="53.0" prefWidth="494.0" text="Developed by: Danica Balibalos, Billy Bausin, Mark Ello, Joylyn Espinoza" textFill="WHITE">
                <font>
                   <Font name="System Bold" size="9.0" />
                </font>

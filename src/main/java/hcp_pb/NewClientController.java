@@ -13,6 +13,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDate;
+import java.time.Period;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -29,6 +30,7 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+
 /**
  * FXML Controller class
  *
@@ -36,47 +38,47 @@ import javafx.stage.Stage;
  */
 public class NewClientController implements Initializable {
 
-    
-    
-      @FXML
+    @FXML
     private TextField cID;
-        @FXML
+    @FXML
     private TextField cMedicare;
-              
-                @FXML
+
+    @FXML
     private TextField cFname;
-    
-           @FXML
+
+    @FXML
     private TextField cLname;
-           
-  @FXML
+
+    @FXML
     private DatePicker cBday;
-           
-                  @FXML
+
+    @FXML
     private TextField cAddress;
-                  
-                  
-                         @FXML
+
+    @FXML
     private TextField cMobile;
-                         
-                                @FXML
+
+    @FXML
     private TextField cEmail;
-                                
-                     @FXML
+
+    @FXML
     private TextField cEmergencyName;
-                     
-                            @FXML
+
+    @FXML
     private TextField cRelation;
-                            
-                   @FXML
+
+    @FXML
     private TextField cEmergencyMob;
-                   
-                          @FXML
+
+    @FXML
     private TextField cEmergencyMail;
+
+    @FXML
+    private Button saveNewClientBtn;
                           
-                  @FXML
-                          private Button
-                          saveNewClientBtn;
+//                  @FXML
+//                          private Button
+//                          saveNewClientBtn;
                         @FXML          
                      private Button cancelClientReg      ;
            
@@ -85,52 +87,44 @@ public class NewClientController implements Initializable {
 
     @FXML
     private Button saveNewClient;
-    
-    
-      private static final String DB_URL = "jdbc:mysql://localhost:3306/HCP_PBP";
-        private static final String DB_USER = "root";
+
+    private static final String DB_URL = "jdbc:mysql://localhost:3306/HCP_PBP";
+    private static final String DB_USER = "root";
     private static final String DB_PASSWORD = "!Student1";
+
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        
+
         getTheMaxCid();
-         cBday.setValue(LocalDate.now());
+        cBday.setValue(LocalDate.now());
     }
-    
-    
-     @FXML
+
+    @FXML
     private void saveNewClientBtn(ActionEvent event) throws IOException {
 
         String cId = cID.getText();
-		String mediCare = cMedicare.getText();
+        String mediCare = cMedicare.getText();
         String firstName = cFname.getText();
         String lastName = cLname.getText();
         String birthDate = cBday.getValue() != null ? cBday.getValue().toString() : "";
-     
-	
-	 
+
         String addr = cAddress.getText();
-		   String email = cEmail.getText();
+        String email = cEmail.getText();
         String mobile = cMobile.getText();
 
         String eContactName = cEmergencyName.getText();
- String eRelation = cRelation.getText();
-  String eMob = cEmergencyMob.getText();
-    String eMail = cEmergencyMail.getText();
-
-
-
+        String eRelation = cRelation.getText();
+        String eMob = cEmergencyMob.getText();
+        String eEmail = cEmergencyMail.getText();
 
         //validate input (call validateinput method)
-        if (!validateInput(firstName, lastName, email, mobile, addr, mediCare, eContactName, eRelation, eMob, email)) {
+        if (!validateInput(firstName, lastName, email, mobile, addr, mediCare, eContactName, eRelation, eMob, eEmail)) {
             return;
         }
 
-       
-      
         //insert to db
         String regClient = "INSERT INTO clientdata (clientID, fName, lName, clientMedicare, clientAddress, clientMobile, clientBday, emergencyContactPerson,emergencyContactNumber, relationship,levelID) "
                 + "VALUES ('" + cId + "','" + firstName + "', '" + lastName + "', "
@@ -138,24 +132,20 @@ public class NewClientController implements Initializable {
                 + "'" + birthDate + "', '" + eContactName + "', '" + eMob + "', "
                 + "'" + eRelation + "','1')";
 
- 
-
         try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD); Statement stmt = conn.createStatement()) {
 
             // Execute the query
             int rowsAffected = stmt.executeUpdate(regClient);
-          
-            
+
             if (rowsAffected > 0) {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Success");
                 alert.setHeaderText(null);
                 alert.setContentText("Client Record Created");
                 alert.showAndWait();
-                
-               
-Stage stage = (Stage) saveNewClientBtn.getScene().getWindow();
-stage.close();
+
+                Stage stage = (Stage) saveNewClientBtn.getScene().getWindow();
+                stage.close();
 
 //               FXMLLoader loader = new FXMLLoader(getClass().getResource("Dashboard.fxml"));
 //                Parent root = loader.load();
@@ -167,7 +157,6 @@ stage.close();
 //                stage.setWidth(680);  // Set the width 
 //                stage.setHeight(520);
 //                stage.show();
-
             }
 
         } catch (SQLException e) {
@@ -176,18 +165,8 @@ stage.close();
         }
 
     }
-	
-	
 
-
-    
-    
-    
-    
-    
-    
-    
-    	    private void getTheMaxCid() {
+    private void getTheMaxCid() {
 
         String query = "SELECT clientID FROM clientdata ORDER BY clientID DESC LIMIT 1";
 
@@ -204,45 +183,72 @@ stage.close();
             e.printStackTrace();
         }
     }
-            
-            
-            
-            
-	 private boolean validateInput(String firstName, String lastName, String email, String mobile, String addr, String mediCare, String eContactName, String eRelation, String eMob, String Email) {
+
+    private boolean validateInput(String firstName, String lastName, String email, String mobile, String addr, String mediCare, String eContactName, String eRelation, String eMob, String eEmail) {
         String numeric = "\\d+";
 
         if (firstName.isEmpty() || lastName.isEmpty() || email.isEmpty()
-                || mobile.isEmpty() || addr.isEmpty() || mediCare.isEmpty() || eContactName.isEmpty() || eRelation.isEmpty()|| eMob.isEmpty()|| Email.isEmpty()) {
+                || mobile.isEmpty() || addr.isEmpty() || mediCare.isEmpty() || eContactName.isEmpty() || eRelation.isEmpty() || eMob.isEmpty() || eEmail.isEmpty()) {
             showAlert(Alert.AlertType.ERROR, "Error", "All fields are required!");
             return false;
         }
 
-        if (!mobile.matches(numeric)) {
-            showAlert(Alert.AlertType.ERROR, "Error", "Contact should contain only numbers!");
+        // Check if the clien is at least 65 years old
+        LocalDate today = LocalDate.now();
+        Period age = Period.between(cBday.getValue(), today);
+
+        if (age.getYears() < 65) {
+            showAlert(Alert.AlertType.ERROR, "Error", "Client must be at least 65 years old.");
             return false;
         }
-		
-		    if (!eMob.matches(numeric)) {
-            showAlert(Alert.AlertType.ERROR, "Error", "Contact should contain only numbers!");
+
+        // Regular expression for validating email
+        String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@"
+                + "(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
+
+        if (email == null || !email.matches(emailRegex)) {
+            showAlert(Alert.AlertType.ERROR, "Error", "Please enter a valid email address.");
+            return false;
+        }
+
+        if (!mobile.matches("\\d{10}")) {
+            showAlert(Alert.AlertType.ERROR, "Error", "Mobile number must contain 10 digit numbers.");
             return false;
         }
 
         if (!mediCare.matches(numeric)) {
+//<<<<<<< HEAD (aad685d) - Additional features and
             showAlert(Alert.AlertType.ERROR, "Error", "Medicare Number should contain only numbers!");
+//=======
+            showAlert(Alert.AlertType.ERROR, "Error", "Medicare must contain numbers only.");
+            return false;
+        }
+
+        if (!eMob.matches("\\d{10}")) {
+            showAlert(Alert.AlertType.ERROR, "Error", "Mobile number must contain 10 digit numbers.");
+            return false;
+        }
+        // Regular expression for validating Emergency contact email
+        String eEmailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@"
+                + "(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
+
+        if (eEmail == null || !eEmail.matches(eEmailRegex)) {
+            showAlert(Alert.AlertType.ERROR, "Error", "Please enter a valid email address.");
+//>>>>>>> origin/master (51df165) - Update Admin,
             return false;
         }
 
         return true;
     }
-         
-         
-             private void showAlert(Alert.AlertType alertType, String title, String content) {
+
+    private void showAlert(Alert.AlertType alertType, String title, String content) {
         Alert alert = new Alert(alertType);
         alert.setTitle(title);
         alert.setHeaderText(null);
         alert.setContentText(content);
         alert.showAndWait();
     }
+//<<<<<<< HEAD (aad685d) - Additional features and
 	
     
              
@@ -280,5 +286,8 @@ stage.close();
              
              
              
-             
+//             
+//=======
+//
+//>>>>>>> origin/master (51df165) - Update Admin,
 }
