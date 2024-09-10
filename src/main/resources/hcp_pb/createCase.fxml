@@ -27,7 +27,7 @@
                 </Label>
                 <Label fx:id="lblId" layoutX="437.0" layoutY="41.0" text="." textFill="#212c65" />
                 <Label layoutX="471.0" layoutY="25.0" prefHeight="17.0" prefWidth="204.0" text="Create a new Case Profile for client" textFill="WHITE" />
-                <Label layoutX="471.0" layoutY="41.0" prefHeight="17.0" prefWidth="204.0" text="Danica Balibalos, 4567586" textFill="WHITE" />
+                <Label fx:id="namelbl" layoutX="471.0" layoutY="41.0" prefHeight="17.0" prefWidth="204.0" text="Danica Balibalos, 4567586" textFill="WHITE" visible="false" />
             </children>
         </Pane>
         <TableView fx:id="tblCreateCase" layoutX="12.0" layoutY="123.0" prefHeight="170.0" prefWidth="658.0">
@@ -51,13 +51,13 @@
                 <Label layoutX="23.0" layoutY="152.0" prefHeight="17.0" prefWidth="73.0" text="Medicare ID:" />
                 <Label layoutX="43.0" layoutY="117.0" prefHeight="17.0" prefWidth="100.0" text="Birthday:" />
                 <Label layoutX="45.0" layoutY="214.0" prefHeight="17.0" prefWidth="100.0" text="Address:" />
-                <TextField fx:id="cID" disable="true" editable="false" layoutX="94.0" layoutY="19.0" prefHeight="25.0" prefWidth="193.0" />
-                <TextField fx:id="fName" disable="true" editable="false" layoutX="95.0" layoutY="51.0" prefHeight="25.0" prefWidth="193.0" />
-                <TextField fx:id="lName" disable="true" editable="false" layoutX="95.0" layoutY="83.0" prefHeight="25.0" prefWidth="193.0" />
-                <DatePicker fx:id="bDay" disable="true" editable="false" layoutX="95.0" layoutY="114.0" prefHeight="25.0" prefWidth="193.0" />
-                <TextField fx:id="medi_Care" disable="true" editable="false" layoutX="96.0" layoutY="147.0" prefHeight="25.0" prefWidth="193.0" />
-                <TextField fx:id="mobileNum" disable="true" editable="false" layoutX="96.0" layoutY="179.0" prefHeight="25.0" prefWidth="193.0" />
-                <TextField fx:id="address" disable="true" editable="false" layoutX="96.0" layoutY="211.0" prefHeight="25.0" prefWidth="193.0" />
+                <TextField fx:id="cID" editable="false" layoutX="94.0" layoutY="19.0" prefHeight="25.0" prefWidth="193.0" />
+                <TextField fx:id="fName" editable="false" layoutX="95.0" layoutY="51.0" prefHeight="25.0" prefWidth="193.0" />
+                <TextField fx:id="lName" editable="false" layoutX="95.0" layoutY="83.0" prefHeight="25.0" prefWidth="193.0" />
+                <DatePicker fx:id="bDay" editable="false" layoutX="95.0" layoutY="114.0" prefHeight="25.0" prefWidth="193.0" />
+                <TextField fx:id="medi_Care" editable="false" layoutX="96.0" layoutY="147.0" prefHeight="25.0" prefWidth="193.0" />
+                <TextField fx:id="mobileNum" editable="false" layoutX="96.0" layoutY="179.0" prefHeight="25.0" prefWidth="193.0" />
+                <TextField fx:id="address" editable="false" layoutX="96.0" layoutY="211.0" prefHeight="25.0" prefWidth="193.0" />
             </children>
         </Pane>
         <Line endX="555.0" layoutX="114.0" layoutY="302.0" startX="-100.0" />

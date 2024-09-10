@@ -13,10 +13,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -39,7 +42,11 @@ import javafx.stage.Stage;
  * @author mark
  */
 public class CreateCaseController implements Initializable {
-
+    private String cmID;
+    
+    
+    @FXML
+    private Label cmName;
     @FXML
     private Label lblId;
     @FXML
@@ -282,6 +289,9 @@ public class CreateCaseController implements Initializable {
 // 
 
     private void loadClientDetails(int clientID) {
+        
+        
+     
         String query = "SELECT * FROM clientData WHERE clientID = ?";
         try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD); PreparedStatement preparedStatement = connection.prepareStatement(query)) {
 
@@ -301,8 +311,10 @@ public class CreateCaseController implements Initializable {
                         LocalDate birthday = LocalDate.parse(birthdayStr);
                         bDay.setValue(birthday);
 
+                          
 //           aEMail.getText();
                     }
+        
 
                 }
             }
@@ -339,11 +351,47 @@ public class CreateCaseController implements Initializable {
         assessmentTypeCombo.getSelectionModel().selectFirst();
 
         // Initialize role combo box
-        casePriorityCombo.setItems(FXCollections.observableArrayList("Low Priority", "High Priority", "Urgent"));
+        casePriorityCombo.setItems(FXCollections.observableArrayList("Low", "Medium", "High"));
         casePriorityCombo.getSelectionModel().selectFirst();
 
-        csoAssignmentCombo.setItems(FXCollections.observableArrayList("Mark Ello", "Billy Bausin", "Danica Balibalos", "Joy Espinoza"));
-        csoAssignmentCombo.getSelectionModel().selectFirst();
+        
+        
+        
+        
+        
+        
+        
+        
+        
+          // Query to fetch names of users with roleID = '2'
+        String query = "SELECT userID, CONCAT(fName, ' ', lName) AS fullName FROM userAccounts WHERE roleID = '2'";
+
+        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD); Statement statement = connection.createStatement(); ResultSet resultSet = statement.executeQuery(query)) {
+
+            // Clear existing items in ComboBox
+            csoAssignmentCombo.getItems().clear();
+
+            // Process the result set and populate the ComboBox
+            List<String> namesList = new ArrayList<>();
+
+//           namesList.add("Select One");
+            while (resultSet.next()) {
+                String fullName = resultSet.getString("fullName");
+                cmID = resultSet.getString("userID");
+                namesList.add(cmID + " - " + fullName);
+            }
+
+            // Convert the list to an ObservableList and set it in the ComboBox
+            ObservableList<String> observableNamesList = FXCollections.observableArrayList(namesList);
+            csoAssignmentCombo.setItems(observableNamesList);
+            csoAssignmentCombo.getSelectionModel().selectFirst(); // Optional: Select the first item
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        
+        
+
 
     }
 
@@ -369,16 +417,22 @@ public class CreateCaseController implements Initializable {
 //    LocalDate bDayValue = bDay.getValue();
         LocalDate dateCreatedValue = dateCreated.getValue();
         LocalDate completionDateValue = completionCombo.getValue();
+        
+        String csoAssignmentValue = csoAssignmentCombo.getValue(); // 
+String csoID = csoAssignmentValue.substring(0, 5); // 
+String csoName = csoAssignmentValue.substring(8);
 
 //        //validate input (call validateinput method)
 //        if (!validateInput(firstName, lastName, email, mobile, addr, mediCare, eContactName, eRelation, eMob, email)) {
 //            return;
 //        }
+
+
         //insert to db
-        String regClient = "INSERT INTO clientcases (caseID, caseType, casePriority, caseAssignment, caseDate, clientType, clientID,userID) "
+        String regClient = "INSERT INTO clientcases (caseID, caseType, casePriority, caseAssignment, caseDate, clientType, clientID,userID, assessmentStatus ) "
                 + "VALUES ('" + caseNumberText + "','" + assessmentType + "', '" + casePriority + "', "
-                + "'" + csoAssignment + "', '" + dateCreatedValue + "', '" + clientStatus + "', "
-                + "'" + clientIDText + "','10013')"; // temporary user id - for presentation purposes
+                + "'" + csoName + "', '" + dateCreatedValue + "', '" + clientStatus + "', "
+                + "'" + clientIDText + "','" + csoID + "', 'Open')"; // temporary user id - for presentation purposes
 
         try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD); Statement stmt = conn.createStatement()) {
 
