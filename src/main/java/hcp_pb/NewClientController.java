@@ -14,7 +14,11 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -28,6 +32,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
@@ -38,11 +43,13 @@ import javafx.stage.Stage;
  */
 public class NewClientController implements Initializable {
 
+    private String cmID;
     @FXML
     private TextField cID;
     @FXML
     private TextField cMedicare;
-
+  @FXML
+    private TextField zip;
     @FXML
     private TextField cFname;
 
@@ -75,15 +82,26 @@ public class NewClientController implements Initializable {
 
     @FXML
     private Button saveNewClientBtn;
-                          
+
 //                  @FXML
 //                          private Button
 //                          saveNewClientBtn;
-                        @FXML          
-                     private Button cancelClientReg      ;
-           
-           
-                  
+    @FXML
+    private Button cancelClientReg;
+
+    @FXML
+    private ComboBox<String> standingCmb;
+    @FXML
+    private ComboBox<String> fLevelCmb;
+    @FXML
+
+    private ComboBox<String> cmCmb;
+
+    @FXML
+    private TextField reffCode;
+
+    @FXML
+    private TextArea handOver;
 
     @FXML
     private Button saveNewClient;
@@ -99,7 +117,66 @@ public class NewClientController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
 
         getTheMaxCid();
+        initComboBox();
         cBday.setValue(LocalDate.now());
+
+    }
+
+    private void initComboBox() {
+        standingCmb.setItems(FXCollections.observableArrayList("New Entry", "New-Referral", "Transfer-Referral"));
+        standingCmb.getSelectionModel().selectFirst();
+
+        fLevelCmb.setItems(FXCollections.observableArrayList("Level 0", "Level 1", "Level 2", "Level 3", "Level 4"));
+        fLevelCmb.getSelectionModel().selectFirst();
+
+        // Query to fetch names of users with roleID = '1'
+        String query = "SELECT userID, CONCAT(fName, ' ', lName) AS fullName FROM userAccounts WHERE roleID = '1'";
+
+        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD); Statement statement = connection.createStatement(); ResultSet resultSet = statement.executeQuery(query)) {
+
+            // Clear existing items in ComboBox
+            cmCmb.getItems().clear();
+
+            // Process the result set and populate the ComboBox
+            List<String> namesList = new ArrayList<>();
+
+//           namesList.add("Select One");
+            while (resultSet.next()) {
+                String fullName = resultSet.getString("fullName");
+                cmID = resultSet.getString("userID");
+                namesList.add(cmID + " - " + fullName);
+            }
+
+            // Convert the list to an ObservableList and set it in the ComboBox
+            ObservableList<String> observableNamesList = FXCollections.observableArrayList(namesList);
+            cmCmb.setItems(observableNamesList);
+            cmCmb.getSelectionModel().selectFirst(); // Optional: Select the first item
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void standingCmb(ActionEvent event) {
+        // Get the selected value from the ComboBox
+        String selectedValue = standingCmb.getValue();
+
+        // Check if the selected value is "Transfer"
+        if ("New Entry".equals(selectedValue)) {
+            // Enable the specified components
+            reffCode.setDisable(true);
+            fLevelCmb.setDisable(true);
+            cmCmb.setDisable(true);
+            handOver.setDisable(true);
+        } else {
+            // Disable the specified components
+
+            reffCode.setDisable(false);
+            fLevelCmb.setDisable(false);
+            cmCmb.setDisable(false);
+            handOver.setDisable(false);
+        }
     }
 
     @FXML
@@ -119,23 +196,48 @@ public class NewClientController implements Initializable {
         String eRelation = cRelation.getText();
         String eMob = cEmergencyMob.getText();
         String eEmail = cEmergencyMail.getText();
+        String standing = standingCmb.getValue();
+        String refCode = reffCode.getText();
+        String level = fLevelCmb.getValue();
+String zipCode = zip.getText();
+        
+        String instruct = (handOver.getText() != null) ? handOver.getText() : "";
 
+  
+        String cmValue = cmCmb.getValue(); // 
+String cmID = cmValue.substring(0, 5); // 
+String cmName = cmValue.substring(8);
+        
+        
         //validate input (call validateinput method)
-        if (!validateInput(firstName, lastName, email, mobile, addr, mediCare, eContactName, eRelation, eMob, eEmail)) {
+        if (!validateInput(firstName, lastName, email, mobile, addr, mediCare, eContactName, eRelation, eMob, eEmail, refCode, zipCode)) {
             return;
         }
 
         //insert to db
-        String regClient = "INSERT INTO clientdata (clientID, fName, lName, clientMedicare, clientAddress, clientMobile, clientBday, emergencyContactPerson,emergencyContactNumber, relationship,levelID) "
+        String regClient = "INSERT INTO clientdata (clientID, fName, lName, clientMedicare, clientAddress, clientMobile, clientEmail,clientBday, emergencyContactPerson,emergencyContactNumber, relationship,levelID, clientZip) "
                 + "VALUES ('" + cId + "','" + firstName + "', '" + lastName + "', "
-                + "'" + mediCare + "', '" + addr + "', '" + mobile + "', "
+                + "'" + mediCare + "', '" + addr + "', '" + mobile + "',  '" + email + "', "
                 + "'" + birthDate + "', '" + eContactName + "', '" + eMob + "', "
-                + "'" + eRelation + "','1')";
+                + "'" + eRelation + "', '" + level + "', '" + zipCode + "')";
+
+        //insert to client management
+        String insertCareManagement = "INSERT INTO clientCareManagement (clientID, clientStanding, referralCode, levelID, userID, handOver) "
+                + "VALUES ('" + cId + "', '" + standing + "', '" + refCode + "', "
+                + "'" + level + "', '" + cmID + "', '" + instruct + "')";
+        
+        //insert primary contact
+        
+        String insertContact = "INSERT INTO clientContact "
+        + "(clientID, primaryContact, primaryRelationship, primaryPhone, primaryEmail) "
+        + "VALUES ( '" + cId + "',  '" + eContactName + "',  '" + eRelation + "',  '" + eMob + "', '" + eEmail + "')";
 
         try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD); Statement stmt = conn.createStatement()) {
 
             // Execute the query
             int rowsAffected = stmt.executeUpdate(regClient);
+            int rowsAffected2 = stmt.executeUpdate(insertCareManagement);
+              int rowsAffected3 = stmt.executeUpdate(insertContact);
 
             if (rowsAffected > 0) {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -184,7 +286,7 @@ public class NewClientController implements Initializable {
         }
     }
 
-    private boolean validateInput(String firstName, String lastName, String email, String mobile, String addr, String mediCare, String eContactName, String eRelation, String eMob, String eEmail) {
+    private boolean validateInput(String firstName, String lastName, String email, String mobile, String addr, String mediCare, String eContactName, String eRelation, String eMob, String eEmail, String refCode, String zipCode) {
         String numeric = "\\d+";
 
         if (firstName.isEmpty() || lastName.isEmpty() || email.isEmpty()
@@ -249,15 +351,11 @@ public class NewClientController implements Initializable {
         alert.showAndWait();
     }
 //<<<<<<< HEAD (aad685d) - Additional features and
-	
-    
-             
-             
-       @FXML
+
+    @FXML
     private void clearRegClient(ActionEvent event) throws IOException {
-   
-             
-                    // cID.setText("");
+
+        // cID.setText("");
         cMedicare.setText("");
         cFname.setText("");
         cLname.setText("");
@@ -268,24 +366,17 @@ public class NewClientController implements Initializable {
         cRelation.setText("");
         cEmergencyMob.setText("");
         cEmergencyMail.setText("");
-             
 
-    }       
-    
-        @FXML
+    }
+
+    @FXML
     private void cancelClientReg() {
         // Get the current stage (window)
         Stage stage = (Stage) cancelClientReg.getScene().getWindow();
         // Close the stage
         stage.close();
     }
-             
-             
-             
-             
-             
-             
-             
+
 //             
 //=======
 //
