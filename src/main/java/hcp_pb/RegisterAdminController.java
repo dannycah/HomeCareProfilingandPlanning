@@ -72,7 +72,7 @@ public class RegisterAdminController implements Initializable {
 
     private static final String DB_URL = "jdbc:mysql://localhost:3306/HCP_PBP";
     private static final String DB_USER = "root";
-    private static final String DB_PASSWORD = "password";
+    private static final String DB_PASSWORD = "!Student1";
 
     /**
      * Initializes the controller class.
