@@ -32,11 +32,11 @@ public class SplashScreenController implements Initializable {
     private final String PASSWORD = "!Student1";
     private final String dbCreateSQL = "CREATE DATABASE IF NOT EXISTS HCP_PBP";
     private final String TABLE_FUNDING_LEVEL = "CREATE TABLE IF NOT EXISTS fundingLevel ("
-            + "levelID INT PRIMARY KEY, "
+            + "levelID VARCHAR(20) PRIMARY KEY, "
             + "dailyFund DECIMAL(10, 2), "
+            + "fortnightlyFund DECIMAL(10, 2), "
             + "monthlyFund DECIMAL(10, 2), "
-            + "monthlyITF DECIMAL(10, 2), "
-            + "dementiaFlag BOOLEAN)";
+               + "dementiaFlag VARCHAR(10))";
     
     
           private final String TABLE_USER_ROLES = "CREATE TABLE IF NOT EXISTS userRoles ("
@@ -90,18 +90,33 @@ public class SplashScreenController implements Initializable {
             + "clientID INT PRIMARY KEY, "
             + "fName VARCHAR(20) NOT NULL, "
             + "lName VARCHAR(20) NOT NULL, "
-            + "levelID INT NOT NULL, "
+            + "levelID VARCHAR(20), "
             + "clientMedicare VARCHAR(20), "
             + "clientAddress VARCHAR(250), "
+             + "clientZip VARCHAR(5), "
             + "clientMobile VARCHAR(20), "
+             + "clientEmail VARCHAR(50), "
             + "clientBday DATE, "
             + "emergencyContactPerson VARCHAR(20), "
             + "emergencyContactNumber VARCHAR(20), "
             + "relationship VARCHAR(20), "
             + "FOREIGN KEY (levelID) REFERENCES fundingLevel(levelID))";
+    
+    
+private final String TABLE_CARE_MANAGEMENT = "CREATE TABLE IF NOT EXISTS clientCareManagement ("
+       + "managementID INT AUTO_INCREMENT PRIMARY KEY, "
+    + "clientID INT, "
+    + "clientStanding VARCHAR(20), "
+    + "referralCode VARCHAR(20), "
+    + "levelID  VARCHAR(20), "
+    + "userID INT, "
+    + "handOver VARCHAR(200), " 
+    + "FOREIGN KEY (clientID) REFERENCES clientData(clientID), "  
+    + "FOREIGN KEY (levelID) REFERENCES fundingLevel(levelID), "
+    + "FOREIGN KEY (userID) REFERENCES userAccounts(userID))";
 
     private final String TABLE_CLIENT_CONTACT = "CREATE TABLE IF NOT EXISTS clientContact ("
-            + "contactID INT PRIMARY KEY, "
+            + "contactID INT AUTO_INCREMENT PRIMARY KEY, "
             + "primaryContact VARCHAR(20), "
             + "primaryRelationship VARCHAR(20), "
             + "primaryPhone VARCHAR(20), "
@@ -126,11 +141,12 @@ public class SplashScreenController implements Initializable {
             + "caseID INT PRIMARY KEY, "
             + "caseType VARCHAR(20), "
             + "casePriority VARCHAR(20), "
-            + "caseAssignment VARCHAR(20), "
+            + "caseAssignment VARCHAR(50), "
             + "caseDate DATE, "
             + "clientType VARCHAR(20), "
             + "clientID INT, "
             + "userID INT, "
+            + "assessmentStatus VARCHAR(20), "
             + "FOREIGN KEY (userID) REFERENCES userAccounts(userID), "
             + "FOREIGN KEY (clientID) REFERENCES clientData(clientID))";
 
@@ -436,6 +452,7 @@ public class SplashScreenController implements Initializable {
                                     statement.executeUpdate(TABLE_EMPLOYEE_LIST);
                                     statement.executeUpdate(TABLE_AUDIT_TRAIL);
                                     statement.executeUpdate(TABLE_CLIENT_DATA);
+                                     statement.executeUpdate(TABLE_CARE_MANAGEMENT);
                                     statement.executeUpdate(TABLE_CLIENT_CONTACT);
                                     statement.executeUpdate(TABLE_CLIENT_CASES);
                                     statement.executeUpdate(TABLE_CLIENT_ASSESSMENT);
