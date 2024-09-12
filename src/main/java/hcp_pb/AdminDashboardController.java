@@ -4,6 +4,9 @@
  */
 package hcp_pb;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.Connection;
@@ -13,9 +16,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDate;
+import java.time.Period;
+import java.time.format.DateTimeFormatter;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -28,6 +35,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
@@ -38,6 +46,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
+import javafx.stage.FileChooser;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 /**
@@ -45,7 +55,51 @@ import javafx.stage.Stage;
  *
  * @author mark
  */
-public class AdminDashboardController implements Initializable {
+public class AdminDashboardController implements Initializable, CloseCallBack {
+
+    @FXML
+    private TableView<employeeList> empTbl;
+    @FXML
+    private TableColumn<employeeList, Integer> employeeID;
+    @FXML
+    private TableColumn<employeeList, String> fullName;
+    @FXML
+    private TableColumn<employeeList, String> status;
+    @FXML
+    private TableColumn<employeeList, String> startD;
+    @FXML
+    private TableColumn<employeeList, String> endD;
+
+    @FXML
+    private Button chooseFile;
+    @FXML
+    private Button upload;
+
+    @FXML
+    private TextField filePathTextField;
+
+    private File selectedFile;
+
+    @FXML
+    private Button bulkUploadBtn;
+    @FXML
+    private Button addEmpBtn;
+    @FXML
+    private Button retireEmpBtn;
+    @FXML
+    private Button cancelBulkBtn;
+    @FXML
+    private Button saveEmpBtn;
+    @FXML
+    private Button cancelEmpBtn;
+//    @FXML private Button retireEmpBtn;
+
+    @FXML
+    private TextField emp_id;
+    @FXML
+    private TextField emp_name;
+    @FXML
+    private DatePicker emp_Start;
 
     @FXML
     private Pane employeeRecordsPane;
@@ -161,6 +215,7 @@ public class AdminDashboardController implements Initializable {
         uID.setCellValueFactory(new PropertyValueFactory<>("uID"));
         empName.setCellValueFactory(new PropertyValueFactory<>("empName"));
         loadUserData();
+        emp_Start.setValue(LocalDate.now());
         roleCombo.setItems(FXCollections.observableArrayList("System Administrator", "Case Manager", "Care Service Officer"));
         // Set up the mouse click event handler for the TableView
         tblUser.setOnMouseClicked(event -> {
@@ -184,6 +239,346 @@ public class AdminDashboardController implements Initializable {
             }
         }
 
+        employeeID.setCellValueFactory(new PropertyValueFactory<>("eid"));
+        fullName.setCellValueFactory(new PropertyValueFactory<>("fullName"));
+        status.setCellValueFactory(new PropertyValueFactory<>("status"));
+        startD.setCellValueFactory(new PropertyValueFactory<>("startD"));
+        endD.setCellValueFactory(new PropertyValueFactory<>("endD"));
+
+        loadEmpDataFromDatabase();
+
+        // Add a listener to monitor changes in the filePathTextField
+        filePathTextField.textProperty().addListener((observable, oldValue, newValue) -> {
+            // Enable the button if the text field is not empty, disable if it is
+            upload.setDisable(false);
+        });
+
+    }
+
+    @FXML
+    private void chooseFile(ActionEvent event) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Select a File");
+        fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("CSV Files", "*.csv")
+        );
+
+        Stage stage = (Stage) chooseFile.getScene().getWindow();
+        selectedFile = fileChooser.showOpenDialog(stage);
+
+        if (selectedFile != null) {
+            filePathTextField.setText(selectedFile.getAbsolutePath());
+        }
+    }
+
+    @FXML
+    private void upload(ActionEvent event) {
+        if (selectedFile != null) {
+            showEmp(selectedFile);
+        } else {
+            System.out.println("No file selected.");
+        }
+    }
+
+    private void showEmp(File file) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("showEmpData.fxml"));
+            Parent root = loader.load();
+
+            Stage dialogStage = new Stage();
+            dialogStage.initModality(Modality.APPLICATION_MODAL);
+            dialogStage.setTitle("Employee Data");
+            dialogStage.setScene(new Scene(root));
+
+            ShowEmpDataController controller = loader.getController();
+            controller.setDialogStage(dialogStage);
+            controller.setCloseCallback(this); // Set the callback
+
+            String fileContent = readFile(file);
+            controller.setFileContent(fileContent);
+
+            dialogStage.showAndWait();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private String readFile(File file) {
+        StringBuilder content = new StringBuilder();
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] columns = line.split(",");
+                if (columns.length >= 3) {
+                    content.append(columns[0]).append(", ")
+                            .append(columns[1]).append(", ")
+                            .append(columns[2]).append("\n");
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return content.toString();
+    }
+
+    @FXML
+    private void bulkUploadBtn(ActionEvent event) {
+        bulkUploadBtn.setDisable(true);
+        addEmpBtn.setDisable(true);
+        retireEmpBtn.setDisable(true);
+        chooseFile.setDisable(false);
+        cancelBulkBtn.setDisable(false);
+        chooseFile.requestFocus();
+
+    }
+
+    @FXML
+    private void cancelBulkBtn(ActionEvent event) {
+        bulkUploadBtn.setDisable(false);
+        addEmpBtn.setDisable(false);
+        retireEmpBtn.setDisable(false);
+        chooseFile.setDisable(true);
+        cancelBulkBtn.setDisable(true);
+
+        filePathTextField.setText("");
+
+        upload.setDisable(true);
+
+    }
+
+    @FXML
+    private void addEmpBtn(ActionEvent event) {
+        emp_id.setEditable(true);
+        emp_name.setEditable(true);
+        emp_Start.setEditable(true);
+        bulkUploadBtn.setDisable(true);
+        addEmpBtn.setDisable(true);
+        retireEmpBtn.setDisable(true);
+        saveEmpBtn.setDisable(false);
+        cancelEmpBtn.setDisable(false);
+
+    }
+
+    @FXML
+    private void cancelEmpBtn(ActionEvent event) {
+        emp_id.setEditable(false);
+        emp_name.setEditable(false);
+        emp_Start.setEditable(false);
+        bulkUploadBtn.setDisable(false);
+        addEmpBtn.setDisable(false);
+        retireEmpBtn.setDisable(false);
+        emp_Start.setValue(LocalDate.now());
+        emp_id.setText("");
+        emp_name.setText("");
+        saveEmpBtn.setDisable(true);
+        cancelEmpBtn.setDisable(true);
+
+    }
+
+    @FXML
+    private void saveEmpBtn(ActionEvent event) {
+        String EID = emp_id.getText();
+        String EName = emp_name.getText();
+        String EStart = emp_Start.getValue() != null ? emp_Start.getValue().toString() : "";
+
+        // Validate input (call validateInput method)
+        if (!validateInput(EID, EName)) {
+            return;
+        }
+
+        String empList = "INSERT INTO employeeList (employeeID, fullName, startDate) "
+                + "VALUES ('" + EID + "', '" + EName + "', '" + EStart + "')";
+
+        String checkQuery = "SELECT COUNT(*) FROM employeeList WHERE employeeID = '" + EID + "'";
+
+        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD); Statement stmt = conn.createStatement()) {
+
+            // Check if employeeID exists
+            ResultSet rs = stmt.executeQuery(checkQuery);
+            rs.next();  // Move to the first row
+            loadEmpDataFromDatabase();
+
+            if (rs.getInt(1) > 0) {
+                // Employee ID exists, show a prompt
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setTitle("Warning");
+                alert.setHeaderText(null);
+                alert.setContentText("Employee ID already exists.");
+                alert.showAndWait();
+            } else {
+                // Employee ID doesn't exist, proceed with insert
+                int rowsAffected = stmt.executeUpdate(empList);
+
+                if (rowsAffected > 0) {
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Success");
+                    alert.setHeaderText(null);
+                    alert.setContentText("Employee Record Created");
+                    alert.showAndWait();
+                }
+
+                emp_id.setEditable(false);
+                emp_name.setEditable(false);
+                emp_Start.setEditable(false);
+                bulkUploadBtn.setDisable(false);
+                addEmpBtn.setDisable(false);
+                retireEmpBtn.setDisable(false);
+                emp_Start.setValue(LocalDate.now());
+                emp_id.setText("");
+                emp_name.setText("");
+                saveEmpBtn.setDisable(true);
+                cancelEmpBtn.setDisable(true);
+
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(AdminDashboardController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }
+@FXML
+private void retireEmpBtn(ActionEvent event) {
+    // Check if TableView has a selected item before proceeding
+    if (empTbl.getSelectionModel().getSelectedItem() != null) {
+
+        // Get the selected employee's ID
+        employeeList emp_list = empTbl.getSelectionModel().getSelectedItem();
+        int employeeID = emp_list.getEid(); // Adjust this to match how you get employee ID from selected item
+
+        // Check current status of the employee
+        String checkStatusQuery = "SELECT activeFlag FROM employeeList WHERE employeeID = ?";
+        
+        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+             PreparedStatement checkStatusStmt = connection.prepareStatement(checkStatusQuery)) {
+            
+            // Set parameters and execute query
+            checkStatusStmt.setInt(1, employeeID);
+            ResultSet resultSet = checkStatusStmt.executeQuery();
+            
+            if (resultSet.next()) {
+                String activeFlag = resultSet.getString("activeFlag");
+                
+                if ("0".equals(activeFlag)) {
+                    // Employee is already inactive
+                    Alert alreadyInactiveAlert = new Alert(Alert.AlertType.INFORMATION);
+                    alreadyInactiveAlert.setTitle("Already Inactive");
+                    alreadyInactiveAlert.setHeaderText(null);
+                    alreadyInactiveAlert.setContentText("This employee is already inactive.");
+                    alreadyInactiveAlert.showAndWait();
+                    return; // Exit method
+                }
+            }
+
+            // If employee is not inactive, proceed with retiring the employee
+            LocalDate localDate = LocalDate.now(); // Current date
+            String endDate = localDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+
+            // Show confirmation dialog
+            Alert confirmAlert = new Alert(Alert.AlertType.CONFIRMATION);
+            confirmAlert.setTitle("Retire Employee");
+            confirmAlert.setHeaderText(null);
+            confirmAlert.setContentText("Are you sure you want to retire this employee?");
+            
+            Optional<ButtonType> result = confirmAlert.showAndWait();
+            if (result.isPresent() && result.get() == ButtonType.OK) {
+                // User clicked OK, proceed with retiring the employee
+                String retireEmp = "UPDATE employeeList SET endDate = ?, activeFlag = '0' WHERE employeeID = ?";
+
+                try (PreparedStatement preparedStatement = connection.prepareStatement(retireEmp)) {
+                    // Set parameters
+                    preparedStatement.setString(1, endDate);
+                    preparedStatement.setInt(2, employeeID);
+
+                    // Execute the update query
+                    int rowsUpdated = preparedStatement.executeUpdate();
+
+                    if (rowsUpdated > 0) {
+                        // Display success alert
+                        Alert successAlert = new Alert(Alert.AlertType.INFORMATION);
+                        successAlert.setTitle("Success");
+                        successAlert.setHeaderText(null);
+                        successAlert.setContentText("Employee successfully retired.");
+                        successAlert.showAndWait();
+                    }
+
+                    loadEmpDataFromDatabase();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+    } else {
+        // Notify user to select an item first
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle("No Selection");
+        alert.setHeaderText(null);
+        alert.setContentText("Please select an employee record.");
+        alert.showAndWait();
+    }
+}
+
+
+
+    private boolean validateInput(String e_id, String e_full) {
+        String numeric = "\\d+";
+
+        if (e_id.isEmpty() || e_full.isEmpty()) {
+            showAlert(Alert.AlertType.ERROR, "Error", "All fields are required!");
+            return false;
+        }
+
+        // Check if the clien is at least 65 years old
+        LocalDate today = LocalDate.now();
+        Period age = Period.between(emp_Start.getValue(), today);
+
+        if (age.getYears() < 18) {
+            showAlert(Alert.AlertType.ERROR, "Error", "Employee must be at least 18 years old.");
+            return false;
+        }
+
+        if (!e_id.matches(numeric)) {
+
+            showAlert(Alert.AlertType.ERROR, "Error", "Employee ID must contain numbers only.");
+            return false;
+        }
+
+        return true;
+    }
+
+    private void showAlert(Alert.AlertType alertType, String title, String content) {
+        Alert alert = new Alert(alertType);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(content);
+        alert.showAndWait();
+    }
+
+    private void loadEmpDataFromDatabase() {
+        String Empquery = "SELECT * FROM employeeList";
+
+        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD); Statement statement = connection.createStatement(); ResultSet resultSet = statement.executeQuery(Empquery)) {
+
+            empTbl.getItems().clear();
+
+            while (resultSet.next()) {
+                int eid = resultSet.getInt("employeeID");
+                String fullName = resultSet.getString("fullName");
+                String status = resultSet.getString("activeFlag");
+                String startD = resultSet.getString("startDate");
+                String endD = resultSet.getString("endDate");
+                if (endD == null || endD.isEmpty()) {
+                    endD = "Employed";
+                }
+                String empFlag = "1".equals(status) ? "Active" : "Inactive";
+                employeeList emplist = new employeeList(eid, fullName, empFlag, startD, endD);
+                empTbl.getItems().add(emplist);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public void loadUserData() {
@@ -278,7 +673,7 @@ public class AdminDashboardController implements Initializable {
 
     @FXML
     private void assessmentLbl(MouseEvent event) {
-        
+
     }
 
     @FXML
@@ -440,7 +835,7 @@ public class AdminDashboardController implements Initializable {
                     deactUser.setDisable(false);
                     cancelUpdate.setDisable(true);
                     saveUpdate.setDisable(true);
-loadUserData();
+                    loadUserData();
 // Disable TableView
                     tblUser.setDisable(false);
 
@@ -561,6 +956,11 @@ loadUserData();
 
         // Show the alert
         alert.showAndWait();
+    }
+
+    @Override
+    public void onClose() {
+        loadEmpDataFromDatabase(); // Reload data when the second form closes
     }
 
 }

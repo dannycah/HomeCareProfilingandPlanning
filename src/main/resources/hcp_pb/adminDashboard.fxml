@@ -203,17 +203,77 @@
                               <Button fx:id="saveUpdate" disable="true" layoutX="570.0" layoutY="516.0" mnemonicParsing="false" onAction="#SaveUpdate" prefHeight="25.0" prefWidth="68.0" style="-fx-background-color: #364bbf;" text="Save" textFill="WHITE" />
                            </children>
                         </Pane>
-                        <Pane fx:id="employeeRecordsPane" prefHeight="556.0" prefWidth="724.0" visible="false" />
-                        <Label layoutX="269.0" layoutY="356.0" text="Under Development">
-                           <font>
-                              <Font size="30.0" />
-                           </font>
-                        </Label>
-                        <Label layoutX="344.0" layoutY="311.0" text="Analytics">
-                           <font>
-                              <Font size="30.0" />
-                           </font>
-                        </Label>
+                        <Pane fx:id="employeeRecordsPane" prefHeight="556.0" prefWidth="724.0" visible="false">
+                           <children>
+                              <Pane prefHeight="556.0" prefWidth="724.0">
+                                 <children>
+                                    <TableView fx:id="empTbl" layoutX="10.0" layoutY="14.0" prefHeight="311.0" prefWidth="704.0">
+                                       <columns>
+                                          <TableColumn fx:id="employeeID" text="Employee ID" />
+                                          <TableColumn fx:id="fullName" prefWidth="180.0" text="Employee Name" />
+                                          <TableColumn fx:id="status" prefWidth="181.0" text="Employment Status" />
+                                          <TableColumn fx:id="startD" minWidth="0.0" prefWidth="143.0" text="Start Date" />
+                                          <TableColumn fx:id="endD" prefWidth="198.0" text="End Date" />
+                                       </columns>
+                                    </TableView>
+                                    <Button fx:id="retireEmpBtn" layoutX="11.0" layoutY="334.0" mnemonicParsing="false" onAction="#retireEmpBtn" prefHeight="25.0" prefWidth="105.0" style="-fx-background-color: #364bbf;" text="Retire" textFill="WHITE">
+                                       <font>
+                                          <Font name="System Bold" size="12.0" />
+                                       </font>
+                                    </Button>
+                                    <Button fx:id="addEmpBtn" layoutX="123.0" layoutY="334.0" mnemonicParsing="false" onAction="#addEmpBtn" prefHeight="25.0" prefWidth="105.0" style="-fx-background-color: #364bbf;" text="Add Employee" textFill="WHITE">
+                                       <font>
+                                          <Font name="System Bold" size="12.0" />
+                                       </font>
+                                    </Button>
+                                    <Button fx:id="bulkUploadBtn" layoutX="235.0" layoutY="334.0" mnemonicParsing="false" onAction="#bulkUploadBtn" prefHeight="25.0" prefWidth="105.0" style="-fx-background-color: #364bbf;" text="Bulk Upload" textFill="WHITE">
+                                       <font>
+                                          <Font name="System Bold" size="12.0" />
+                                       </font>
+                                    </Button>
+                                    <Pane layoutX="12.0" layoutY="376.0" prefHeight="123.0" prefWidth="327.0" style="-fx-border-color: black;">
+                                       <children>
+                                          <Label layoutX="14.0" layoutY="7.0" text="Manually Add Employee">
+                                             <font>
+                                                <Font name="System Bold" size="12.0" />
+                                             </font>
+                                          </Label>
+                                          <Label layoutX="59.0" layoutY="34.0" text="Employee ID:" />
+                                          <Label layoutX="38.0" layoutY="63.0" text="Employee Name:" />
+                                          <Label layoutX="72.0" layoutY="91.0" prefHeight="17.0" prefWidth="56.0" text="Start Date:" />
+                                          <TextField fx:id="emp_id" editable="false" layoutX="136.0" layoutY="30.0" prefHeight="25.0" prefWidth="181.0" />
+                                          <TextField fx:id="emp_name" editable="false" layoutX="136.0" layoutY="59.0" prefHeight="25.0" prefWidth="181.0" />
+                                          <DatePicker fx:id="emp_Start" editable="false" layoutX="136.0" layoutY="88.0" prefHeight="25.0" prefWidth="181.0" />
+                                       </children>
+                                    </Pane>
+                                    <Pane layoutX="347.0" layoutY="376.0" prefHeight="123.0" prefWidth="366.0" style="-fx-border-color: black;">
+                                       <children>
+                                          <TextField fx:id="filePathTextField" editable="false" layoutX="14.0" layoutY="31.0" prefHeight="25.0" prefWidth="241.0" />
+                                          <Label layoutX="14.0" layoutY="8.0" text="Bulk Upload Employee Data">
+                                             <font>
+                                                <Font name="System Bold" size="12.0" />
+                                             </font>
+                                          </Label>
+                                          <Label layoutX="20.0" layoutY="66.0" text="Choose the New Employee List File">
+                                             <font>
+                                                <Font name="System Italic" size="11.0" />
+                                             </font>
+                                          </Label>
+                                          <Label layoutX="21.0" layoutY="85.0" text="Please note that only CSV files are accepted.">
+                                             <font>
+                                                <Font name="System Italic" size="11.0" />
+                                             </font>
+                                          </Label>
+                                          <Button fx:id="chooseFile" disable="true" layoutX="263.0" layoutY="31.0" mnemonicParsing="false" onAction="#chooseFile" prefHeight="25.0" prefWidth="89.0" style="-fx-background-color: #364bbf;" text="Choose File" textFill="WHITE" />
+                                       </children>
+                                    </Pane>
+                                    <Button fx:id="saveEmpBtn" disable="true" layoutX="138.0" layoutY="510.0" mnemonicParsing="false" onAction="#saveEmpBtn" prefHeight="25.0" prefWidth="97.0" style="-fx-background-color: #364bbf;" text="Save" textFill="WHITE" />
+                                    <Button fx:id="cancelEmpBtn" disable="true" layoutX="242.0" layoutY="510.0" mnemonicParsing="false" onAction="#cancelEmpBtn" prefHeight="25.0" prefWidth="97.0" style="-fx-background-color: #364bbf;" text="Cancel" textFill="WHITE" />
+                                    <Button fx:id="upload" disable="true" layoutX="495.0" layoutY="510.0" mnemonicParsing="false" onAction="#upload" prefHeight="25.0" prefWidth="105.0" style="-fx-background-color: #364bbf;" text="Upload" textFill="WHITE" />
+                                    <Button fx:id="cancelBulkBtn" disable="true" layoutX="608.0" layoutY="510.0" mnemonicParsing="false" onAction="#cancelBulkBtn" prefHeight="25.0" prefWidth="105.0" style="-fx-background-color: #364bbf;" text="Cancel" textFill="WHITE" />
+                                 </children>
+                              </Pane>
+                           </children></Pane>
                      </children>
                   </Pane>
                </children>
