@@ -21,6 +21,10 @@ public class CreateCase {
         this.fundLevel = fundLevel;
         this.mediCare = mediCare;
     }
+    
+    
+    
+    
 
     // Getter and Setter for cID
     public int getCID() {

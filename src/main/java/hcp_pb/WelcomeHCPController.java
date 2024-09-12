@@ -834,9 +834,11 @@ public class WelcomeHCPController implements Initializable {
                             if (dashboardController != null) {
                                 dashboardController.setUser(userID);
                             } else {
-                                throw new IllegalStateException("DashboardController not initialized");
+                             //   throw new IllegalStateException("DashboardController not initialized");
                             }
                         }
+                 
+                        
                         Scene welcomeScene = new Scene(welcomePage);
 
                         // Get the current stage and set the new scene

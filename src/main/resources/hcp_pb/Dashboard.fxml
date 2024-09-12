@@ -30,12 +30,7 @@
                                 <Font name="System Bold" size="20.0" />
                             </font>
                         </Label>
-                        <Pane prefHeight="40.0" prefWidth="300.0">
-                            <children>
-                                <TextField fx:id="searchField" layoutX="12.0" layoutY="10.0" prefHeight="25.0" prefWidth="211.0" promptText="Search Case" />
-                                <Button fx:id="searchBtn" layoutX="236.0" layoutY="10.0" mnemonicParsing="false" onAction="#searchBtn" style="-fx-background-color: #364bbf;" text="Search" textFill="WHITE" />
-                            </children>
-                        </Pane>
+                        <Pane prefHeight="12.0" prefWidth="300.0" />
                         <VBox prefHeight="224.0" prefWidth="300.0">
                             <children>
                                 <Pane fx:id="cmPane" prefHeight="23.0" prefWidth="300.0">
@@ -243,7 +238,7 @@
                                         <Button layoutX="619.0" layoutY="220.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="97.0" style="-fx-background-color: #364bbf;" text="Deactivate" textFill="WHITE" />
                                     </children>
                                 </Pane>
-                                <Pane fx:id="manageCasePane" layoutX="-7.0" layoutY="-3.0" prefHeight="556.0" prefWidth="731.0">
+                                <Pane fx:id="manageCasePane" layoutX="-7.0" layoutY="-3.0" prefHeight="556.0" prefWidth="731.0" visible="false">
                                     <children>
                                         <Pane layoutX="376.0" layoutY="38.0" prefHeight="441.0" prefWidth="340.0" style="-fx-border-color: black; -fx-background-color: d9d9d9;">
                                             <children>
@@ -301,7 +296,7 @@
                                         <Hyperlink fx:id="viewAssessment" layoutX="385.0" layoutY="494.0" onMouseClicked="#viewAssessment" text="View Assessment &gt;&gt;" />
                                     </children>
                                 </Pane>
-                                <Pane fx:id="myCasePane" layoutX="-4.0" layoutY="-2.0" prefHeight="565.0" prefWidth="731.0" visible="false">
+                                <Pane fx:id="myCasePane" layoutX="-4.0" layoutY="-2.0" prefHeight="565.0" prefWidth="731.0">
                                     <children>
                                         <Label layoutX="16.0" layoutY="16.0" text="List of assigned Cases">
                                             <font>

@@ -507,7 +507,7 @@ public class DashboardController implements Initializable {
 //        // Handle database errors
 //        System.err.println("Database error occurred: " + e.getMessage());
 //    }
-//    CSO client table
+
     public void setUser(String userID) throws SQLException {
         this.userID = userID;
         System.out.println("Setting User Details: userID=" + userID);
@@ -1727,8 +1727,8 @@ casePriority.setText(resultSet.getString("casePriority"));
             stage.setTitle("Client Assessment");
             stage.setScene(new Scene(root));
             stage.setResizable(false);
-            stage.setWidth(840);  // Set the width 
-            stage.setHeight(640); // Set the height
+            stage.setWidth(845);  // Set the width 
+            stage.setHeight(650); // Set the height
 
             stage.showAndWait(); // Wait for the dialog to close before continuing with main window
         } catch (IOException e) {
