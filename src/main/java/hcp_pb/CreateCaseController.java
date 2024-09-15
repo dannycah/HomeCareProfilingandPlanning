@@ -42,9 +42,10 @@ import javafx.stage.Stage;
  * @author mark
  */
 public class CreateCaseController implements Initializable {
+
     private String cmID;
-    
-    
+    private String createUser;
+
     @FXML
     private Label cmName;
     @FXML
@@ -289,9 +290,7 @@ public class CreateCaseController implements Initializable {
 // 
 
     private void loadClientDetails(int clientID) {
-        
-        
-     
+
         String query = "SELECT * FROM clientData WHERE clientID = ?";
         try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD); PreparedStatement preparedStatement = connection.prepareStatement(query)) {
 
@@ -311,10 +310,8 @@ public class CreateCaseController implements Initializable {
                         LocalDate birthday = LocalDate.parse(birthdayStr);
                         bDay.setValue(birthday);
 
-                          
 //           aEMail.getText();
                     }
-        
 
                 }
             }
@@ -347,23 +344,14 @@ public class CreateCaseController implements Initializable {
         clientStatusCombo.getSelectionModel().selectFirst();
 
         // Initialize role combo box
-        assessmentTypeCombo.setItems(FXCollections.observableArrayList("Initial Assessment", "Re-Assessment", "Risk Assessment"));
+        assessmentTypeCombo.setItems(FXCollections.observableArrayList("New Assessment", "Re-Assessment", "Risk Assessment", "Welfare Assessment"));
         assessmentTypeCombo.getSelectionModel().selectFirst();
 
         // Initialize role combo box
-        casePriorityCombo.setItems(FXCollections.observableArrayList("Low", "Medium", "High"));
+        casePriorityCombo.setItems(FXCollections.observableArrayList("High", "Medium", "Low"));
         casePriorityCombo.getSelectionModel().selectFirst();
 
-        
-        
-        
-        
-        
-        
-        
-        
-        
-          // Query to fetch names of users with roleID = '2'
+        // Query to fetch names of users with roleID = '2'
         String query = "SELECT userID, CONCAT(fName, ' ', lName) AS fullName FROM userAccounts WHERE roleID = '2'";
 
         try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD); Statement statement = connection.createStatement(); ResultSet resultSet = statement.executeQuery(query)) {
@@ -389,10 +377,12 @@ public class CreateCaseController implements Initializable {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        
-        
 
+    }
 
+    public void setCreateUser(String createUser) {
+        this.createUser = createUser;
+      //  System.out.println("Create User received: " + createUser);  // For debugging purposes
     }
 
     @FXML
@@ -417,22 +407,20 @@ public class CreateCaseController implements Initializable {
 //    LocalDate bDayValue = bDay.getValue();
         LocalDate dateCreatedValue = dateCreated.getValue();
         LocalDate completionDateValue = completionCombo.getValue();
-        
+
         String csoAssignmentValue = csoAssignmentCombo.getValue(); // 
-String csoID = csoAssignmentValue.substring(0, 5); // 
-String csoName = csoAssignmentValue.substring(8);
+        String csoID = csoAssignmentValue.substring(0, 5); // 
+        String csoName = csoAssignmentValue.substring(8);
 
 //        //validate input (call validateinput method)
 //        if (!validateInput(firstName, lastName, email, mobile, addr, mediCare, eContactName, eRelation, eMob, email)) {
 //            return;
 //        }
-
-
         //insert to db
-        String regClient = "INSERT INTO clientcases (caseID, caseType, casePriority, caseAssignment, caseDate, clientType, clientID,userID, assessmentStatus ) "
+        String regClient = "INSERT INTO clientcases (caseID, caseType, casePriority, caseAssignment, caseDate, clientType, clientID,userID, assessmentStatus, createUser ) "
                 + "VALUES ('" + caseNumberText + "','" + assessmentType + "', '" + casePriority + "', "
                 + "'" + csoName + "', '" + dateCreatedValue + "', '" + clientStatus + "', "
-                + "'" + clientIDText + "','" + csoID + "', 'Open')"; // temporary user id - for presentation purposes
+                + "'" + clientIDText + "','" + csoID + "', 'Open',  '" + createUser + "' )"; // temporary user id - for presentation purposes
 
         try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD); Statement stmt = conn.createStatement()) {
 

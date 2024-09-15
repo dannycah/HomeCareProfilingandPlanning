@@ -829,13 +829,16 @@ public class WelcomeHCPController implements Initializable {
                         Parent welcomePage = loader.load();
 
                         if (!"3".equals(roleID)) {
-                            // Ensure DashboardController is initialized
+                    
                             DashboardController dashboardController = loader.getController();
                             if (dashboardController != null) {
                                 dashboardController.setUser(userID);
                             } else {
-                             //   throw new IllegalStateException("DashboardController not initialized");
+                       
                             }
+                            
+                       
+                            
                         }
                  
                         
