@@ -17,6 +17,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -47,6 +48,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 /**
  * FXML Controller class
@@ -57,12 +59,13 @@ public class DashboardController implements Initializable {
 
     private String cmID;
 
+    
     @FXML
     private TextField refCode;
 
     @FXML
     private TextField assessmentStats;
-    
+
     @FXML
     private TextField clientStat;
     @FXML
@@ -71,7 +74,7 @@ public class DashboardController implements Initializable {
     private TextField assessmentType;
     @FXML
     private TextField casePriority;
-    
+
     @FXML
     private Button searchCase;
 
@@ -114,13 +117,12 @@ public class DashboardController implements Initializable {
 
     @FXML
     private ComboBox<String> aFundLevelCombo;
+//
+//    @FXML
+//    private TextField aAssessmentDate;
 
-    @FXML
-    private TextField aAssessmentDate;
-
-    @FXML
-    private TextField aCSO;
-
+//    @FXML
+//    private TextField aCSO;
     @FXML
     private TextArea aOutcome;
 
@@ -138,6 +140,9 @@ public class DashboardController implements Initializable {
 
     @FXML
     private TextField aEMail;
+    
+    @FXML
+    private TextField aCaseSearch;
 
     @FXML
     private Button aDeactClient;
@@ -145,6 +150,9 @@ public class DashboardController implements Initializable {
     private Button completeTaskBtn;
     @FXML
     private Button clientSearch;
+
+    @FXML
+    private TextField clientSearches;
 
     @FXML
     private Button aSaveUpdate;
@@ -203,6 +211,21 @@ public class DashboardController implements Initializable {
     @FXML
     private Pane cmPane;
 
+    @FXML
+    private TextField clID;
+
+    @FXML
+    private TextField clDate;
+
+    @FXML
+    private TextArea clReason;
+
+    @FXML
+    private Button clConfirm;
+
+    @FXML
+    private Button clCancel;
+
 //    private User user;
     private String userID;
     private String roleID;
@@ -257,6 +280,9 @@ public class DashboardController implements Initializable {
     private TextField myClientMedicare;
     @FXML
     private DatePicker myClientBday;
+
+    @FXML
+    private TextField caseSearch;
 
     @FXML
     private TextField csID;
@@ -506,8 +532,7 @@ public class DashboardController implements Initializable {
 //    private void handleDatabaseError(SQLException e) {
 //        // Handle database errors
 //        System.err.println("Database error occurred: " + e.getMessage());
-//    }
-
+//    }+
     public void setUser(String userID) throws SQLException {
         this.userID = userID;
         System.out.println("Setting User Details: userID=" + userID);
@@ -575,7 +600,7 @@ public class DashboardController implements Initializable {
             while (resultSet.next()) {
                 String fullName = resultSet.getString("fullName");
                 cmID = resultSet.getString("userID");
-                namesList.add(cmID + " - " + fullName);
+                namesList.add(fullName);
             }
 
             // Convert the list to an ObservableList and set it in the ComboBox
@@ -586,10 +611,8 @@ public class DashboardController implements Initializable {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        
-        
-                
-          // Query to fetch names of users with roleID = '2'
+
+        // Query to fetch names of users with roleID = '2'
         String CSOquery = "SELECT userID, CONCAT(fName, ' ', lName) AS fullName FROM userAccounts WHERE roleID = '2'";
 
         try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD); Statement statement = connection.createStatement(); ResultSet resultSet = statement.executeQuery(CSOquery)) {
@@ -615,28 +638,43 @@ public class DashboardController implements Initializable {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        
 
     }
 
-    @FXML
-    private void reassignBtn(ActionEvent event) {
-
-        Alert noRecordSelectedAlert = new Alert(Alert.AlertType.INFORMATION);
-        noRecordSelectedAlert.setTitle("Warning");
-        noRecordSelectedAlert.setHeaderText(null);
-        noRecordSelectedAlert.setContentText("Under Development.");
-        noRecordSelectedAlert.showAndWait();
-    }
-
+//    @FXML
+//    private void reassignBtn(ActionEvent event) {
+//
+//String aStats = assessmentStats.getText();
+//if (!aStats.equals("Not Started")) {
+//    // Display a message if the assessment has already been started
+//    Alert assessmentStartedAlert = new Alert(Alert.AlertType.INFORMATION);
+//    assessmentStartedAlert.setTitle("Warning");
+//    assessmentStartedAlert.setHeaderText(null);
+//    assessmentStartedAlert.setContentText("The assessment has either already completed or started and cannot be updated at the moment.");
+//    assessmentStartedAlert.showAndWait();
+//    return; // Exit the method if the assessment is not "Not Started"
+//}
+//    }
     @FXML
     private void finaliseBtn(ActionEvent event) {
 
+        String aStats = assessmentStats.getText();
+        if (!aStats.equals("Complete")) {
+            // Display a message if the assessment has already been started
+            Alert assessmentStartedAlert = new Alert(Alert.AlertType.INFORMATION);
+            assessmentStartedAlert.setTitle("Warning");
+            assessmentStartedAlert.setHeaderText(null);
+            assessmentStartedAlert.setContentText("The assessment is either in progress or not not started");
+            assessmentStartedAlert.showAndWait();
+            return; // Exit the method if the assessment is not "Not Started"
+        }
+
         Alert noRecordSelectedAlert = new Alert(Alert.AlertType.INFORMATION);
         noRecordSelectedAlert.setTitle("Warning");
         noRecordSelectedAlert.setHeaderText(null);
-        noRecordSelectedAlert.setContentText("Under Development.");
+        noRecordSelectedAlert.setContentText("Opening Care Plannning");
         noRecordSelectedAlert.showAndWait();
+
     }
 
     @FXML
@@ -671,7 +709,7 @@ public class DashboardController implements Initializable {
     private void loadCases() {
 
         // SQL query
-        String query = "SELECT cc.caseID AS cID, CONCAT(cd.fName, ' ', cd.lName) AS fullName, cc.caseType AS caseType, assessmentStatus AS caseStats, CONCAT(ua.fName, ' ', ua.lName) AS assignedCSO FROM clientCases cc JOIN clientData cd ON cc.clientID = cd.clientID JOIN userAccounts ua ON cc.userID = ua.userID";
+        String query = "SELECT cc.caseID AS cID, CONCAT(cd.fName, ' ', cd.lName) AS fullName, cc.caseType AS caseType, assessmentStatus AS caseStats, CONCAT(ua.fName, ' ', ua.lName) AS assignedCSO FROM clientCases cc JOIN clientData cd ON cc.clientID = cd.clientID JOIN userAccounts ua ON cc.userID = ua.userID WHERE cc.createUser = '" + userID + "'";
 
         try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD); Statement statement = connection.createStatement(); ResultSet resultSet = statement.executeQuery(query)) {
 
@@ -682,10 +720,9 @@ public class DashboardController implements Initializable {
             while (resultSet.next()) {
                 int caseID = resultSet.getInt("cID");
                 String clientName = resultSet.getString("fullName");
-                        String caseType = resultSet.getString("caseType");          
+                String caseType = resultSet.getString("caseType");
                 String assignedCSO = resultSet.getString("assignedCSO");
-                                String status = resultSet.getString("caseStats");
-               
+                String status = resultSet.getString("caseStats");
 
                 // Create a Management object
                 Cases Case = new Cases(caseID, clientName, caseType, assignedCSO, status);
@@ -706,7 +743,7 @@ public class DashboardController implements Initializable {
         System.out.println("Current User ID: " + currentUser);
 
         // Correctly use parameterized query
-  String query = "SELECT cc.caseID AS cID, "
+        String query = "SELECT cc.caseID AS cID, "
                 + "cc.clientID AS clientID, "
                 + "CONCAT(cd.fName, ' ', cd.lName) AS fullName, "
                 + "cc.caseType AS caseType, "
@@ -716,8 +753,8 @@ public class DashboardController implements Initializable {
                 + "JOIN clientData cd ON cc.clientID = cd.clientID "
                 + "JOIN userAccounts ua ON cc.userID = ua.userID "
                 + "WHERE cc.userID = ? "
+                + "AND cc.assessmentStatus NOT IN ('Complete', 'Closed') "
                 + "ORDER BY FIELD(cc.casePriority, 'High', 'Medium', 'Low')";
-
 
         try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD); PreparedStatement statement = connection.prepareStatement(query)) {
 
@@ -750,7 +787,7 @@ public class DashboardController implements Initializable {
     private void loadClients() {
 
         // SQL query
-        String query = "SELECT clientID, CONCAT(fName, ' ', lName) AS fullName FROM clientData";
+        String query = "SELECT clientID, CONCAT(fName, ' ', lName) AS fullName FROM clientData WHERE isActive = '1'";
 
         try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD); Statement statement = connection.createStatement(); ResultSet resultSet = statement.executeQuery(query)) {
 
@@ -836,7 +873,7 @@ public class DashboardController implements Initializable {
     }
 
     private void loadCaseDetails(int caseID) {
-    String query = "SELECT cc.caseID AS caseID, "
+        String query = "SELECT cc.caseID AS caseID, "
                 + "cd.clientID AS clientID, "
                 + "cd.fName AS fName, "
                 + "cd.lName AS lName, "
@@ -848,7 +885,7 @@ public class DashboardController implements Initializable {
                 + "cc.casePriority AS casePriority, "
                 + "cc.caseAssignment AS caseAssignment, "
                 + "cc.caseDate AS caseDate, "
-            +"cc.assessmentStatus as Stat, "
+                + "cc.assessmentStatus as Stat, "
                 + "CONCAT(ua.fName, ' ', ua.lName) AS assignedCSO "
                 + "FROM clientCases cc "
                 + "JOIN clientData cd ON cc.clientID = cd.clientID "
@@ -866,21 +903,18 @@ public class DashboardController implements Initializable {
                     mobileNum.setText(resultSet.getString("clientMobile"));
                     address.setText(resultSet.getString("clientAddress"));
                     mediCare.setText(resultSet.getString("clientMedicare"));
-                    asignedCSO.setValue(resultSet.getString("assignedCSO"));
+//                    asignedCSO.setValue(resultSet.getString("assignedCSO"));
                     cmbAssessment.setValue(resultSet.getString("caseType"));
                     cmbPriority.setValue(resultSet.getString("casePriority"));
                     asignedCSO.setValue(resultSet.getString("caseAssignment"));
                     assessmentStats.setText(resultSet.getString("Stat"));
-                    
-                    
-                    
-                    
-                        String startDate = resultSet.getString("caseDate");
+
+                    String startDate = resultSet.getString("caseDate");
                     if (startDate != null && !startDate.isEmpty()) {
                         LocalDate cDate = LocalDate.parse(startDate);
                         dateCreate.setValue(cDate);
                     }
-                                        
+
                     String birthdayStr = resultSet.getString("clientBday");
                     if (birthdayStr != null && !birthdayStr.isEmpty()) {
                         LocalDate birthday = LocalDate.parse(birthdayStr);
@@ -905,7 +939,7 @@ public class DashboardController implements Initializable {
     private void loadMyCaseDetails(int caseID) {
 
         // Define the SQL query with parameter placeholders
-String query = "SELECT cc.caseID AS caseID, "
+        String query = "SELECT cc.caseID AS selectedcaseID, "
                 + "cd.clientID AS clientID, "
                 + "cd.fName AS fName, "
                 + "cd.lName AS lName, "
@@ -923,8 +957,6 @@ String query = "SELECT cc.caseID AS caseID, "
                 + "JOIN userAccounts ua ON cc.userID = ua.userID "
                 + "WHERE cc.caseID = ?";
 
-
-
         try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD); PreparedStatement preparedStatement = connection.prepareStatement(query)) {
 
             // Set the parameter for the caseID
@@ -933,16 +965,17 @@ String query = "SELECT cc.caseID AS caseID, "
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
                     // Update text fields with data from the result set
+                    clID.setText(resultSet.getString("selectedcaseID"));
                     myClientID.setText(resultSet.getString("clientID"));
                     myClientFname.setText(resultSet.getString("fName"));
                     myClientLname.setText(resultSet.getString("lName"));
                     myClientContact.setText(resultSet.getString("clientMobile"));
                     myClientAddress.setText(resultSet.getString("clientAddress"));
                     myClientMedicare.setText(resultSet.getString("clientMedicare"));
-clientStat.setText(resultSet.getString("clientType"));
-caseDate.setText(resultSet.getString("caseDate"));
-assessmentType.setText(resultSet.getString("caseType"));
-casePriority.setText(resultSet.getString("casePriority"));
+                    clientStat.setText(resultSet.getString("clientType"));
+                    caseDate.setText(resultSet.getString("caseDate"));
+                    assessmentType.setText(resultSet.getString("caseType"));
+                    casePriority.setText(resultSet.getString("casePriority"));
 
                     // Uncomment if needed: myClientCSO.setText(resultSet.getString("assignedCSO"));
                     // Handle birthday parsing and setting
@@ -1066,7 +1099,7 @@ casePriority.setText(resultSet.getString("casePriority"));
                 try (ResultSet resultSet = preparedStatement.executeQuery()) {
                     if (resultSet.next()) {
                         aFundLevelCombo.setValue(resultSet.getString("levelID"));
-                    aCMCombo.setValue(Integer.toString(resultSet.getInt("userID"))); // need to replace with cm name
+                        aCMCombo.setValue(Integer.toString(resultSet.getInt("userID"))); // need to replace with cm name
 
                         refCode.setText(resultSet.getString("referralCode"));
                         aOutcome.setText(resultSet.getString("handOver"));
@@ -1100,6 +1133,18 @@ casePriority.setText(resultSet.getString("casePriority"));
             noRecordSelectedAlert.showAndWait();
             return; // Exit the method if no record is selected
         }
+
+        String aStats = assessmentStats.getText();
+        if (!aStats.equals("Not Started")) {
+            // Display a message if the assessment has already been started
+            Alert assessmentStartedAlert = new Alert(Alert.AlertType.INFORMATION);
+            assessmentStartedAlert.setTitle("Warning");
+            assessmentStartedAlert.setHeaderText(null);
+            assessmentStartedAlert.setContentText("The assessment has either already completed or started and cannot be updated at the moment.");
+            assessmentStartedAlert.showAndWait();
+            return; // Exit the method if the assessment is not "Not Started"
+        }
+
         initComboBox();
 
         csID.setDisable(false);
@@ -1272,19 +1317,27 @@ casePriority.setText(resultSet.getString("casePriority"));
     private void createCaseLbl(MouseEvent event) {
 
         try {
-            // Load the FXML file
+
             FXMLLoader loader = new FXMLLoader(getClass().getResource("createCase.fxml"));
             Parent root = loader.load();
 
-            // Create a new stage
+            String createUser = userID;
+            CreateCaseController createCasec = loader.getController();
+
+            if (createCasec != null) {
+                createCasec.setCreateUser(createUser);
+            } else {
+                System.out.println("Error: Controller not found!");
+            }
+
             Stage stage = new Stage();
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.setTitle("Create New Case");
             stage.setScene(new Scene(root));
             stage.setResizable(false);
+
 //                                                stage.setWidth(679);  // Set the width 
 //                                                stage.setHeight(580); // Set the height
-
             stage.showAndWait(); // Wait for the dialog to close before continuing with main window
         } catch (IOException e) {
             e.printStackTrace();
@@ -1481,8 +1534,8 @@ casePriority.setText(resultSet.getString("casePriority"));
         aZip.setDisable(false);
         aBday.setDisable(false);
         aFundLevelCombo.setDisable(false);
-        aAssessmentDate.setDisable(false);
-        aCSO.setDisable(false);
+//        aAssessmentDate.setDisable(false);
+//        aCSO.setDisable(false);
         aOutcome.setDisable(false);
         aCMCombo.setDisable(false);
         aEContact.setDisable(false);
@@ -1509,8 +1562,8 @@ casePriority.setText(resultSet.getString("casePriority"));
         aZip.setDisable(true);
         aBday.setDisable(true);
         aFundLevelCombo.setDisable(true);
-        aAssessmentDate.setDisable(true);
-        aCSO.setDisable(true);
+//        aAssessmentDate.setDisable(true);
+//        aCSO.setDisable(true);
         aOutcome.setDisable(true);
         aCMCombo.setDisable(true);
         aEContact.setDisable(true);
@@ -1608,8 +1661,8 @@ casePriority.setText(resultSet.getString("casePriority"));
         aZip.setDisable(true);
         aBday.setDisable(true);
         aFundLevelCombo.setDisable(true);
-        aAssessmentDate.setDisable(true);
-        aCSO.setDisable(true);
+//        aAssessmentDate.setDisable(true);
+//        aCSO.setDisable(true);
         aOutcome.setDisable(true);
         aCMCombo.setDisable(true);
         aEContact.setDisable(true);
@@ -1657,6 +1710,80 @@ casePriority.setText(resultSet.getString("casePriority"));
 //        });
 //    }
 //}
+//      private Stage log;
+//
+//    // Set the stage and handle the window close request
+//    public void setStage(Stage log) {
+//        this.log = log;
+//        this.log.setOnCloseRequest(event -> {
+//            event.consume();  // Prevent the default close action
+//            xLogout(event);   // Call xLogout and pass the event
+//        });
+//    }
+//    
+//      // Handle logout and confirmation when "X" button is clicked
+//    public void xLogout(WindowEvent event) {
+//        // Create a confirmation dialog
+//        Alert confirmation = new Alert(Alert.AlertType.CONFIRMATION);
+//        confirmation.setTitle("Logout");
+//        confirmation.setHeaderText("Are you sure you want to logout?");
+//        confirmation.setContentText("Click OK to confirm logout or Cancel to stay.");
+//
+//        // Show the dialog and handle the user's response
+//        confirmation.showAndWait().ifPresent(response -> {
+//            if (response == ButtonType.OK) {
+//                // Perform the logout action
+//                try (Connection c = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD); 
+//                     Statement s = c.createStatement()) {
+//
+//                    // Update the active status of the user
+//                    String sql = "UPDATE userAccounts SET stats = '1' WHERE userID = '" + userID + "'";
+//                    int row = s.executeUpdate(sql);
+//                    System.out.println("Updated " + row + " row(s).");
+//
+//                } catch (SQLException e) {
+//                    e.printStackTrace();
+//                }
+//
+//                // Load the WelcomeHCP.fxml file
+//                try {
+//                    FXMLLoader loader = new FXMLLoader(getClass().getResource("WelcomeHCP.fxml"));
+//                    Parent root = loader.load();
+//
+//                    // Set the new scene to the stage
+//                    Scene scene = new Scene(root);
+//                    log.setScene(scene);
+//
+//                    log.setWidth(680);  // Set the width
+//                    log.setHeight(520); // Set the height
+//
+//                    log.show();
+//
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//            } else {
+//                // If Cancel is clicked, don't close the window
+//                event.consume();  // Prevent the window from closing
+//            }
+//        });
+//    }
+//    
+    @FXML
+    private void handleCloseButton(ActionEvent event) {
+        // Stage stage = (Stage) closeButton.getScene().getWindow();
+
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Confirm Exit");
+        alert.setHeaderText("You are about to close the window.");
+        alert.setContentText("Are you sure you want to exit?");
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            // stage.close();
+        }
+    }
+
     @FXML
     private void logoutBtn(MouseEvent event) {
         // Get the current stage (window) from the logout button
@@ -1727,7 +1854,7 @@ casePriority.setText(resultSet.getString("casePriority"));
             stage.setTitle("Client Assessment");
             stage.setScene(new Scene(root));
             stage.setResizable(false);
-            stage.setWidth(845);  // Set the width 
+            stage.setWidth(850);  // Set the width 
             stage.setHeight(650); // Set the height
 
             stage.showAndWait(); // Wait for the dialog to close before continuing with main window
@@ -1743,12 +1870,106 @@ casePriority.setText(resultSet.getString("casePriority"));
 
     @FXML
     private void searchCase(ActionEvent event) {
-        showUnderDevelopmentAlert();
+        
+          
+           // Get the search term from the text field
+        String ssSearch = aCaseSearch.getText().trim();
+
+        clID.clear();
+        myClientID.clear();
+        myClientFname.clear();
+        myClientLname.clear();
+        myClientContact.clear();
+        myClientAddress.clear();
+        myClientMedicare.clear();
+        bDay.setValue(LocalDate.now());
+
+        if (!ssSearch.isEmpty()) {
+            // Construct the SQL query with the search term
+
+//            String searchCases = 
+   String searchCases = "SELECT cc.caseID AS cID, CONCAT(cd.fName, ' ', cd.lName) AS fullName, cc.caseType AS caseType, assessmentStatus AS caseStats, CONCAT(ua.fName, ' ', ua.lName) AS assignedCSO FROM clientCases cc JOIN clientData cd ON cc.clientID = cd.clientID JOIN userAccounts ua ON cc.userID = ua.userID "
+           + "WHERE cc.caseID LIKE '%" + ssSearch + "%' "
+              + "OR cd.lName LIKE '%" + ssSearch + "%' "
+                    + "OR cd.fName LIKE '%" + ssSearch + "%' "
+             + "OR cc.caseType LIKE '%" + ssSearch + "%' "  ;
+
+
+            
+            
+
+            //       "SELECT caseID,clientID CONCAT(fname, ' ', lname) AS fullName, caseType FROM clientdata WHERE fName LIKE '%" + searchC + "%' OR lName LIKE '%" + searchC + "%' OR clientID LIKE '%" + searchC + "%' OR clientMedicare LIKE '%" + searchC + "%'";
+            try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD); Statement statement = connection.createStatement()) {
+
+                // Execute the query
+                ResultSet resultSet = statement.executeQuery(searchCases);
+
+                // Clear the TableView items
+                casesTbl.getItems().clear();
+
+                // Flag to check if any records were found
+                boolean recordsFound = false;
+
+                // Populate the TableView with search results
+                while (resultSet.next()) {
+                    int cssID= resultSet.getInt("cID");
+                    String cssName = resultSet.getString("fullName");
+                    String cssType = resultSet.getString("caseType");
+                    String cssCSO = resultSet.getString("assignedCSO");
+                    String cssStats = resultSet.getString("caseStats");
+
+                    // Create a Clients object
+                    Cases css = new Cases(cssID, cssName, cssType, cssCSO, cssStats);
+
+                    // Add the Client object to the TableView
+                    casesTbl.getItems().add(css);
+
+                    recordsFound = true;
+                }
+
+                // If no records are found, show an alert and load all clients
+                if (!recordsFound) {
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Search Results");
+                    alert.setHeaderText(null);
+                    alert.setContentText("Can't find anything.");
+                    alert.showAndWait();
+
+                    // Optionally, call a method to load all clients
+                    loadCases();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        } else {
+            // Display a message if the search query is empty
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Search");
+            alert.setHeaderText(null);
+            alert.setContentText("Please enter a word to search.");
+            alert.showAndWait();
+
+            // Optionally, call a method to load all clients
+            loadCases();
+        }
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
     }
 
     @FXML
     private void searchBtn(ActionEvent event) {
-        showUnderDevelopmentAlert();
+        
+       
+        
     }
 
     @FXML
@@ -1776,25 +1997,313 @@ casePriority.setText(resultSet.getString("casePriority"));
     @FXML
     private void aDeactClient(ActionEvent event) {
 
-        showUnderDevelopmentAlert();
+        Clients selectedClient = tblClient.getSelectionModel().getSelectedItem();
+
+// Check if the selected client is null
+        if (selectedClient == null) {
+            // Display a message or handle the case when no client is selected
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("No Selection");
+            alert.setHeaderText(null);
+            alert.setContentText("No client is selected.");
+            alert.showAndWait();
+        } else {
+
+            // Create a confirmation alert
+            Alert confirmationAlert = new Alert(AlertType.CONFIRMATION);
+            confirmationAlert.setTitle("Deactivate Record");
+            confirmationAlert.setHeaderText("Are you sure you want to deactivate this client?\n This action cannot be undone.");
+
+            // Show the alert and wait for the response
+            confirmationAlert.showAndWait().ifPresent(response -> {
+                if (response == ButtonType.OK) {
+                    // If the user confirms, perform the deactivation
+
+                    String selectedID = aClientID.getText();
+
+// Construct the SQL UPDATE query
+                    String deactClient = "UPDATE clientData SET isActive = '0' WHERE clientID = '" + selectedID + "'";
+
+////        String updateQuery = "UPDATE clientData SET clientID =  '" + clientIDValue + "', fName = '" + fnameValue + "', lName = '" + lnameValue + "', clientMedicare = '" + medicareValue + "', clientAddress = '" + addressValue + "', clientMobile = '" + mobileValue + "', clientEmail = '" + emailValue + "', clientBday = '" + bdayValue + "' WHERE clientID = '" + clientIDValue + "'";
+                    try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD); Statement statement = connection.createStatement()) {
+                        // Execute the update query
+                        int clientRowsUpdated = statement.executeUpdate(deactClient);
+
+                        // Check if the update was successful
+                        if (clientRowsUpdated > 0) {
+                            // Display success alert
+                            Alert successAlert = new Alert(Alert.AlertType.INFORMATION);
+                            successAlert.setTitle("Success");
+                            successAlert.setHeaderText(null);
+                            successAlert.setContentText("Client deactivated successfully.");
+                            successAlert.showAndWait();
+
+                            loadClients();
+                        }
+
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+
+                    }
+
+                } else {
+                    // If the user cancels, do nothing
+                    System.out.println("Deactivation cancelled.");
+                }
+            });
+
+        }
+
     }
 
     @FXML
     private void clientSearch(ActionEvent event) {
+        // Get the search term from the text field
+        String searchC = clientSearches.getText().trim();
 
-        showUnderDevelopmentAlert();
+        aClientID.clear();
+        aFname.clear();
+        aLname.clear();
+        aMedicare.clear();
+        aAddress.clear();
+        aZip.clear();
+        aMobile.clear();
+        aEmail.clear();
+        aBday.setValue(LocalDate.now());
+        aEContact.clear();
+        aERelation.clear();
+        aEMobile.clear();
+        aEMail.clear();
+        aCMCombo.getSelectionModel().selectFirst();
+        aFundLevelCombo.getSelectionModel().selectFirst();
+
+        if (!searchC.isEmpty()) {
+            // Construct the SQL query with the search term
+            String sqlQuery = "SELECT clientID, CONCAT(fname, ' ', lname) AS fullName FROM clientdata WHERE fName LIKE '%" + searchC + "%' OR lName LIKE '%" + searchC + "%' OR clientID LIKE '%" + searchC + "%' OR clientMedicare LIKE '%" + searchC + "%'";
+
+            try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD); Statement statement = connection.createStatement()) {
+
+                // Execute the query
+                ResultSet resultSet = statement.executeQuery(sqlQuery);
+
+                // Clear the TableView items
+                tblClient.getItems().clear();
+
+                // Flag to check if any records were found
+                boolean recordsFound = false;
+
+                // Populate the TableView with search results
+                while (resultSet.next()) {
+                    int cid = resultSet.getInt("clientID");
+                    String cname = resultSet.getString("fullName");
+
+                    // Create a Clients object
+                    Clients client = new Clients(cid, cname);
+
+                    // Add the Client object to the TableView
+                    tblClient.getItems().add(client);
+
+                    recordsFound = true;
+                }
+
+                // If no records are found, show an alert and load all clients
+                if (!recordsFound) {
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Search Results");
+                    alert.setHeaderText(null);
+                    alert.setContentText("Can't find anything.");
+                    alert.showAndWait();
+
+                    // Optionally, call a method to load all clients
+                    loadClients();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        } else {
+            // Display a message if the search query is empty
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Search");
+            alert.setHeaderText(null);
+            alert.setContentText("Please enter a word to search.");
+            alert.showAndWait();
+
+            // Optionally, call a method to load all clients
+            loadClients();
+        }
     }
 
     @FXML
     private void completeTaskBtn(ActionEvent event) {
 
-        showUnderDevelopmentAlert();
+        String basis = myClientID.getText().trim();
+
+// Check if the selected client is null
+        if (basis == null || basis.isEmpty()) {
+            // Display a message or handle the case when no client is selected
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("No Selection");
+            alert.setHeaderText(null);
+            alert.setContentText("No case is selected.");
+            alert.showAndWait();
+        } else {
+
+            clReason.setDisable(false);
+            clConfirm.setDisable(false);
+            clCancel.setDisable(false);
+
+            clientAssessment.setDisable(true);
+            completeTaskBtn.setDisable(true);
+
+            clDate.setText(LocalDate.now().toString());
+
+        }
+
+    }
+
+    @FXML
+    private void clCancel(ActionEvent event) {
+        clReason.setEditable(false);
+        clReason.clear();
+        clDate.clear();
+        clConfirm.setDisable(true);
+        clCancel.setDisable(true);
+
+        clientAssessment.setDisable(false);
+        completeTaskBtn.setDisable(false);
+
+    }
+
+    @FXML
+    private void clConfirm(ActionEvent event) {
+
+        String selectedCase = clID.getText();
+        String closeReasin = clReason.getText();
+
+// Construct the SQL UPDATE query
+        String closeCase = "UPDATE clientcases SET assessmentStatus = 'Closed', closingReason = '" + closeReasin + "' WHERE caseID = '" + selectedCase + "'";
+
+        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD); Statement statement = connection.createStatement()) {
+            // Execute the update query
+            int clientRowsUpdated = statement.executeUpdate(closeCase);
+
+            // Check if the update was successful
+            if (clientRowsUpdated > 0) {
+                // Display success alert
+                Alert successAlert = new Alert(Alert.AlertType.INFORMATION);
+                successAlert.setTitle("Success");
+                successAlert.setHeaderText(null);
+                successAlert.setContentText("Case Closed!.");
+                successAlert.showAndWait();
+
+                loadMyCases();
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+
+        }
+
+        clReason.setEditable(false);
+        clConfirm.setDisable(true);
+        clReason.clear();
+        clDate.clear();
+        clCancel.setDisable(true);
+
+        clientAssessment.setDisable(false);
+        completeTaskBtn.setDisable(false);
+
     }
 
     @FXML
     private void sCase(ActionEvent event) {
 
-        showUnderDevelopmentAlert();
+        // Get the search term from the text field
+        String searchCase = caseSearch.getText().trim();
+
+        clID.clear();
+        myClientID.clear();
+        myClientFname.clear();
+        myClientLname.clear();
+        myClientContact.clear();
+        myClientAddress.clear();
+        myClientMedicare.clear();
+        myClientBday.setValue(LocalDate.now());
+
+        if (!searchCase.isEmpty()) {
+            // Construct the SQL query with the search term
+
+            String searchMyCase = "SELECT cc.caseID AS cID, "
+                    + "cc.clientID AS clientID, "
+                    + "CONCAT(cd.fName, ' ', cd.lName) AS fullName, "
+                    + "cc.caseType AS caseType, "
+                    + "cc.casePriority AS casePriority, "
+                    + "CONCAT(ua.fName, ' ', ua.lName) AS assignedCSO "
+                    + "FROM clientCases cc "
+                    + "JOIN clientData cd ON cc.clientID = cd.clientID "
+                    + "JOIN userAccounts ua ON cc.userID = ua.userID "
+                    + "WHERE cc.caseID LIKE '%" + searchCase + "%' "
+                    + "OR cc.clientID LIKE '%" + searchCase + "%' "
+                    + "OR cd.lName LIKE '%" + searchCase + "%' "
+                    + "OR cd.fName LIKE '%" + searchCase + "%' "
+                    + "OR cc.caseType LIKE '%" + searchCase + "%' "
+                    + "OR cc.casePriority LIKE '%" + searchCase + "%'";
+
+            //       "SELECT caseID,clientID CONCAT(fname, ' ', lname) AS fullName, caseType FROM clientdata WHERE fName LIKE '%" + searchC + "%' OR lName LIKE '%" + searchC + "%' OR clientID LIKE '%" + searchC + "%' OR clientMedicare LIKE '%" + searchC + "%'";
+            try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD); Statement statement = connection.createStatement()) {
+
+                // Execute the query
+                ResultSet resultSet = statement.executeQuery(searchMyCase);
+
+                // Clear the TableView items
+                myCaseTbl.getItems().clear();
+
+                // Flag to check if any records were found
+                boolean recordsFound = false;
+
+                // Populate the TableView with search results
+                while (resultSet.next()) {
+                    int caID = resultSet.getInt("cID");
+                    int cliID = resultSet.getInt("clientID");
+                    String clName = resultSet.getString("fullName");
+                    String caType = resultSet.getString("caseType");
+                    String caPriority = resultSet.getString("casePriority");
+
+                    // Create a Clients object
+                    MyCases cases = new MyCases(caID, cliID, clName, caType, caPriority);
+
+                    // Add the Client object to the TableView
+                    myCaseTbl.getItems().add(cases);
+
+                    recordsFound = true;
+                }
+
+                // If no records are found, show an alert and load all clients
+                if (!recordsFound) {
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Search Results");
+                    alert.setHeaderText(null);
+                    alert.setContentText("Can't find anything.");
+                    alert.showAndWait();
+
+                    // Optionally, call a method to load all clients
+                    loadMyCases();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        } else {
+            // Display a message if the search query is empty
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Search");
+            alert.setHeaderText(null);
+            alert.setContentText("Please enter a word to search.");
+            alert.showAndWait();
+
+            // Optionally, call a method to load all clients
+            loadMyCases();
+        }
+
     }
 
     private void showUnderDevelopmentAlert() {
