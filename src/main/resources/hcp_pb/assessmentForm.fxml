@@ -6,6 +6,7 @@
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressIndicator?>
 <?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
@@ -105,7 +106,7 @@
                   <Insets left="20.0" />
                </padding>
             </Label>
-            <Label fx:id="lblSkinIntegrity" accessibleRole="CHECK_BOX" onMouseClicked="#lblSkinIntegrity" prefHeight="35.0" prefWidth="300.0" text="Skin Integrity" textFill="#a9a6a6">
+            <Label fx:id="lblSkinIntegrity" accessibleRole="CHECK_BOX" onMouseClicked="#lblSkinIntegrity" prefHeight="35.0" prefWidth="300.0" text="Skin Integrity and Podiatry" textFill="#a9a6a6">
                <font>
                   <Font size="15.0" />
                </font>
@@ -160,7 +161,7 @@
                   <Insets left="20.0" />
                </padding>
             </Label>
-            <Label fx:id="lblHouseEnvironment" accessibleRole="CHECK_BOX" onMouseClicked="#lblHouseEnvironment" prefHeight="35.0" prefWidth="300.0" text="Home Environment" textFill="#a9a6a6">
+            <Label fx:id="lblHouseEnvironment" accessibleRole="CHECK_BOX" onMouseClicked="#lblHouseEnvironment" prefHeight="35.0" prefWidth="300.0" text="Home Environment and Transport" textFill="#a9a6a6">
                <font>
                   <Font size="15.0" />
                </font>
@@ -195,28 +196,65 @@
             </Label>
          </children>
       </VBox>
-      <Pane fx:id="mainPanel" layoutX="286.0" layoutY="-1.0" prefHeight="606.0" prefWidth="533.0" style="-fx-background-color: white;">
+      <Pane fx:id="mainPanel" layoutX="286.0" layoutY="-1.0" prefHeight="606.0" prefWidth="562.0" style="-fx-background-color: white;">
          <children>
-            <Pane fx:id="clientDetsPane" layoutX="19.0" layoutY="14.0" prefHeight="219.0" prefWidth="495.0" style="-fx-border-color: black; -fx-background-color: d9d9d9;" visible="false">
+            <Pane fx:id="clientDetsPane" layoutX="1.0" layoutY="1.0" prefHeight="606.0" prefWidth="562.0">
                <children>
-                  <Label layoutX="59.0" layoutY="33.0" text="Client ID:" />
-                  <Label layoutX="47.0" layoutY="60.0" text="First Name:" />
-                  <Label layoutX="257.0" layoutY="59.0" text="Last Name:" />
-                  <Label layoutX="59.0" layoutY="89.0" text="Birthday:" />
-                  <Label layoutX="265.0" layoutY="31.0" text="Medicare:" />
-                  <Label layoutX="8.0" layoutY="6.0" text="Client information">
-                     <font>
-                        <Font name="System Bold" size="12.0" />
-                     </font>
-                  </Label>
-                  <TextField fx:id="cID" editable="false" layoutX="112.0" layoutY="29.0" prefHeight="25.0" prefWidth="124.0" />
-                  <TextField fx:id="cMedicare" layoutX="320.0" layoutY="27.0" prefHeight="25.0" prefWidth="132.0" />
-                  <TextField fx:id="cFname" layoutX="112.0" layoutY="58.0" prefHeight="25.0" prefWidth="124.0" />
-                  <TextField fx:id="cLname" layoutX="320.0" layoutY="56.0" prefHeight="25.0" prefWidth="132.0" />
-                  <DatePicker fx:id="cBday" layoutX="112.0" layoutY="87.0" prefHeight="25.0" prefWidth="124.0" />
-                  <Label layoutX="241.0" layoutY="91.0" text="Funding Level:" />
-                  <ComboBox layoutX="320.0" layoutY="87.0" prefHeight="25.0" prefWidth="131.0" />
-                  <Button fx:id="startAssesmentBtn" layoutX="194.0" layoutY="153.0" mnemonicParsing="false" onAction="#startAssesmentBtn" style="-fx-background-color: #364bbf;" text="Start Assessment" textFill="WHITE" />
+                  <Pane layoutX="34.0" layoutY="14.0" prefHeight="172.0" prefWidth="495.0" style="-fx-background-color: d9d9d9; -fx-border-color: black;">
+                     <children>
+                        <Label layoutX="57.0" layoutY="36.0" text="Client ID:" />
+                        <Label layoutX="45.0" layoutY="63.0" text="First Name:" />
+                        <Label layoutX="255.0" layoutY="62.0" text="Last Name:" />
+                        <Label layoutX="57.0" layoutY="92.0" text="Birthday:" />
+                        <Label layoutX="263.0" layoutY="34.0" text="Medicare:" />
+                        <TextField fx:id="cID" editable="false" layoutX="110.0" layoutY="32.0" prefHeight="25.0" prefWidth="124.0" text="200001" />
+                        <TextField fx:id="cMedicare" layoutX="318.0" layoutY="30.0" prefHeight="25.0" prefWidth="132.0" text="AB1234567" />
+                        <TextField fx:id="cFname" layoutX="110.0" layoutY="61.0" prefHeight="25.0" prefWidth="124.0" text="Emily" />
+                        <TextField fx:id="cLname" layoutX="318.0" layoutY="59.0" prefHeight="25.0" prefWidth="132.0" text="Clark" />
+                        <DatePicker fx:id="cBday" layoutX="110.0" layoutY="90.0" prefHeight="25.0" prefWidth="124.0" promptText="1975-02-20" />
+                        <Label layoutX="239.0" layoutY="94.0" text="Funding Level:" />
+                        <ComboBox fx:id="cLevel" layoutX="318.0" layoutY="90.0" prefHeight="25.0" prefWidth="131.0" promptText="Level 1" />
+                        <Label layoutX="12.0" layoutY="5.0" text="Client information">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </Label>
+                        <TextField fx:id="caseNo" editable="false" layoutX="210.0" layoutY="124.0" text="201" />
+                        <Label layoutX="149.0" layoutY="128.0" text="Case No:" />
+                     </children>
+                  </Pane>
+                  <Pane layoutX="33.0" layoutY="193.0" prefHeight="189.0" prefWidth="495.0" style="-fx-border-color: black;">
+                     <children>
+                        <Label layoutX="12.0" layoutY="7.0" text="Assessment Details">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="68.0" layoutY="55.0" text="Assessor:" />
+                        <Label layoutX="23.0" layoutY="84.0" text="Assessment Date:" />
+                        <Label layoutX="79.0" layoutY="117.0" text="Venue:" />
+                        <TextField fx:id="csoName" layoutX="127.0" layoutY="51.0" prefHeight="25.0" prefWidth="194.0" text="John Doe" />
+                        <DatePicker fx:id="aDate" layoutX="127.0" layoutY="83.0" prefHeight="25.0" prefWidth="193.0" />
+                        <ComboBox fx:id="aVenue" layoutX="127.0" layoutY="115.0" prefHeight="25.0" prefWidth="194.0" />
+                        <TextField fx:id="aVenueOthers" layoutX="127.0" layoutY="144.0" prefHeight="25.0" prefWidth="344.0" />
+                        <Label layoutX="47.0" layoutY="24.0" text="Assessment No:" />
+                        <TextField fx:id="assessNo" editable="false" layoutX="141.0" layoutY="20.0" />
+                        <ProgressIndicator fx:id="startProg" layoutX="263.0" layoutY="63.0" progress="0.0" visible="false" />
+                     </children>
+                  </Pane>
+                  <Pane layoutX="33.0" layoutY="389.0" prefHeight="159.0" prefWidth="495.0" style="-fx-border-color: black;">
+                     <children>
+                        <Label layoutX="12.0" layoutY="7.0" text="Assessment Instructions">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="74.0" layoutY="31.0" text="put information about the assessment here, the pre-condition," />
+                        <Label layoutX="134.0" layoutY="62.0" text="the steps and upon completion herer" />
+                     </children>
+                  </Pane>
+                  <Button fx:id="startAssesmentBtn" layoutX="295.0" layoutY="558.0" mnemonicParsing="false" onAction="#startAssesmentBtn" style="-fx-background-color: #364bbf;" text="Start Assessment" textFill="WHITE" />
+                  <Button fx:id="cancelAssessment" layoutX="413.0" layoutY="558.0" mnemonicParsing="false" onAction="#cancelAssessment" prefHeight="25.0" prefWidth="108.0" style="-fx-background-color: #364bbf;" text="Cancel" textFill="WHITE" />
                </children>
             </Pane>
             <Pane fx:id="paneClientHygiene" layoutX="7.0" layoutY="1.0" prefHeight="607.0" prefWidth="554.0" style="-fx-background-color: FFFF;" visible="false">
@@ -239,8 +277,7 @@
                   </Text>
                   <Pane fx:id="showerIntervalsD" layoutX="6.0" layoutY="113.0" prefHeight="78.0" prefWidth="527.0" style="-fx-border-color: #000000; -fx-background-color: #d9d9d9;">
                      <children>
-                        <Pane layoutX="387.0" layoutY="85.0" prefHeight="60.0" prefWidth="140.0" style="-fx-background-color: #d9d9d9; -fx-border-color: #000000;" />
-                        <Pane layoutX="239.0" layoutY="85.0" prefHeight="60.0" prefWidth="142.0" style="-fx-background-color: #d9d9d9; -fx-border-color: #000000;" />
+                        <Pane layoutX="239.0" layoutY="85.0" prefHeight="60.0" prefWidth="287.0" style="-fx-background-color: #d9d9d9; -fx-border-color: #000000;" />
                         <Pane layoutY="85.0" prefHeight="60.0" prefWidth="233.0" style="-fx-background-color: #d9d9d9; -fx-border-color: #000000;" />
                         <Text layoutX="8.0" layoutY="15.0" strokeType="OUTSIDE" strokeWidth="0.0" text="What the client can do:" />
                         <Text layoutX="21.0" layoutY="34.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Walking to the bathroom/Shower room" />
@@ -255,8 +292,8 @@
                         <Text layoutX="6.0" layoutY="108.0" strokeType="OUTSIDE" strokeWidth="0.0" text="How often do you shower?" wrappingWidth="75.17578124999983" />
                         <RadioButton fx:id="rdoShowerIntervalsD" layoutX="85.0" layoutY="104.0" mnemonicParsing="false" text="Daily" />
                         <RadioButton fx:id="rdoShowerIntervals2" layoutX="145.0" layoutY="97.0" mnemonicParsing="false" prefHeight="37.0" prefWidth="96.0" text="2-3 times week" wrapText="true" />
-                        <RadioButton fx:id="rdoShowerCarerReqY" layoutX="332.0" layoutY="92.0" mnemonicParsing="false" text="Yes" />
-                        <RadioButton fx:id="rdoShowerCarerReqN" layoutX="332.0" layoutY="119.0" mnemonicParsing="false" text="No" />
+                        <RadioButton fx:id="rdoShowerCarerGenderN" layoutX="332.0" layoutY="92.0" mnemonicParsing="false" text="No" />
+                        <RadioButton fx:id="rdoShowerCarerGenderA" layoutX="332.0" layoutY="119.0" mnemonicParsing="false" text="Any" />
                         <RadioButton fx:id="rdoShowerCarerGenderM" layoutX="399.0" layoutY="95.0" mnemonicParsing="false" text="Male Carers only" />
                         <RadioButton fx:id="rdoShowerCarerGenderF" layoutX="399.0" layoutY="118.0" mnemonicParsing="false" text="Female Carers only" />
                         <Text layoutX="5.0" layoutY="167.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Preferred day/s:" />
@@ -267,11 +304,10 @@
                   </Pane>
                   <Pane layoutX="6.0" layoutY="317.0" prefHeight="67.0" prefWidth="528.0" style="-fx-border-color: #000000; -fx-background-color: #d9d9d9;">
                      <children>
-                        <Pane layoutX="236.0" layoutY="183.0" prefHeight="67.0" prefWidth="147.0" style="-fx-background-color: #d9d9d9; -fx-border-color: #000000;" />
-                        <Pane layoutX="388.0" layoutY="183.0" prefHeight="67.0" prefWidth="140.0" style="-fx-background-color: #d9d9d9; -fx-border-color: #000000;">
+                        <Pane layoutX="236.0" layoutY="183.0" prefHeight="67.0" prefWidth="290.0" style="-fx-background-color: #d9d9d9; -fx-border-color: #000000;">
                            <children>
-                              <RadioButton fx:id="rdoDressingCarerGenderM" layoutX="10.0" layoutY="12.0" mnemonicParsing="false" text="Male Carers only" />
-                              <RadioButton fx:id="rdoDressingCarerGenderF" layoutX="9.0" layoutY="37.0" mnemonicParsing="false" text="Female Carers only" />
+                              <RadioButton fx:id="rdoDressingCarerGenderM" layoutX="161.0" layoutY="11.0" mnemonicParsing="false" text="Male Carers only" />
+                              <RadioButton fx:id="rdoDressingCarerGenderF" layoutX="161.0" layoutY="37.0" mnemonicParsing="false" text="Female Carers only" />
                            </children></Pane>
                         <Pane layoutY="74.0" prefHeight="102.0" prefWidth="527.0" style="-fx-background-color: #d9d9d9; -fx-border-color: #000000;" />
                         <Text layoutX="9.0" layoutY="17.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Level of assitance required:" />
@@ -292,8 +328,8 @@
                         <Text layoutX="23.0" layoutY="165.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Putting on and Taking off shoes" />
                         <RadioButton fx:id="rdoShoesY" layoutX="206.0" layoutY="153.0" mnemonicParsing="false" text="Yes" />
                         <RadioButton fx:id="rdoShoesN" layoutX="264.0" layoutY="153.0" mnemonicParsing="false" text="No" />
-                        <RadioButton fx:id="rdoDressingCarerReqY" layoutX="332.0" layoutY="193.0" mnemonicParsing="false" text="Yes" />
-                        <RadioButton fx:id="rdoDressingCarerReqN" layoutX="332.0" layoutY="217.0" mnemonicParsing="false" text="No" />
+                        <RadioButton fx:id="rdoDressingCarerGenderN" layoutX="332.0" layoutY="194.0" mnemonicParsing="false" text="No" />
+                        <RadioButton fx:id="rdoDressingCarerGenderA" layoutX="332.0" layoutY="218.0" mnemonicParsing="false" text="Any" />
                         <Text layoutX="245.0" layoutY="208.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Do you require Carer?" wrappingWidth="75.17578124999983" />
                      </children>
                   </Pane>
@@ -309,7 +345,7 @@
                   </Text>
                   <Button fx:id="btnBackClientHygiene" layoutX="8.0" layoutY="574.0" mnemonicParsing="false" onAction="#btnBackClientHygiene" style="-fx-background-color: #364bbf;" text="Back" textFill="WHITE" />
                   <Button fx:id="btnNextClientHygiene" layoutX="491.0" layoutY="574.0" mnemonicParsing="false" onAction="#btnNextClientHygiene" style="-fx-background-color: #364bbf;" text="Next" textFill="WHITE" />
-                  <Text layoutX="13.0" layoutY="537.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Preferred day/s:" />
+                  <Text layoutX="13.0" layoutY="537.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Preferred time:" />
                   <RadioButton fx:id="rdoDressingPrefDayA" layoutX="129.0" layoutY="524.0" mnemonicParsing="false" text="AM" />
                   <RadioButton fx:id="rdoDressingPrefDayP" layoutX="184.0" layoutY="524.0" mnemonicParsing="false" text="PM" />
                </children>
@@ -712,7 +748,7 @@
             </Pane>
             <Pane fx:id="paneCMHBN" prefHeight="608.0" prefWidth="540.0" style="-fx-background-color: FFF;" visible="false">
                <children>
-                  <Pane layoutX="15.0" layoutY="30.0" prefHeight="369.0" prefWidth="508.0" style="-fx-background-color: d9d9d9; -fx-border-color: black;">
+                  <Pane layoutX="15.0" layoutY="30.0" prefHeight="320.0" prefWidth="508.0" style="-fx-background-color: d9d9d9; -fx-border-color: black;">
                      <children>
                         <Text layoutX="8.0" layoutY="23.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Have you been diagnosed with Cognitive Impairment (e.g. Dementia)?" wrappingWidth="241.0473632812501" />
                         <Line endX="370.00006103515625" endY="-3.4999923706054688" layoutX="138.0" layoutY="56.0" startX="-137.0" startY="-3.5" />
@@ -735,8 +771,6 @@
                         <RadioButton fx:id="rdoDepressionY" layoutX="345.0" layoutY="159.0" mnemonicParsing="false" text="Yes" />
                         <RadioButton fx:id="rdoDepressionN" layoutX="427.0" layoutY="160.0" mnemonicParsing="false" text="No" />
                         <Line endX="370.00006103515625" endY="-3.5" layoutX="137.0" layoutY="227.0" startX="-137.0" startY="-3.5" />
-                        <Text layoutX="15.0" layoutY="328.0" strokeType="OUTSIDE" strokeWidth="0.0" text="If Yes Specify:" wrappingWidth="63.38613281249968" />
-                        <TextArea fx:id="txtOtherMentalText" layoutX="98.0" layoutY="316.0" prefHeight="38.0" prefWidth="396.0" />
                         <Text layoutX="14.0" layoutY="246.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Have you been diagnosed with schizophrenia?" wrappingWidth="275.5664062500001" />
                         <RadioButton fx:id="rdoSchizophreniaY" layoutX="345.0" layoutY="236.0" mnemonicParsing="false" text="Yes" />
                         <RadioButton fx:id="rdoSchizophreniaN" layoutX="427.0" layoutY="236.0" mnemonicParsing="false" text="No" />
@@ -867,26 +901,28 @@
             </Pane>
             <Pane fx:id="paneClientHousing" layoutY="2.0" prefHeight="604.0" prefWidth="535.0" style="-fx-background-color: FFF;" visible="false">
                <children>
-                  <Pane layoutX="6.0" layoutY="30.0" prefHeight="351.0" prefWidth="524.0" style="-fx-border-color: black; -fx-background-color: d9d9d9;">
+                  <Pane layoutX="6.0" layoutY="30.0" prefHeight="306.0" prefWidth="524.0" style="-fx-border-color: black; -fx-background-color: d9d9d9;">
                      <children>
-                        <Text layoutX="8.0" layoutY="24.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Do you own your Home?" />
-                        <RadioButton fx:id="rdoHousingOwnershipY" layoutX="150.0" layoutY="12.0" mnemonicParsing="false" text="Yes" />
-                        <RadioButton fx:id="rdoHousingOwnershipN" layoutX="217.0" layoutY="12.0" mnemonicParsing="false" text="No If not, please specify below:" />
-                        <RadioButton fx:id="rdoHousingSetupR" layoutX="183.0" layoutY="52.0" mnemonicParsing="false" text="Renting" />
-                        <RadioButton fx:id="rdoHousingSetupG" layoutX="269.0" layoutY="52.0" mnemonicParsing="false" text="Government Housing" />
-                        <RadioButton fx:id="rdoHousingSetupO" layoutX="411.0" layoutY="52.0" mnemonicParsing="false" text="Owned by family" />
-                        <RadioButton fx:id="rdoLivingSetupN2" layoutX="352.0" layoutY="124.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="116.0" text="Lives with Family" wrapText="true" />
-                        <TextArea fx:id="txtAlarmCompany" layoutX="152.0" layoutY="214.0" prefHeight="39.0" prefWidth="300.0" />
-                        <TextField fx:id="txtKeyLockCode" layoutX="154.0" layoutY="313.0" prefHeight="25.0" prefWidth="62.0" />
-                        <Text layoutX="9.0" layoutY="334.0" strokeType="OUTSIDE" strokeWidth="0.0" text="If yes, enter code:" />
-                        <RadioButton fx:id="rdoKeyLockBoxN" layoutX="230.0" layoutY="279.0" mnemonicParsing="false" text="No" />
-                        <Line endX="382.103515625" endY="22.066669464111328" layoutX="141.0" layoutY="22.0" startX="-141.0" startY="22.066665649414062" />
-                        <Text layoutX="12.0" layoutY="292.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Key lock box" />
-                        <RadioButton fx:id="rdoKeyLockBoxY" layoutX="153.0" layoutY="279.0" mnemonicParsing="false" text="Yes" />
-                        <Text layoutX="9.0" layoutY="230.0" strokeType="OUTSIDE" strokeWidth="0.0" text="If yes, enter company details:" wrappingWidth="95.97128906250009" />
-                        <Line endX="382.0" endY="22.066673278808594" layoutX="142.0" layoutY="98.0" startX="-141.0" startY="22.066665649414062" />
-                        <RadioButton fx:id="rdoLivingSetupN1" layoutX="215.0" layoutY="132.0" mnemonicParsing="false" text="Live with carer     " />
-                        <Line endX="386.0" endY="-3.5" layoutX="137.0" layoutY="273.0" startX="-137.0" startY="-3.5" />
+                        <Text layoutX="8.0" layoutY="37.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Do you own your Home?" />
+                        <RadioButton fx:id="rdoHousingOwnershipY" layoutX="152.0" layoutY="24.0" mnemonicParsing="false" text="Yes" />
+                        <RadioButton fx:id="rdoHousingSetupR" layoutX="220.0" layoutY="23.0" mnemonicParsing="false" text="Renting" />
+                        <RadioButton fx:id="rdoHousingSetupG" layoutX="306.0" layoutY="9.0" mnemonicParsing="false" prefHeight="39.0" prefWidth="96.0" text="Government Housing" wrapText="true" />
+                        <RadioButton fx:id="rdoHousingSetupO" layoutX="414.0" layoutY="10.0" mnemonicParsing="false" prefHeight="39.0" prefWidth="96.0" text="Owned by family" wrapText="true" />
+                        <RadioButton fx:id="rdoLivingSetupN2" layoutX="344.0" layoutY="75.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="116.0" text="Lives with Family" wrapText="true" />
+                        <TextArea fx:id="txtAlarmCompany" layoutX="154.0" layoutY="165.0" prefHeight="39.0" prefWidth="300.0" />
+                        <TextField fx:id="txtKeyLockCode" layoutX="155.0" layoutY="265.0" prefHeight="25.0" prefWidth="62.0" />
+                        <Text layoutX="13.0" layoutY="281.0" strokeType="OUTSIDE" strokeWidth="0.0" text="If yes, enter code:" />
+                        <RadioButton fx:id="rdoKeyLockBoxN" layoutX="230.0" layoutY="236.0" mnemonicParsing="false" text="No" />
+                        <Text layoutX="12.0" layoutY="249.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Key lock box" />
+                        <RadioButton fx:id="rdoKeyLockBoxY" layoutX="153.0" layoutY="236.0" mnemonicParsing="false" text="Yes" />
+                        <Text layoutX="11.0" layoutY="180.0" strokeType="OUTSIDE" strokeWidth="0.0" text="If yes, enter company details:" wrappingWidth="95.97128906250009" />
+                        <RadioButton fx:id="rdoLivingSetupN1" layoutX="222.0" layoutY="79.0" mnemonicParsing="false" text="Live with carer     " />
+                        <Line endX="386.0" endY="-3.5" layoutX="137.0" layoutY="222.0" startX="-137.0" startY="-3.5" />
+                        <Text layoutX="10.0" layoutY="93.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Do you live alone?" />
+                        <RadioButton fx:id="rdoLivingSetupY" layoutX="157.0" layoutY="80.0" mnemonicParsing="false" text="Yes" />
+                        <Text layoutX="13.0" layoutY="148.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Personal alarm:" />
+                        <RadioButton fx:id="rdoPersonalAlarmY" layoutX="161.0" layoutY="135.0" mnemonicParsing="false" text="Yes" />
+                        <RadioButton fx:id="rdoPersonalAlarmN" layoutX="221.0" layoutY="134.0" mnemonicParsing="false" text="No" />
                      </children>
                   </Pane>
                   <Text layoutX="12.0" layoutY="21.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Client Housing">
@@ -894,43 +930,15 @@
                         <Font name="System Bold" size="12.0" />
                      </font>
                   </Text>
-                  <Line endX="383.0" endY="22.06665802001953" layoutX="147.0" layoutY="88.0" startX="-141.0" startY="22.066665649414062" />
-                  <Text layoutX="14.0" layoutY="132.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Do you live alone?" />
-                  <RadioButton fx:id="rdoLivingSetupY" layoutX="155.0" layoutY="120.0" mnemonicParsing="false" text="Yes" />
-                  <RadioButton fx:id="rdoLivingSetupN" layoutX="222.0" layoutY="120.0" mnemonicParsing="false" text="No If not, please specify below:" />
-                  <Line endX="382.0" endY="22.066665649414062" layoutX="147.0" layoutY="167.0" startX="-141.0" startY="22.066665649414062" />
-                  <Line endX="386.0" endY="-3.5" layoutX="143.0" layoutY="238.0" startX="-137.0" startY="-3.5" />
-                  <Text layoutX="15.0" layoutY="214.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Personal alarm:" />
-                  <RadioButton fx:id="rdoPersonalAlarmY" layoutX="155.0" layoutY="201.0" mnemonicParsing="false" text="Yes" />
-                  <RadioButton fx:id="rdoPersonalAlarmN" layoutX="223.0" layoutY="200.0" mnemonicParsing="false" text="No" />
-                  <Line endX="386.0" endY="-3.5" layoutX="143.0" layoutY="342.0" startX="-137.0" startY="-3.5" />
+                  <Line endX="383.0" endY="22.06665802001953" layoutX="147.0" layoutY="67.0" startX="-141.0" startY="22.066665649414062" />
+                  <Line endX="382.0" endY="22.066665649414062" layoutX="147.0" layoutY="128.0" startX="-141.0" startY="22.066665649414062" />
                   <Button fx:id="btnBackClientHousing" layoutX="7.0" layoutY="572.0" mnemonicParsing="false" onAction="#btnBackClientHousing" style="-fx-background-color: #364bbf;" text="Back" textFill="WHITE" />
                   <Button fx:id="btnNextClientHousing" layoutX="488.0" layoutY="573.0" mnemonicParsing="false" onAction="#btnNextClientHousing" style="-fx-background-color: #364bbf;" text="Next" textFill="WHITE" />
                </children>
             </Pane>
-            <Pane fx:id="paneMHEN" layoutX="-1.0" layoutY="2.0" prefHeight="607.0" prefWidth="536.0" style="-fx-background-color: FFF;">
+            <Pane fx:id="paneMHEN" layoutX="-1.0" layoutY="2.0" prefHeight="607.0" prefWidth="536.0" style="-fx-background-color: FFF;" visible="false">
                <children>
-                  <Pane layoutX="6.0" layoutY="214.0" prefHeight="129.0" prefWidth="524.0" style="-fx-background-color: d9d9d9; -fx-border-color: black;">
-                     <children>
-                        <TextArea fx:id="txtCleaningPrefDay" layoutX="254.0" layoutY="75.0" prefHeight="38.0" prefWidth="92.0" />
-                        <Text layoutX="8.0" layoutY="19.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Room/Areas to clean:" />
-                        <RadioButton fx:id="rdoCleaningCarerGenderM" layoutX="382.0" layoutY="68.0" mnemonicParsing="false" text="Male Carers Only" />
-                        <RadioButton fx:id="rdoCleaningCarerGenderF" layoutX="382.0" layoutY="88.0" mnemonicParsing="false" text="Female Carers only " />
-                        <RadioButton fx:id="rdoCleaningCarerGenderN" layoutX="382.0" layoutY="108.0" mnemonicParsing="false" text="No Preferences" />
-                        <Text layoutX="189.0" layoutY="90.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Preferred day/s:" wrappingWidth="53.129882812499886" />
-                        <Text layoutX="13.0" layoutY="95.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Frequency:" />
-                        <CheckBox fx:id="ckToiletCleaning" layoutX="134.0" layoutY="25.0" mnemonicParsing="false" text="Toilet" />
-                        <CheckBox fx:id="ckKitchenCleaning" layoutX="134.0" layoutY="45.0" mnemonicParsing="false" text="Kitchen" />
-                        <CheckBox fx:id="ckLaundryCleaning" layoutX="261.0" layoutY="3.0" mnemonicParsing="false" text="Laundry Area" />
-                        <CheckBox fx:id="ckPatioCleaning" layoutX="261.0" layoutY="25.0" mnemonicParsing="false" text="Patio" />
-                        <CheckBox fx:id="ckBathroomCleaning" layoutX="261.0" layoutY="46.0" mnemonicParsing="false" text="Bathroom" />
-                        <CheckBox fx:id="ckLoungeCleaning" layoutX="385.0" layoutY="4.0" mnemonicParsing="false" text="Lounge Room" />
-                        <CheckBox fx:id="ckBedroomCleaning" layoutX="134.0" layoutY="4.0" mnemonicParsing="false" text="Bedroom" />
-                        <TextArea fx:id="txtCleaningFreq" layoutX="87.0" layoutY="76.0" prefHeight="38.0" prefWidth="91.0" />
-                        <Line endX="262.0" layoutX="260.0" layoutY="67.0" startX="-261.0" />
-                     </children>
-                  </Pane>
-                  <Pane layoutX="6.0" layoutY="27.0" prefHeight="181.0" prefWidth="524.0" style="-fx-border-color: #000000; -fx-background-color: d9d9d9;">
+                  <Pane layoutX="6.0" layoutY="27.0" prefHeight="246.0" prefWidth="524.0" style="-fx-border-color: #000000; -fx-background-color: d9d9d9;">
                      <children>
                         <Line endX="386.0" endY="-3.5" layoutX="138.0" layoutY="31.0" startX="-137.0" startY="-3.5" />
                         <RadioButton fx:id="rdoHomeMaintainSupportY" layoutX="295.0" layoutY="6.0" mnemonicParsing="false" text="Yes" />
@@ -940,18 +948,20 @@
                               <Font size="10.0" />
                            </font>
                         </Text>
-                        <CheckBox fx:id="ckCleaning" layoutX="13.0" layoutY="30.0" mnemonicParsing="false" text="Cleaning" />
-                        <CheckBox fx:id="ckDecluttering" layoutX="13.0" layoutY="51.0" mnemonicParsing="false" text="Decluttering" />
-                        <CheckBox fx:id="ckDusting" layoutX="13.0" layoutY="73.0" mnemonicParsing="false" text="Dust &amp; damp-wipe " />
-                        <CheckBox fx:id="ckVacuum" layoutX="13.0" layoutY="95.0" mnemonicParsing="false" text="Vacuum" />
-                        <CheckBox fx:id="ckMop" layoutX="13.0" layoutY="117.0" mnemonicParsing="false" text="Mop" />
-                        <CheckBox fx:id="ckSweeping" layoutX="13.0" layoutY="138.0" mnemonicParsing="false" text="Sweep hard surface floors" />
-                        <CheckBox fx:id="ckLaundry" layoutX="13.0" layoutY="160.0" mnemonicParsing="false" text="Laundry" />
-                        <CheckBox fx:id="ckHangClothes" layoutX="261.0" layoutY="32.0" mnemonicParsing="false" text="Hang the clothes out to dry " />
-                        <CheckBox fx:id="ckLightGardening" layoutX="261.0" layoutY="54.0" mnemonicParsing="false" prefHeight="37.0" prefWidth="257.0" text="Light Gardening (weeding, watering plants,  sweeping garden paths, raking leaves)" wrapText="true" />
-                        <CheckBox fx:id="ckWindowCleaning" layoutX="261.0" layoutY="94.0" mnemonicParsing="false" text="Window Cleaning" />
-                        <CheckBox fx:id="ckGutterCleaning" layoutX="261.0" layoutY="120.0" mnemonicParsing="false" text="Gutter Cleaning" />
-                        <CheckBox fx:id="ckMowGarden" layoutX="261.0" layoutY="137.0" mnemonicParsing="false" prefHeight="48.0" prefWidth="238.0" text="Gardening (mowing, edging, managing sweeping garden paths, raking leaves)" wrapText="true" />
+                        <CheckBox fx:id="ckCleaning" layoutX="13.0" layoutY="57.0" mnemonicParsing="false" text="Cleaning" />
+                        <CheckBox fx:id="ckDecluttering" layoutX="13.0" layoutY="81.0" mnemonicParsing="false" text="Decluttering" />
+                        <CheckBox fx:id="ckDusting" layoutX="13.0" layoutY="104.0" mnemonicParsing="false" text="Dust &amp; damp-wipe " />
+                        <CheckBox fx:id="ckVacuum" layoutX="13.0" layoutY="130.0" mnemonicParsing="false" text="Vacuum" />
+                        <CheckBox fx:id="ckMop" layoutX="13.0" layoutY="158.0" mnemonicParsing="false" text="Mop" />
+                        <CheckBox fx:id="ckSweeping" layoutX="13.0" layoutY="189.0" mnemonicParsing="false" text="Sweep hard surface floors" />
+                        <CheckBox fx:id="ckLaundry" layoutX="13.0" layoutY="218.0" mnemonicParsing="false" text="Laundry" />
+                        <CheckBox fx:id="ckHangClothes" layoutX="261.0" layoutY="59.0" mnemonicParsing="false" text="Hang the clothes out to dry " />
+                        <CheckBox fx:id="ckLightGardening" layoutX="261.0" layoutY="81.0" mnemonicParsing="false" prefHeight="37.0" prefWidth="257.0" text="Light Gardening (weeding, watering plants,  sweeping garden paths, raking leaves)" wrapText="true" />
+                        <CheckBox fx:id="ckWindowCleaning" layoutX="261.0" layoutY="125.0" mnemonicParsing="false" text="Window Cleaning" />
+                        <CheckBox fx:id="ckGutterCleaning" layoutX="261.0" layoutY="151.0" mnemonicParsing="false" text="Gutter Cleaning" />
+                        <CheckBox fx:id="ckMowGarden" layoutX="261.0" layoutY="170.0" mnemonicParsing="false" prefHeight="48.0" prefWidth="238.0" text="Gardening (mowing, edging, managing sweeping garden paths, raking leaves)" wrapText="true" />
+                        <CheckBox fx:id="ckBedroomCleaning" layoutX="261.0" layoutY="222.0" mnemonicParsing="false" text="Bedroom" />
+                        <Text layoutX="13.0" layoutY="47.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Room/Areas to clean:" />
                      </children>
                   </Pane>
                   <Text layoutX="15.0" layoutY="21.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Maintaining Home Environment Needs">
@@ -960,31 +970,31 @@
                      </font>
                   </Text>
                   <Text layoutX="22.0" layoutY="45.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Do you require any support services:" />
-                  <Text layoutX="16.0" layoutY="357.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Social and Transportation Needs">
+                  <Text layoutX="16.0" layoutY="294.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Social and Transportation Needs">
                      <font>
                         <Font name="System Bold" size="12.0" />
                      </font>
                   </Text>
-                  <Pane layoutX="6.0" layoutY="364.0" prefHeight="194.0" prefWidth="524.0" style="-fx-border-color: #000000; -fx-background-color: d9d9d9;">
+                  <Pane layoutX="6.0" layoutY="303.0" prefHeight="219.0" prefWidth="524.0" style="-fx-border-color: #000000; -fx-background-color: d9d9d9;">
                      <children>
-                        <Line endX="386.0" endY="-3.5" layoutX="138.0" layoutY="48.0" startX="-137.0" startY="-3.5" />
+                        <Line endX="386.0" endY="-3.5" layoutX="138.0" layoutY="50.0" startX="-137.0" startY="-3.5" />
                         <RadioButton fx:id="rdoSocialActivityY" layoutX="293.0" layoutY="15.0" mnemonicParsing="false" text="Yes" />
                         <RadioButton fx:id="rdoSocialActivityN" layoutX="388.0" layoutY="15.0" mnemonicParsing="false" text="No" />
-                        <RadioButton fx:id="rdoTaxiVoucher" layoutX="11.0" layoutY="125.0" mnemonicParsing="false" text="Taxi Voucher" />
-                        <RadioButton fx:id="rdoShoppingAssist" layoutX="11.0" layoutY="154.0" mnemonicParsing="false" text="Shopping Assist" />
-                        <RadioButton fx:id="rdoDocAptAssist" layoutX="232.0" layoutY="120.0" mnemonicParsing="false" text="Doctor Appointment Assist" />
-                        <Text layoutX="8.0" layoutY="21.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Do you require assistance accessing social and community activities?" wrappingWidth="245.90039062500023" />
-                        <Text layoutX="7.0" layoutY="91.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Do you still drive?" wrappingWidth="229.09423828125006" />
-                        <RadioButton fx:id="rdoCanDriveY" layoutX="293.0" layoutY="78.0" mnemonicParsing="false" text="Yes" />
-                        <RadioButton fx:id="rdoCanDriveN" layoutX="388.0" layoutY="79.0" mnemonicParsing="false" text="No (specify below)" />
-                        <Line endX="386.0" endY="-3.5" layoutX="137.0" layoutY="106.0" startX="-137.0" startY="-3.5" />
-                        <Text layoutX="7.0" layoutY="119.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Assistance required:" />
-                        <RadioButton fx:id="rdoOtherAssist" graphicTextGap="3.0" layoutX="232.0" layoutY="143.0" mnemonicParsing="false" prefHeight="39.0" prefWidth="100.0" text="Other Assist: (enter assist)" wrapText="true" />
-                        <Text layoutX="7.0" layoutY="61.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Do you require transport assistance?" wrappingWidth="229.09423828125006" />
-                        <RadioButton fx:id="rdoTransportAssistY" layoutX="293.0" layoutY="48.0" mnemonicParsing="false" text="Yes" />
-                        <RadioButton fx:id="rdoTransportAssistN" layoutX="388.0" layoutY="48.0" mnemonicParsing="false" text="No" />
-                        <Line endX="386.0" endY="-3.5" layoutX="138.0" layoutY="77.0" startX="-137.0" startY="-3.5" />
-                        <TextArea fx:id="txtOtherAssist" layoutX="337.0" layoutY="145.0" prefHeight="39.0" prefWidth="176.0" />
+                        <RadioButton fx:id="rdoTaxiVoucher" layoutX="11.0" layoutY="144.0" mnemonicParsing="false" text="Taxi Voucher" />
+                        <RadioButton fx:id="rdoShoppingAssist" layoutX="11.0" layoutY="173.0" mnemonicParsing="false" text="Shopping Assist" />
+                        <RadioButton fx:id="rdoDocAptAssist" layoutX="232.0" layoutY="139.0" mnemonicParsing="false" text="Doctor Appointment Assist" />
+                        <Text layoutX="8.0" layoutY="22.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Do you require assistance accessing social and community activities?" wrappingWidth="245.90039062500023" />
+                        <Text layoutX="7.0" layoutY="104.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Do you still drive?" wrappingWidth="229.09423828125006" />
+                        <RadioButton fx:id="rdoCanDriveY" layoutX="293.0" layoutY="91.0" mnemonicParsing="false" text="Yes" />
+                        <RadioButton fx:id="rdoCanDriveN" layoutX="388.0" layoutY="92.0" mnemonicParsing="false" text="No (specify below)" />
+                        <Line endX="386.0" endY="-3.5" layoutX="137.0" layoutY="124.0" startX="-137.0" startY="-3.5" />
+                        <Text layoutX="7.0" layoutY="138.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Assistance required:" />
+                        <RadioButton fx:id="rdoOtherAssist" graphicTextGap="3.0" layoutX="232.0" layoutY="162.0" mnemonicParsing="false" prefHeight="39.0" prefWidth="100.0" text="Other Assist: (enter assist)" wrapText="true" />
+                        <Text layoutX="7.0" layoutY="68.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Do you require transport assistance?" wrappingWidth="229.09423828125006" />
+                        <RadioButton fx:id="rdoTransportAssistY" layoutX="293.0" layoutY="55.0" mnemonicParsing="false" text="Yes" />
+                        <RadioButton fx:id="rdoTransportAssistN" layoutX="388.0" layoutY="57.0" mnemonicParsing="false" text="No" />
+                        <Line endX="386.0" endY="-3.5" layoutX="138.0" layoutY="89.0" startX="-137.0" startY="-3.5" />
+                        <TextArea fx:id="txtOtherAssist" layoutX="337.0" layoutY="164.0" prefHeight="39.0" prefWidth="176.0" />
                      </children>
                   </Pane>
                   <Button fx:id="btnBackMHEN" layoutX="7.0" layoutY="575.0" mnemonicParsing="false" onAction="#btnBackMHEN" style="-fx-background-color: #364bbf;" text="Back" textFill="WHITE" />
@@ -1063,6 +1073,7 @@
                            </font>
                         </Text>
                         <TextField fx:id="txtPracticeAddress" layoutX="70.0" layoutY="254.0" prefHeight="25.0" prefWidth="194.0" />
+                        <TextField fx:id="txtPracticeEmail" layoutX="359.0" layoutY="250.0" prefHeight="1.0" prefWidth="149.0" />
                         <Text layoutX="286.0" layoutY="236.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Phone:" />
                         <Text layoutX="8.0" layoutY="240.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Full Name:" />
                         <Text layoutX="9.0" layoutY="271.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Address:" />
@@ -1079,7 +1090,6 @@
                         <Text layoutX="285.0" layoutY="363.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Email:" />
                         <Text layoutX="9.0" layoutY="335.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Name:" />
                         <Text layoutX="10.0" layoutY="364.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Adress:" />
-                        <TextField fx:id="txtPracticeEmail" layoutX="359.0" layoutY="250.0" prefHeight="1.0" prefWidth="149.0" />
                         <Text layoutX="286.0" layoutY="268.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Email:" />
                      </children>
                   </Pane>
