@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+
+<AnchorPane id="AnchorPane" prefHeight="565.0" prefWidth="873.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="hcp_pb.LoadEmployeeController">
+    <children>
+        <Label layoutX="560.0" layoutY="265.0" text="User Name:" />
+        <Label layoutX="581.0" layoutY="300.0" text="Password:" />
+        <Pane layoutX="526.0" layoutY="330.0" prefHeight="200.0" prefWidth="290.0" style="-fx-border-color: black;">
+            <children>
+                <TextField fx:id="empID" layoutX="92.0" layoutY="37.0" />
+                <Label layoutX="22.0" layoutY="41.0" text="Employee ID:" />
+                <Label layoutX="31.0" layoutY="89.0" text="Employee Name:" />
+                <Label layoutX="39.0" layoutY="123.0" text="Start Date:" />
+                <Label layoutX="38.0" layoutY="145.0" text="Status:" />
+                <TextField fx:id="empFullName" layoutX="135.0" layoutY="85.0" />
+                <DatePicker fx:id="empStart" layoutX="109.0" layoutY="119.0" />
+                <TextField fx:id="empStat" layoutX="92.0" layoutY="150.0" />
+ 
+            </children>
+        </Pane>
+      <TableView fx:id="empTbl" layoutX="21.0" layoutY="34.0" prefHeight="274.0" prefWidth="783.0">
+        <columns>
+                                          
+                            <TableColumn fx:id="employeeID" text="Employee ID" />
+                <TableColumn fx:id="fullName" prefWidth="197.59996032714844" text="Employee Name" />
+                <TableColumn fx:id="status" prefWidth="196.0" text="Employment Status" />
+                  <TableColumn fx:id="startD" prefWidth="154.0" text="Start Date" />
+                  <TableColumn fx:id="endD" prefWidth="154.0" text="End Date" />
+        </columns>
+      </TableView>
+      <Button layoutX="114.0" layoutY="384.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="89.0" text="Deactivate" />
+      <Button layoutX="219.0" layoutY="384.0" mnemonicParsing="false" text="Add Employee" />
+      <Button fx:id="chooseFile" layoutX="297.0" layoutY="474.0" mnemonicParsing="false" onAction="#chooseFile" text="Choose File" />
+      <TextField fx:id="filePathTextField" layoutX="40.0" layoutY="474.0" prefHeight="26.0" prefWidth="231.0" />
+      <Button fx:id="upload" layoutX="385.0" layoutY="474.0" mnemonicParsing="false" onAction="#upload" prefHeight="26.0" prefWidth="78.0" text="Upload" />
+    </children>
+</AnchorPane>

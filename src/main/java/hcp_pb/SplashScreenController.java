@@ -36,20 +36,22 @@ public class SplashScreenController implements Initializable {
             + "dailyFund DECIMAL(10, 2), "
             + "fortnightlyFund DECIMAL(10, 2), "
             + "monthlyFund DECIMAL(10, 2), "
-            + "dementiaFlag VARCHAR(10))";
+            + "dementiaFlag VARCHAR(10)"
+            + ");";
 
     private final String TABLE_USER_ROLES = "CREATE TABLE IF NOT EXISTS userRoles ("
             + "roleID INT PRIMARY KEY, "
             + "roleDesc  VARCHAR(50), "
-            + "dateAdded DATE) ";
+            + "dateAdded DATE "
+            + ");";
 
     private final String TABLE_EMPLOYEE_LIST = "CREATE TABLE IF NOT EXISTS employeeList ("
             + "employeeID INT PRIMARY KEY, "
             + "fullName VARCHAR(100) NOT NULL, "
             + "startDate VARCHAR(20), "
             + "endDate VARCHAR(20), "
-            + "activeFlag BOOLEAN NOT NULL DEFAULT TRUE, "
-            + "UNIQUE (employeeID)) ";
+            + "activeFlag BOOLEAN NOT NULL DEFAULT TRUE"
+            + ");";
 
     private final String TABLE_USER_ACCOUNTS = "CREATE TABLE IF NOT EXISTS userAccounts ("
             + "userID INT PRIMARY KEY, "
@@ -66,13 +68,37 @@ public class SplashScreenController implements Initializable {
             + "userPass VARCHAR(100) NOT NULL, "
             + "isActive int, "
             + "stats int, "
-            + "FOREIGN KEY (employeeID) REFERENCES employeeList(employeeID))";
+            + "FOREIGN KEY (employeeID) REFERENCES employeeList(employeeID)"
+            + ");";
+
+    private final String TABLE_SERVICE_OFFERED = "CREATE TABLE IF NOT EXISTS serviceoffered ("
+            + "serviceID VARCHAR(10), "
+            + "servicedesc VARCHAR(255), "
+            + "dayshift DECIMAL(10, 2), "
+            + "eveningshift DECIMAL(10, 2), "
+            + "satShift DECIMAL(10, 2), "
+            + "sunShift DECIMAL(10, 2), "
+            + "holidayShift DECIMAL(10, 2), "
+            + "satNight DECIMAL(10, 2), "
+            + "sunNight DECIMAL(10, 2), "
+            + "holidayNight DECIMAL(10, 2)"
+            + ");";
+
+    private final String CREATE_BUDGET_STAGING_TABLE = "CREATE TABLE IF NOT EXISTS budget_staging ("
+            + "stagingID INT AUTO_INCREMENT PRIMARY KEY, "
+            + "clientID VARCHAR(10), "
+            + "assessmentID VARCHAR(10), "
+            + "caseID VARCHAR(10), "
+            + "serviceID VARCHAR(10), "
+            + "counter INT DEFAULT 0"
+            + ");";
 
     private final String TABLE_LOGIN_ATTEMPTS = "CREATE TABLE IF NOT EXISTS loginAttempts ("
             + "loginID INT PRIMARY KEY, "
             + "userName  VARCHAR(20), "
             + "lastAttempt DATETIME, "
-            + "loginCount INT) ";
+            + "loginCount INT "
+            + ");";
 //            + "FOREIGN KEY (userName) REFERENCES userAccounts(userName))";
 
     private final String TABLE_AUDIT_TRAIL = "CREATE TABLE IF NOT EXISTS auditTrail ("
@@ -96,6 +122,7 @@ public class SplashScreenController implements Initializable {
             + "emergencyContactPerson VARCHAR(20), "
             + "emergencyContactNumber VARCHAR(20), "
             + "relationship VARCHAR(20), "
+            + "isActive VARCHAR(10)DEFAULT 1, "
             + "FOREIGN KEY (levelID) REFERENCES fundingLevel(levelID))";
 
     private final String TABLE_CARE_MANAGEMENT = "CREATE TABLE IF NOT EXISTS clientCareManagement ("
@@ -142,6 +169,8 @@ public class SplashScreenController implements Initializable {
             + "clientID INT, "
             + "userID INT, "
             + "assessmentStatus VARCHAR(20), "
+                 + "createUser VARCHAR(20),"
+            + "closingReason VARCHAR(500), "
             + "FOREIGN KEY (userID) REFERENCES userAccounts(userID), "
             + "FOREIGN KEY (clientID) REFERENCES clientData(clientID))";
 
@@ -151,8 +180,11 @@ public class SplashScreenController implements Initializable {
             + "caseID INT, "
             + "assignedCSO VARCHAR(20), "
             + "assessmentDate DATE, "
-            + "referralCode VARCHAR(20), "
-            + "assessedLevel VARCHAR(20), "
+            + "assessVenue VARCHAR(50), "
+            + "assessAddress VARCHAR(150), "
+            + "asessedLevel VARCHAR(10), "
+            + "assessOutcome VARCHAR(250), "
+            + "assessStatus VARCHAR(10), "
             + "userID INT, "
             + "FOREIGN KEY (clientID) REFERENCES clientData(clientID), "
             + "FOREIGN KEY (caseID) REFERENCES clientCases(caseID), "
@@ -179,7 +211,9 @@ public class SplashScreenController implements Initializable {
             + "dressingCarerGender VARCHAR(100), "
             + "dressingPrefDay VARCHAR(100), "
             + "FOREIGN KEY (clientID) REFERENCES clientData(clientID), "
-            + "FOREIGN KEY (assessmentID) REFERENCES clientAssessment(assessmentID))";
+            + "FOREIGN KEY (assessmentID) REFERENCES clientAssessment(assessmentID), "
+            + "UNIQUE (clientID, assessmentID)"
+            + ")";
 
     private static final String TABLE_CLIENT_DENTAL = "CREATE TABLE IF NOT EXISTS clientDental ("
             + "dentalID INT PRIMARY KEY AUTO_INCREMENT, "
@@ -195,7 +229,9 @@ public class SplashScreenController implements Initializable {
             + "lastVisit DATE, "
             + "dentistName VARCHAR(100), "
             + "FOREIGN KEY (clientID) REFERENCES clientData(clientID), "
-            + "FOREIGN KEY (assessmentID) REFERENCES clientAssessment(assessmentID))";
+            + "FOREIGN KEY (assessmentID) REFERENCES clientAssessment(assessmentID), "
+            + "UNIQUE (clientID, assessmentID)"
+            + ")";
 
     private static final String TABLE_CLIENT_TOILETING = "CREATE TABLE IF NOT EXISTS clientToileting ("
             + "toiletingID INT PRIMARY KEY AUTO_INCREMENT, "
@@ -214,7 +250,9 @@ public class SplashScreenController implements Initializable {
             + "size VARCHAR(100), "
             + "continenceFund VARCHAR(100), "
             + "FOREIGN KEY (clientID) REFERENCES clientData(clientID), "
-            + "FOREIGN KEY (assessmentID) REFERENCES clientAssessment(assessmentID))";
+            + "FOREIGN KEY (assessmentID) REFERENCES clientAssessment(assessmentID), "
+            + "UNIQUE (clientID, assessmentID)"
+            + ")";
 
     private static final String TABLE_CLIENT_MOBILITY = "CREATE TABLE IF NOT EXISTS clientMobility ("
             + "mobilityID INT PRIMARY KEY AUTO_INCREMENT, "
@@ -235,7 +273,9 @@ public class SplashScreenController implements Initializable {
             + "fallHistory VARCHAR(100), "
             + "fallDets TEXT, "
             + "FOREIGN KEY (clientID) REFERENCES clientData(clientID), "
-            + "FOREIGN KEY (assessmentID) REFERENCES clientAssessment(assessmentID))";
+            + "FOREIGN KEY (assessmentID) REFERENCES clientAssessment(assessmentID), "
+            + "UNIQUE (clientID, assessmentID)"
+            + ")";
 
     private static final String TABLE_OTHER_MOBILITY = "CREATE TABLE IF NOT EXISTS otherMobility ("
             + "omobID INT PRIMARY KEY AUTO_INCREMENT, "
@@ -254,7 +294,9 @@ public class SplashScreenController implements Initializable {
             + "hAidsFitting VARCHAR(100), "
             + "battChange VARCHAR(100), "
             + "FOREIGN KEY (clientID) REFERENCES clientData(clientID), "
-            + "FOREIGN KEY (assessmentID) REFERENCES clientAssessment(assessmentID))";
+            + "FOREIGN KEY (assessmentID) REFERENCES clientAssessment(assessmentID), "
+            + "UNIQUE (clientID, assessmentID)"
+            + ")";
 
     private static final String TABLE_CLIENT_NUTRITION = "CREATE TABLE IF NOT EXISTS clientNutrition ("
             + "nutrionID INT PRIMARY KEY AUTO_INCREMENT, "
@@ -271,7 +313,9 @@ public class SplashScreenController implements Initializable {
             + "mealSize VARCHAR(100), "
             + "dietRef VARCHAR(100), "
             + "FOREIGN KEY (clientID) REFERENCES clientData(clientID), "
-            + "FOREIGN KEY (assessmentID) REFERENCES clientAssessment(assessmentID))";
+            + "FOREIGN KEY (assessmentID) REFERENCES clientAssessment(assessmentID), "
+            + "UNIQUE (clientID, assessmentID)"
+            + ")";
 
     private static final String TABLE_CLIENT_SKIN = "CREATE TABLE IF NOT EXISTS clientSkin ("
             + "dermaID INT PRIMARY KEY AUTO_INCREMENT, "
@@ -291,7 +335,9 @@ public class SplashScreenController implements Initializable {
             + "podiatrist VARCHAR(100), "
             + "visitFreq VARCHAR(100), "
             + "FOREIGN KEY (clientID) REFERENCES clientData(clientID), "
-            + "FOREIGN KEY (assessmentID) REFERENCES clientAssessment(assessmentID))";
+            + "FOREIGN KEY (assessmentID) REFERENCES clientAssessment(assessmentID), "
+            + "UNIQUE (clientID, assessmentID)"
+            + ")";
 
     private static final String TABLE_CLIENT_MENTAL = "CREATE TABLE IF NOT EXISTS clientMental ("
             + "mentalHealthID INT PRIMARY KEY AUTO_INCREMENT, "
@@ -305,7 +351,9 @@ public class SplashScreenController implements Initializable {
             + "anxiety VARCHAR(100), "
             + "otherMental VARCHAR(100), "
             + "FOREIGN KEY (clientID) REFERENCES clientData(clientID), "
-            + "FOREIGN KEY (assessmentID) REFERENCES clientAssessment(assessmentID))";
+            + "FOREIGN KEY (assessmentID) REFERENCES clientAssessment(assessmentID), "
+            + "UNIQUE (clientID, assessmentID)"
+            + ")";
 
     private static final String TABLE_CLIENT_MEDICATION = "CREATE TABLE IF NOT EXISTS clientMedication ("
             + "medID INT PRIMARY KEY AUTO_INCREMENT, "
@@ -326,7 +374,9 @@ public class SplashScreenController implements Initializable {
             + "bloodMonitorAssist VARCHAR(100), "
             + "injectAssist VARCHAR(100), "
             + "FOREIGN KEY (clientID) REFERENCES clientData(clientID), "
-            + "FOREIGN KEY (assessmentID) REFERENCES clientAssessment(assessmentID))";
+            + "FOREIGN KEY (assessmentID) REFERENCES clientAssessment(assessmentID), "
+            + "UNIQUE (clientID, assessmentID)"
+            + ")";
 
     private static final String TABLE_CLIENT_PAIN = "CREATE TABLE IF NOT EXISTS clientPain ("
             + "painMgmtID INT PRIMARY KEY AUTO_INCREMENT, "
@@ -339,7 +389,9 @@ public class SplashScreenController implements Initializable {
             + "respiteRequire VARCHAR(100), "
             + "respiteDelivery VARCHAR(100), "
             + "FOREIGN KEY (clientID) REFERENCES clientData(clientID), "
-            + "FOREIGN KEY (assessmentID) REFERENCES clientAssessment(assessmentID))";
+            + "FOREIGN KEY (assessmentID) REFERENCES clientAssessment(assessmentID), "
+            + "UNIQUE (clientID, assessmentID)"
+            + ")";
 
     private static final String TABLE_CLIENT_HOUSING = "CREATE TABLE IF NOT EXISTS clientHousing ("
             + "housingID INT PRIMARY KEY AUTO_INCREMENT, "
@@ -353,7 +405,9 @@ public class SplashScreenController implements Initializable {
             + "keyLockBox VARCHAR(100), "
             + "keyLockCode VARCHAR(100), "
             + "FOREIGN KEY (clientID) REFERENCES clientData(clientID), "
-            + "FOREIGN KEY (assessmentID) REFERENCES clientAssessment(assessmentID))";
+            + "FOREIGN KEY (assessmentID) REFERENCES clientAssessment(assessmentID), "
+            + "UNIQUE (clientID, assessmentID)"
+            + ")";
 
     private static final String TABLE_CLIENT_HOME = "CREATE TABLE IF NOT EXISTS clientHome ("
             + "HomeTransID INT PRIMARY KEY AUTO_INCREMENT, "
@@ -374,7 +428,9 @@ public class SplashScreenController implements Initializable {
             + "gutterCleaning VARCHAR(100), "
             + "bedroomCleaning VARCHAR(100), "
             + "FOREIGN KEY (clientID) REFERENCES clientData(clientID), "
-            + "FOREIGN KEY (assessmentID) REFERENCES clientAssessment(assessmentID))";
+            + "FOREIGN KEY (assessmentID) REFERENCES clientAssessment(assessmentID), "
+            + "UNIQUE (clientID, assessmentID)"
+            + ")";
 
     private static final String TABLE_CLIENT_TRANSPORT = "CREATE TABLE IF NOT EXISTS clientTransport ("
             + "transportID INT PRIMARY KEY AUTO_INCREMENT, "
@@ -389,7 +445,9 @@ public class SplashScreenController implements Initializable {
             + "docAptAssist VARCHAR(100), "
             + "otherAssist VARCHAR(100), "
             + "FOREIGN KEY (clientID) REFERENCES clientData(clientID), "
-            + "FOREIGN KEY (assessmentID) REFERENCES clientAssessment(assessmentID))";
+            + "FOREIGN KEY (assessmentID) REFERENCES clientAssessment(assessmentID), "
+            + "UNIQUE (clientID, assessmentID)"
+            + ")";
 
     private static final String TABLE_NEAR_DEATH_PREFERENCES = "CREATE TABLE IF NOT EXISTS nearDeathPreferences ("
             + "preferenceID INT PRIMARY KEY AUTO_INCREMENT, "
@@ -488,8 +546,9 @@ public class SplashScreenController implements Initializable {
                                     statement.executeUpdate(TABLE_USER_ROLES);
                                     statement.executeUpdate(TABLE_EMPLOYEE_LIST);
                                     statement.executeUpdate(TABLE_USER_ACCOUNTS);
+                                    statement.executeUpdate(TABLE_SERVICE_OFFERED);
+                                    statement.executeUpdate(CREATE_BUDGET_STAGING_TABLE);
                                     statement.executeUpdate(TABLE_LOGIN_ATTEMPTS);
-
                                     statement.executeUpdate(TABLE_AUDIT_TRAIL);
                                     statement.executeUpdate(TABLE_CLIENT_DATA);
                                     statement.executeUpdate(TABLE_CARE_MANAGEMENT);
