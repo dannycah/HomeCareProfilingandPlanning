@@ -8,15 +8,19 @@ package hcp_pb;
  *
  * @author mark
  */
+
+
 public class UserManager {
-    
+
     private int uID;
     private String empName;
-    
+    private String ustats;
+
     // Constructor
-    public UserManager(int uID, String empName) {
+    public UserManager(int uID, String empName, String ustats) {
         this.uID = uID;
         this.empName = empName;
+        this.ustats = ustats;
     }
 
     // Getter for uID
@@ -38,8 +42,16 @@ public class UserManager {
     public void setEmpName(String empName) {
         this.empName = empName;
     }
+
+    // Getter for ustats
+    public String getUstats() {
+        return ustats;
+    }
+
+    // Setter for ustats
+    public void setUstats(String ustats) {
+        this.ustats = ustats;
+    }
 }
-
-
 
  

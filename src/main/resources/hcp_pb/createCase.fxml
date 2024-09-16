@@ -38,8 +38,8 @@
                 <TableColumn fx:id="fundingLevel" prefWidth="216.79998779296875" text="Funding Level" />
             </columns>
         </TableView>
-        <TextField layoutX="12.0" layoutY="91.0" prefHeight="25.0" prefWidth="255.0" promptText="Search Client" />
-        <Button layoutX="274.0" layoutY="91.0" mnemonicParsing="false" prefHeight="17.0" prefWidth="82.0" style="-fx-background-color: #364bbf;" text="Search" textFill="WHITE" />
+        <TextField fx:id="searchKey" layoutX="12.0" layoutY="91.0" prefHeight="25.0" prefWidth="255.0" promptText="Search Client" />
+        <Button fx:id="searchCase" layoutX="274.0" layoutY="91.0" mnemonicParsing="false" onAction="#searchCase" prefHeight="17.0" prefWidth="82.0" style="-fx-background-color: #364bbf;" text="Search" textFill="WHITE" />
         <Label layoutX="381.0" layoutY="95.0" prefHeight="17.0" prefWidth="117.0" text="Case Number:" />
         <TextField fx:id="caseNum" disable="true" editable="false" layoutX="467.0" layoutY="91.0" prefHeight="26.0" prefWidth="204.0" />
         <Pane layoutX="12.0" layoutY="313.0" prefHeight="255.0" prefWidth="308.0" style="-fx-background-color: d9d9d9; -fx-border-color: black;">
@@ -78,7 +78,7 @@
             </children>
         </Pane>
         <Button fx:id="createCaseBtn" layoutX="329.0" layoutY="535.0" mnemonicParsing="false" onAction="#createCaseBtn" prefHeight="26.0" prefWidth="100.0" style="-fx-background-color: #364bbf;" text="Create" textFill="WHITE" />
-        <Button fx:id="confirmReg" layoutX="439.0" layoutY="535.0" mnemonicParsing="false" onAction="#confirmReg" prefHeight="26.0" prefWidth="110.0" style="-fx-background-color: #364bbf;" text="Confirm" textFill="WHITE" />
-        <Button fx:id="cancelCaseBtn" layoutX="558.0" layoutY="535.0" mnemonicParsing="false" onAction="#cancelCaseBtn" prefHeight="26.0" prefWidth="110.0" style="-fx-background-color: #364bbf;" text="Cancel" textFill="WHITE" />
+        <Button fx:id="confirmReg" disable="true" layoutX="439.0" layoutY="535.0" mnemonicParsing="false" onAction="#confirmReg" prefHeight="26.0" prefWidth="110.0" style="-fx-background-color: #364bbf;" text="Confirm" textFill="WHITE" />
+        <Button fx:id="cancelCaseBtn" disable="true" layoutX="558.0" layoutY="535.0" mnemonicParsing="false" onAction="#cancelCaseBtn" prefHeight="26.0" prefWidth="110.0" style="-fx-background-color: #364bbf;" text="Cancel" textFill="WHITE" />
     </children>
 </AnchorPane>

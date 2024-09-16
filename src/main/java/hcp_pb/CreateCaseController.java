@@ -18,6 +18,8 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -92,6 +94,12 @@ public class CreateCaseController implements Initializable {
     private Button createCaseBtn;
     @FXML
     private Button confirmReg;
+    
+    @FXML
+    private TextField searchKey;
+    
+    
+    @FXML private Button searchCase;
     @FXML
     private Button cancelCaseBtn;
     private final String DB_URL = "jdbc:mysql://localhost:3306/HCP_PBP";
@@ -104,10 +112,14 @@ public class CreateCaseController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         getTheMaxCid();
+          initComboBox();
+        searchChange();
+
+        
+        
         dateCreated.setValue(LocalDate.now());
         completionCombo.setValue(LocalDate.now());
-        initComboBox();
-
+      
         clientID.setCellValueFactory(new PropertyValueFactory<>("cID"));
         clientName.setCellValueFactory(new PropertyValueFactory<>("fullName"));
         mediCare.setCellValueFactory(new PropertyValueFactory<>("mediCare"));
@@ -142,6 +154,112 @@ public class CreateCaseController implements Initializable {
             e.printStackTrace();
         }
     }
+    
+    
+    
+     @FXML
+    private void searchCase(ActionEvent event) {
+        
+          
+           // Get the search term from the text field
+        String ssSearch = searchKey.getText().trim();
+
+        cID.clear();
+        fName.clear();
+        lName.clear();
+        medi_Care.clear();
+        mobileNum.clear();
+        address.clear();
+    
+        bDay.setValue(LocalDate.now());
+
+        if (!ssSearch.isEmpty()) {
+            // Construct the SQL query with the search term
+
+
+
+   String searchClient = "SELECT clientID, CONCAT(fName, ' ', lName) AS fullName, clientMedicare, levelID FROM clientdata "
+           + "WHERE clientID LIKE '%" + ssSearch + "%' "
+           + "OR lName LIKE '%" + ssSearch + "%' "
+              + "OR fName LIKE '%" + ssSearch + "%' "
+            + "OR clientMedicare LIKE '%" + ssSearch + "%' "  ;
+           
+                     
+            
+            try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD); Statement statement = connection.createStatement()) {
+
+                // Execute the query
+                ResultSet resultSet = statement.executeQuery(searchClient);
+
+                // Clear the TableView items
+                tblCreateCase.getItems().clear();
+
+                // Flag to check if any records were found
+                boolean recordsFound = false;
+
+                // Populate the TableView with search results
+                while (resultSet.next()) {
+                    int cID= resultSet.getInt("clientID");
+                    String fullName = resultSet.getString("fullName");
+                    String fundLevel = resultSet.getString("levelID");
+                    String mediCare = resultSet.getString("clientMedicare");
+                  
+
+                    // Create a Clients object
+                    CreateCase css = new CreateCase(cID, fullName, fundLevel, mediCare);
+
+                    // Add the Client object to the TableView
+                    tblCreateCase.getItems().add(css);
+
+                    recordsFound = true;
+                }
+
+                // If no records are found, show an alert and load all clients
+                if (!recordsFound) {
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Search Results");
+                    alert.setHeaderText(null);
+                    alert.setContentText("Can't find anything.");
+                    alert.showAndWait();
+
+                    // Optionally, call a method to load all clients
+                          loadDataFromDatabase();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        } else {
+            // Display a message if the search query is empty
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Search");
+            alert.setHeaderText(null);
+            alert.setContentText("Please enter a word to search.");
+            alert.showAndWait();
+
+            // Optionally, call a method to load all clients
+                  loadDataFromDatabase();
+        }
+    }
+        
+        
+        
+        
+        
+        
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 
     @FXML
     private void cancelCaseBtn() {
@@ -242,7 +360,7 @@ public class CreateCaseController implements Initializable {
             completionCombo.setDisable(false);
             completionCombo.setValue(today);
 
-//    tblCreateCase.setDisable(true);
+    tblCreateCase.setDisable(true);
             confirmReg.setDisable(false);
             cancelCaseBtn.setDisable(false);
             createCaseBtn.setDisable(true);
@@ -260,6 +378,20 @@ public class CreateCaseController implements Initializable {
     }
 //    
 
+    
+        private void searchChange() {
+        // Add a listener to usersID to call loadUserData when its value changes
+        searchKey.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                if (newValue == null || newValue.trim().isEmpty()) {
+                    loadDataFromDatabase();
+                }
+            }
+        });
+    }
+    
+    
     public void loadDataFromDatabase() {
         // SQL query
         String query = "SELECT clientID, CONCAT(fName, ' ', lName) AS fullName, clientMedicare, levelID FROM clientdata";
@@ -447,6 +579,13 @@ public class CreateCaseController implements Initializable {
 //                stage.setWidth(680);  // Set the width 
 //                stage.setHeight(520);
 //                stage.show();
+
+
+
+    tblCreateCase.setDisable(false);
+            confirmReg.setDisable(true);
+            cancelCaseBtn.setDisable(true);
+            createCaseBtn.setDisable(false);
             }
 
         } catch (SQLException e) {
