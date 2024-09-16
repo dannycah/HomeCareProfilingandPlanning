@@ -112,11 +112,12 @@
                            </font>
                         </Label>
                         <Hyperlink fx:id="logoutBtn" layoutX="664.0" layoutY="12.0" onMouseClicked="#logoutBtn" text="Logout" />
+                        <Label fx:id="userHolder" layoutX="566.0" layoutY="17.0" text="Label" />
                      </children>
                   </Pane>
                   <Pane fx:id="motherPane" prefHeight="556.0" prefWidth="724.0" style="-fx-background-color: d9d9d9;">
                      <children>
-                        <Pane fx:id="dashboardPane" prefHeight="556.0" prefWidth="724.0">
+                        <Pane fx:id="dashboardPane" prefHeight="556.0" prefWidth="724.0" visible="false">
                            <children>
                               <Pane layoutX="190.0" layoutY="15.0" prefHeight="200.0" prefWidth="181.0" style="-fx-background-color: #364bbf;" />
                               <TableView layoutX="380.0" layoutY="15.0" prefHeight="200.0" prefWidth="336.0">
@@ -144,15 +145,16 @@
                               <Button layoutX="619.0" layoutY="220.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="97.0" style="-fx-background-color: #364bbf;" text="Deactivate" textFill="WHITE" />
                            </children>
                         </Pane>
-                        <Pane fx:id="manageUsersPane" prefHeight="556.0" prefWidth="724.0" visible="false">
+                        <Pane fx:id="manageUsersPane" prefHeight="556.0" prefWidth="724.0">
                            <children>
                               <TableView fx:id="tblUser" layoutX="12.0" layoutY="45.0" prefHeight="496.0" prefWidth="275.0">
                                  <columns>
-                                    <TableColumn fx:id="uID" prefWidth="87.20001220703125" text="User ID" />
-                                    <TableColumn fx:id="empName" prefWidth="187.20001220703125" text="Employee Name" />
+                                    <TableColumn fx:id="uID" prefWidth="80" text="User ID" />
+                                    <TableColumn fx:id="empName" prefWidth="150" text="Employee Name" />
+                                      <TableColumn fx:id="Stats" prefWidth="85" text="Status" />
                                  </columns>
                               </TableView>
-                              <TextField layoutX="11.0" layoutY="16.0" prefHeight="25.0" prefWidth="211.0" promptText="Search Client" />
+                              <TextField fx:id="searchKey" layoutX="11.0" layoutY="16.0" prefHeight="25.0" prefWidth="211.0" promptText="Search Client" />
                               <Button fx:id="userSearch" layoutX="226.0" layoutY="16.0" mnemonicParsing="false" onAction="#userSearch" prefHeight="25.0" prefWidth="59.0" style="-fx-background-color: #364bbf;" text="Search" textFill="WHITE" />
                               <Pane layoutX="292.0" layoutY="24.0" prefHeight="218.0" prefWidth="418.0" style="-fx-border-color: black;">
                                  <children>
@@ -169,7 +171,7 @@
                                           <Font name="System Bold" size="12.0" />
                                        </font>
                                     </Label>
-                                    <TextField fx:id="userID" disable="true" layoutX="82.0" layoutY="29.0" prefHeight="25.0" prefWidth="124.0" />
+                                    <TextField fx:id="usersID" disable="true" layoutX="82.0" layoutY="29.0" prefHeight="25.0" prefWidth="124.0" />
                                     <TextField fx:id="empID" disable="true" layoutX="278.0" layoutY="29.0" prefHeight="25.0" prefWidth="132.0" />
                                     <TextField fx:id="Fname" disable="true" layoutX="82.0" layoutY="58.0" prefHeight="25.0" prefWidth="124.0" />
                                     <TextField fx:id="Lname" disable="true" layoutX="278.0" layoutY="58.0" prefHeight="25.0" prefWidth="132.0" />

@@ -23,6 +23,8 @@ import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -108,6 +110,8 @@ public class AdminDashboardController implements Initializable, CloseCallBack {
     @FXML
     private Button userSearch;
     @FXML
+    private TextField searchKey;
+    @FXML
     private Button resetPassBtn;
     @FXML
     private Pane caseManagerPane;
@@ -152,6 +156,9 @@ public class AdminDashboardController implements Initializable, CloseCallBack {
     private Label manageUsersLbl;
 
     @FXML
+    private Label userHolder;
+
+    @FXML
     private Label uploadLbl;
 
     @FXML
@@ -169,8 +176,11 @@ public class AdminDashboardController implements Initializable, CloseCallBack {
     private TableColumn<UserManager, Integer> uID;
     @FXML
     private TableColumn<UserManager, String> empName;
+        @FXML
+    private TableColumn<UserManager, String> Stats;
+    
     @FXML
-    private TextField userID;
+    private TextField usersID;
     @FXML
     private TextField empID;
     @FXML
@@ -203,6 +213,10 @@ public class AdminDashboardController implements Initializable, CloseCallBack {
     @FXML
     private Button saveUpdate;
 
+//    private User user;
+    private String userID;
+    private String roleID;
+
     private final String DB_URL = "jdbc:mysql://localhost:3306/HCP_PBP";
     private final String DB_USER = "root";
     private final String DB_PASSWORD = "!Student1";
@@ -212,11 +226,30 @@ public class AdminDashboardController implements Initializable, CloseCallBack {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+
+        searchChange();
+        loadEmpDataFromDatabase();
+        loadUserData();
+
         uID.setCellValueFactory(new PropertyValueFactory<>("uID"));
         empName.setCellValueFactory(new PropertyValueFactory<>("empName"));
-        loadUserData();
+                Stats.setCellValueFactory(new PropertyValueFactory<>("ustats"));
+
         emp_Start.setValue(LocalDate.now());
         roleCombo.setItems(FXCollections.observableArrayList("System Administrator", "Case Manager", "Care Service Officer"));
+
+        employeeID.setCellValueFactory(new PropertyValueFactory<>("eid"));
+        fullName.setCellValueFactory(new PropertyValueFactory<>("fullName"));
+        status.setCellValueFactory(new PropertyValueFactory<>("status"));
+        startD.setCellValueFactory(new PropertyValueFactory<>("startD"));
+        endD.setCellValueFactory(new PropertyValueFactory<>("endD"));
+
+        // Add a listener to monitor changes in the filePathTextField
+        filePathTextField.textProperty().addListener((observable, oldValue, newValue) -> {
+
+            upload.setDisable(false);
+        });
+
         // Set up the mouse click event handler for the TableView
         tblUser.setOnMouseClicked(event -> {
             try {
@@ -227,7 +260,7 @@ public class AdminDashboardController implements Initializable, CloseCallBack {
             }
         });
 
-// Select the first record if available
+        // Select the first record if available
         if (!tblUser.getItems().isEmpty()) {
             // Select the first item in the TableView
             tblUser.getSelectionModel().selectFirst();
@@ -239,19 +272,50 @@ public class AdminDashboardController implements Initializable, CloseCallBack {
             }
         }
 
-        employeeID.setCellValueFactory(new PropertyValueFactory<>("eid"));
-        fullName.setCellValueFactory(new PropertyValueFactory<>("fullName"));
-        status.setCellValueFactory(new PropertyValueFactory<>("status"));
-        startD.setCellValueFactory(new PropertyValueFactory<>("startD"));
-        endD.setCellValueFactory(new PropertyValueFactory<>("endD"));
+    }
 
-        loadEmpDataFromDatabase();
+    public void setUser(String userID) throws SQLException {
+        this.userID = userID;
+        System.out.println("Setting User Details: userID=" + userID);   //to test
+        userHolder.setText(userID);
 
-        // Add a listener to monitor changes in the filePathTextField
-        filePathTextField.textProperty().addListener((observable, oldValue, newValue) -> {
-            // Enable the button if the text field is not empty, disable if it is
-            upload.setDisable(false);
-        });
+        String query = "SELECT userID, roleID, CONCAT(fName, ' ', lName) AS fullName FROM userAccounts WHERE userID = ?";
+        // Run database query on a background thread to avoid blocking the JavaFX Application Thread
+        new Thread(() -> {
+            try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD); PreparedStatement statement = connection.prepareStatement(query)) {
+                statement.setString(1, userID); // Set the parameter for the userID
+
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    if (resultSet.next()) {
+                        String roleID = resultSet.getString("roleID");
+                        String accUser = resultSet.getString("fullName");
+                        System.out.println("Setting User Details: roleID=" + roleID);
+                        // Update UI safely on the JavaFX Application Thread
+                        Platform.runLater(() -> updateUIForRole(roleID, accUser));
+                    } else {
+                        Platform.runLater(() -> handleNoUserFound());
+                    }
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                Platform.runLater(() -> handleDatabaseError(e));
+            }
+        }).start();
+    }
+
+    private void handleNoUserFound() {
+        // Handle case where no user was found with the provided userID
+        System.err.println("No user found with userID: " + userID);
+    }
+
+    private void handleDatabaseError(SQLException e) {
+        // Handle database errors
+        System.err.println("Database error occurred: " + e.getMessage());
+    }
+
+    private void updateUIForRole(String roleID, String accUser) {
+
+        headerLbl.setText("Hi " + accUser);
 
     }
 
@@ -436,91 +500,89 @@ public class AdminDashboardController implements Initializable, CloseCallBack {
         }
 
     }
-@FXML
-private void retireEmpBtn(ActionEvent event) {
-    // Check if TableView has a selected item before proceeding
-    if (empTbl.getSelectionModel().getSelectedItem() != null) {
 
-        // Get the selected employee's ID
-        employeeList emp_list = empTbl.getSelectionModel().getSelectedItem();
-        int employeeID = emp_list.getEid(); // Adjust this to match how you get employee ID from selected item
+    @FXML
+    private void retireEmpBtn(ActionEvent event) {
+        // Check if TableView has a selected item before proceeding
+        if (empTbl.getSelectionModel().getSelectedItem() != null) {
 
-        // Check current status of the employee
-        String checkStatusQuery = "SELECT activeFlag FROM employeeList WHERE employeeID = ?";
-        
-        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
-             PreparedStatement checkStatusStmt = connection.prepareStatement(checkStatusQuery)) {
-            
-            // Set parameters and execute query
-            checkStatusStmt.setInt(1, employeeID);
-            ResultSet resultSet = checkStatusStmt.executeQuery();
-            
-            if (resultSet.next()) {
-                String activeFlag = resultSet.getString("activeFlag");
-                
-                if ("0".equals(activeFlag)) {
-                    // Employee is already inactive
-                    Alert alreadyInactiveAlert = new Alert(Alert.AlertType.INFORMATION);
-                    alreadyInactiveAlert.setTitle("Already Inactive");
-                    alreadyInactiveAlert.setHeaderText(null);
-                    alreadyInactiveAlert.setContentText("This employee is already inactive.");
-                    alreadyInactiveAlert.showAndWait();
-                    return; // Exit method
-                }
-            }
+            // Get the selected employee's ID
+            employeeList emp_list = empTbl.getSelectionModel().getSelectedItem();
+            int employeeID = emp_list.getEid(); // Adjust this to match how you get employee ID from selected item
 
-            // If employee is not inactive, proceed with retiring the employee
-            LocalDate localDate = LocalDate.now(); // Current date
-            String endDate = localDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+            // Check current status of the employee
+            String checkStatusQuery = "SELECT activeFlag FROM employeeList WHERE employeeID = ?";
 
-            // Show confirmation dialog
-            Alert confirmAlert = new Alert(Alert.AlertType.CONFIRMATION);
-            confirmAlert.setTitle("Retire Employee");
-            confirmAlert.setHeaderText(null);
-            confirmAlert.setContentText("Are you sure you want to retire this employee?");
-            
-            Optional<ButtonType> result = confirmAlert.showAndWait();
-            if (result.isPresent() && result.get() == ButtonType.OK) {
-                // User clicked OK, proceed with retiring the employee
-                String retireEmp = "UPDATE employeeList SET endDate = ?, activeFlag = '0' WHERE employeeID = ?";
+            try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD); PreparedStatement checkStatusStmt = connection.prepareStatement(checkStatusQuery)) {
 
-                try (PreparedStatement preparedStatement = connection.prepareStatement(retireEmp)) {
-                    // Set parameters
-                    preparedStatement.setString(1, endDate);
-                    preparedStatement.setInt(2, employeeID);
+                // Set parameters and execute query
+                checkStatusStmt.setInt(1, employeeID);
+                ResultSet resultSet = checkStatusStmt.executeQuery();
 
-                    // Execute the update query
-                    int rowsUpdated = preparedStatement.executeUpdate();
+                if (resultSet.next()) {
+                    String activeFlag = resultSet.getString("activeFlag");
 
-                    if (rowsUpdated > 0) {
-                        // Display success alert
-                        Alert successAlert = new Alert(Alert.AlertType.INFORMATION);
-                        successAlert.setTitle("Success");
-                        successAlert.setHeaderText(null);
-                        successAlert.setContentText("Employee successfully retired.");
-                        successAlert.showAndWait();
+                    if ("0".equals(activeFlag)) {
+                        // Employee is already inactive
+                        Alert alreadyInactiveAlert = new Alert(Alert.AlertType.INFORMATION);
+                        alreadyInactiveAlert.setTitle("Already Inactive");
+                        alreadyInactiveAlert.setHeaderText(null);
+                        alreadyInactiveAlert.setContentText("This employee is already inactive.");
+                        alreadyInactiveAlert.showAndWait();
+                        return; // Exit method
                     }
-
-                    loadEmpDataFromDatabase();
-                } catch (SQLException e) {
-                    e.printStackTrace();
                 }
+
+                // If employee is not inactive, proceed with retiring the employee
+                LocalDate localDate = LocalDate.now(); // Current date
+                String endDate = localDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+
+                // Show confirmation dialog
+                Alert confirmAlert = new Alert(Alert.AlertType.CONFIRMATION);
+                confirmAlert.setTitle("Retire Employee");
+                confirmAlert.setHeaderText(null);
+                confirmAlert.setContentText("Are you sure you want to retire this employee?");
+
+                Optional<ButtonType> result = confirmAlert.showAndWait();
+                if (result.isPresent() && result.get() == ButtonType.OK) {
+                    // User clicked OK, proceed with retiring the employee
+                    String retireEmp = "UPDATE employeeList SET endDate = ?, activeFlag = '0' WHERE employeeID = ?";
+
+                    try (PreparedStatement preparedStatement = connection.prepareStatement(retireEmp)) {
+                        // Set parameters
+                        preparedStatement.setString(1, endDate);
+                        preparedStatement.setInt(2, employeeID);
+
+                        // Execute the update query
+                        int rowsUpdated = preparedStatement.executeUpdate();
+
+                        if (rowsUpdated > 0) {
+                            // Display success alert
+                            Alert successAlert = new Alert(Alert.AlertType.INFORMATION);
+                            successAlert.setTitle("Success");
+                            successAlert.setHeaderText(null);
+                            successAlert.setContentText("Employee successfully retired.");
+                            successAlert.showAndWait();
+                        }
+
+                        loadEmpDataFromDatabase();
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+
+        } else {
+            // Notify user to select an item first
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("No Selection");
+            alert.setHeaderText(null);
+            alert.setContentText("Please select an employee record.");
+            alert.showAndWait();
         }
-
-    } else {
-        // Notify user to select an item first
-        Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setTitle("No Selection");
-        alert.setHeaderText(null);
-        alert.setContentText("Please select an employee record.");
-        alert.showAndWait();
     }
-}
-
-
 
     private boolean validateInput(String e_id, String e_full) {
         String numeric = "\\d+";
@@ -583,7 +645,7 @@ private void retireEmpBtn(ActionEvent event) {
 
     public void loadUserData() {
         // SQL query
-        String query = "SELECT userID, CONCAT(fName, ' ', lName) AS fullName FROM userAccounts";
+        String query = "SELECT userID, CONCAT(fName, ' ', lName) AS fullName, isActive FROM userAccounts ORDER BY isActive DESC";
 
         try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD); Statement statement = connection.createStatement(); ResultSet resultSet = statement.executeQuery(query)) {
 
@@ -594,9 +656,10 @@ private void retireEmpBtn(ActionEvent event) {
             while (resultSet.next()) {
                 int uID = resultSet.getInt("userID");
                 String empName = resultSet.getString("fullName");
-
+                int uStatus = resultSet.getInt("isActive");
+                String userStat = (uStatus == 1) ? "Active" : "Inactive";
                 // Create a CreateCase object
-                UserManager users = new UserManager(uID, empName);
+                UserManager users = new UserManager(uID, empName, userStat);
 
                 // Add the CreateCase object to the TableView
                 tblUser.getItems().add(users);
@@ -624,7 +687,7 @@ private void retireEmpBtn(ActionEvent event) {
                 if (resultSet.next()) {
 
 // Set values for TextFields
-                    userID.setText(resultSet.getString("userID"));
+                    usersID.setText(resultSet.getString("userID"));
                     empID.setText(resultSet.getString("employeeID"));
                     Fname.setText(resultSet.getString("fName"));
                     Lname.setText(resultSet.getString("lName"));
@@ -708,29 +771,41 @@ private void retireEmpBtn(ActionEvent event) {
     @FXML
     private void UpdateClient(ActionEvent event) {
 
+        if (tblUser.getSelectionModel().getSelectedItem() != null) {
+
 // Enable all TextField components
 //empID.setDisable(false);
-        Fname.setDisable(false);
-        Lname.setDisable(false);
-        Address.setDisable(false);
-        Mobile.setDisable(false);
-        Email.setDisable(false);
-        Zip.setDisable(false);
-        usnField.setDisable(false);
+            Fname.setDisable(false);
+            Lname.setDisable(false);
+            Address.setDisable(false);
+            Mobile.setDisable(false);
+            Email.setDisable(false);
+            Zip.setDisable(false);
+            usnField.setDisable(false);
 
 // Enable DatePicker
-        Bday.setDisable(false);
+            Bday.setDisable(false);
 
 // Enable ComboBox
-        roleCombo.setDisable(false);
+            roleCombo.setDisable(false);
 
 // Enable Button components
-        resetPassBtn.setDisable(false);
-        updateUser.setDisable(true);
-        deactUser.setDisable(true);
-        cancelUpdate.setDisable(false);
-        saveUpdate.setDisable(false);
-        tblUser.setDisable(true);
+            resetPassBtn.setDisable(false);
+            updateUser.setDisable(true);
+            deactUser.setDisable(true);
+            cancelUpdate.setDisable(false);
+            saveUpdate.setDisable(false);
+            tblUser.setDisable(true);
+        } else {
+            // Optional: Notify user or handle case where no item is selected
+
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("No Selection");
+            alert.setHeaderText(null);
+            alert.setContentText("A user must be selected.");
+            alert.showAndWait();
+        }
+
     }
 
     @FXML
@@ -770,7 +845,7 @@ private void retireEmpBtn(ActionEvent event) {
 
             // Retrieve values from TextField components
             String empIDText = empID.getText();
-            String uID = userID.getText();
+            String uID = usersID.getText();
             String fnameText = Fname.getText();
             String lnameText = Lname.getText();
             String addressText = Address.getText();
@@ -787,7 +862,7 @@ private void retireEmpBtn(ActionEvent event) {
             int roleID;
 
             if ("System Administrator".equals(role)) {
-                roleID = 13;
+                roleID = 3;
             } else if ("Case Manager".equals(role)) {
                 roleID = 1;
             } else if ("Care Service Officer".equals(role)) {
@@ -893,14 +968,235 @@ private void retireEmpBtn(ActionEvent event) {
         showUnderDevelopmentAlert();
     }
 
-    @FXML
-    private void deactUser(ActionEvent event) {
-        showUnderDevelopmentAlert();
+   @FXML
+private void deactUser(ActionEvent event) {
+    // Check if a user is selected in the TableView
+    if (tblUser.getSelectionModel().getSelectedItem() != null) {
+        // Get the selected user and the userID to be deactivated
+        UserManager selectedUser = tblUser.getSelectionModel().getSelectedItem();
+        int selectedUserID = selectedUser.getUID(); // Assuming this method gets the userID of the selected user
+        String currentStat = selectedUser.getUstats(); // Assuming this method gets the status of the selected user
+        int currentUserID = Integer.parseInt(userHolder.getText().trim()); // Assuming userHolder holds the current user's ID
+
+        // Check if the selected userID is not the same as the current userID
+        if (selectedUserID != currentUserID) {
+            // Check if the user is already inactive
+            if ("Inactive".equalsIgnoreCase(currentStat)) {
+                // Display warning alert if the user is already inactive
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setTitle("Already Inactive");
+                alert.setHeaderText(null);
+                alert.setContentText("The user is already inactive.");
+                alert.showAndWait();
+            } else {
+                // Display confirmation alert before deactivation
+                Alert confirmationAlert = new Alert(Alert.AlertType.CONFIRMATION);
+                confirmationAlert.setTitle("Confirm Deactivation");
+                confirmationAlert.setHeaderText(null);
+                confirmationAlert.setContentText("Are you sure you want to deactivate this user?");
+
+                // Handle the user's response
+                confirmationAlert.showAndWait().ifPresent(response -> {
+                    if (response == ButtonType.OK) {
+                        // Proceed with deactivation
+                        String updateUserData = "UPDATE userAccounts SET isActive = '0' WHERE userID = ?";
+
+                        // Establish connection and create a prepared statement
+                        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+                             PreparedStatement preparedStatement = connection.prepareStatement(updateUserData)) {
+
+                            // Set the userID parameter
+                            preparedStatement.setInt(1, selectedUserID);
+
+                            // Execute the update query
+                            int rowsUpdated = preparedStatement.executeUpdate();
+
+                            // Check if the update was successful
+                            if (rowsUpdated > 0) {
+                                // Display success alert
+                                Alert successAlert = new Alert(Alert.AlertType.INFORMATION);
+                                successAlert.setTitle("Success");
+                                successAlert.setHeaderText(null);
+                                successAlert.setContentText("User access has been deactivated.");
+                                successAlert.showAndWait();
+                                loadUserData();
+                            }
+                        } catch (SQLException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+            }
+        } else {
+            // Display warning alert if attempting to deactivate own account
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Warning");
+            alert.setHeaderText(null);
+            alert.setContentText("You cannot deactivate your own account.");
+            alert.showAndWait();
+        }
+    } else {
+        // Display warning alert if no user is selected
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle("No Selection");
+        alert.setHeaderText(null);
+        alert.setContentText("A user must be selected.");
+        alert.showAndWait();
+    }
+}
+
+    
+//    @FXML
+//private void deactUser(ActionEvent event) {
+//    // Check if a user is selected in the TableView
+//    if (tblUser.getSelectionModel().getSelectedItem() != null) {
+//        // Get the selected user and the userID to be deactivated
+//        UserManager selectedUser = tblUser.getSelectionModel().getSelectedItem();
+//        int selectedUserID = selectedUser.getUID(); // Assuming this method gets the userID of the selected user
+//       String currentStat = selectedUser.getUstats();
+// int currentUserID = Integer.parseInt(userHolder.getText().trim()); // Assuming usersID holds the current user's ID
+//
+//        // Check if the selected userID is not the same as the current userID
+//        if (selectedUserID != currentUserID) {
+//            String updateUserData = "UPDATE userAccounts SET isActive = '0' WHERE userID = ?";
+//
+//            // Establish connection and create a prepared statement
+//            try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+//                 PreparedStatement preparedStatement = connection.prepareStatement(updateUserData)) {
+//
+//                // Set the userID parameter
+//                preparedStatement.setInt(1, selectedUserID);
+//
+//                // Execute the update query
+//                int rowsUpdated = preparedStatement.executeUpdate();
+//
+//                // Check if the update was successful
+//                if (rowsUpdated > 0) {
+//                    // Display success alert
+//                    Alert successAlert = new Alert(Alert.AlertType.INFORMATION);
+//                    successAlert.setTitle("Success");
+//                    successAlert.setHeaderText(null);
+//                    successAlert.setContentText("User access has been deactivated.");
+//                    successAlert.showAndWait();
+//                    loadUserData();
+//                }
+//            } catch (SQLException e) {
+//                e.printStackTrace();
+//            }
+//        } else {
+//            // Display warning alert if attempting to deactivate own account
+//            Alert alert = new Alert(Alert.AlertType.WARNING);
+//            alert.setTitle("Warning");
+//            alert.setHeaderText(null);
+//            alert.setContentText("You cannot deactivate your own account.");
+//            alert.showAndWait();
+//        }
+//    } else {
+//        // Display warning alert if no user is selected
+//        Alert alert = new Alert(Alert.AlertType.WARNING);
+//        alert.setTitle("No Selection");
+//        alert.setHeaderText(null);
+//        alert.setContentText("A user must be selected.");
+//        alert.showAndWait();
+//    }
+//}
+
+    
+    
+    
+    
+    
+    
+    
+    private void searchChange() {
+        // Add a listener to usersID to call loadUserData when its value changes
+        searchKey.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                if (newValue == null || newValue.trim().isEmpty()) {
+                    loadUserData();
+                }
+            }
+        });
     }
 
     @FXML
     private void userSearch(ActionEvent event) {
-        showUnderDevelopmentAlert();
+
+        // Get the search term from the text field
+        String uSearch = searchKey.getText().trim();
+
+        usersID.clear();
+        empID.clear();
+        Fname.clear();
+        Lname.clear();
+        Address.clear();
+        Mobile.clear();
+        Email.clear();
+        Zip.clear();
+        Bday.setValue(LocalDate.now());
+
+        if (!uSearch.isEmpty()) {
+            // Construct the SQL query with the search term
+
+            String searchU = "SELECT userID, CONCAT(fName, ' ', lName) AS fullName, isActive FROM userAccounts "
+                    + "WHERE userID LIKE '%" + uSearch + "%' "
+                    + "OR lName LIKE '%" + uSearch + "%' "
+                    + "OR fName LIKE '%" + uSearch + "%' ";
+
+            try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD); Statement statement = connection.createStatement()) {
+
+                // Execute the query
+                ResultSet resultSet = statement.executeQuery(searchU);
+
+                // Clear the TableView items
+                tblUser.getItems().clear();
+
+                // Flag to check if any records were found
+                boolean recordsFound = false;
+
+                // Populate the TableView with search results
+                while (resultSet.next()) {
+                    int cID = resultSet.getInt("userID");
+                    String fullName = resultSet.getString("fullName");
+                    int uStatus = resultSet.getInt("isActive");
+                    String userStat = (uStatus == 1) ? "Active" : "Inactive";
+
+                    // Create a Clients object
+                    UserManager userList = new UserManager(cID, fullName, userStat);
+
+                    // Add the Client object to the TableView
+                    tblUser.getItems().add(userList);
+
+                    recordsFound = true;
+                }
+
+                // If no records are found, show an alert and load all clients
+                if (!recordsFound) {
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Search Results");
+                    alert.setHeaderText(null);
+                    alert.setContentText("Can't find anything.");
+                    alert.showAndWait();
+
+                    // Optionally, call a method to load all clients
+                    loadUserData();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        } else {
+            // Display a message if the search query is empty
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Search");
+            alert.setHeaderText(null);
+            alert.setContentText("Please enter a word to search.");
+            alert.showAndWait();
+
+            // Optionally, call a method to load all clients
+            loadUserData();
+        }
+
     }
 
     @FXML
