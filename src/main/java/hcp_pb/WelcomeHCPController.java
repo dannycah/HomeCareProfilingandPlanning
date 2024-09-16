@@ -836,10 +836,25 @@ public class WelcomeHCPController implements Initializable {
                             } else {
                        
                             }
+                                                
+                            
+                        }
+                        
+                                    if ("3".equals(roleID)) {
+                    
+                            AdminDashboardController aboard = loader.getController();
+                            if (aboard != null) {
+                                aboard.setUser(userID);
+                            } else {
+                       
+                            }
                             
                        
                             
                         }
+                 
+                        
+                        
                  
                         
                         Scene welcomeScene = new Scene(welcomePage);

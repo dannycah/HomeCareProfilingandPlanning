@@ -22,6 +22,8 @@ import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -304,6 +306,8 @@ public class DashboardController implements Initializable {
     private TextField address;
     @FXML
     private ComboBox asignedCSO;
+    
+    
     @FXML
     private ComboBox<String> cmbAssessment;
     @FXML
@@ -393,6 +397,9 @@ public class DashboardController implements Initializable {
         loadClients();
         loadMyCases();
         initClientComboBox();
+            searchCasesChange();
+    searchMyChange();
+            searchClientChange();
 
         initComboBox();
         dateCreate.setValue(LocalDate.now());
@@ -533,6 +540,61 @@ public class DashboardController implements Initializable {
 //        // Handle database errors
 //        System.err.println("Database error occurred: " + e.getMessage());
 //    }+
+    
+
+        private void searchCasesChange() {
+        // Add a listener to usersID to call loadUserData when its value changes
+        aCaseSearch.textProperty().addListener(new ChangeListener<String>() {
+           
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                if (newValue == null || newValue.trim().isEmpty()) {
+                    loadCases();
+                }
+            }
+            
+            
+        });
+    }
+        
+            
+        private void searchMyChange() {
+        // Add a listener to usersID to call loadUserData when its value changes
+        clientSearches.textProperty().addListener(new ChangeListener<String>() {
+           
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                if (newValue == null || newValue.trim().isEmpty()) {
+                    loadMyCases();
+                }
+            }
+            
+            
+        });
+    }
+    
+        
+                private void searchClientChange() {
+        // Add a listener to usersID to call loadUserData when its value changes
+        caseSearch.textProperty().addListener(new ChangeListener<String>() {
+           
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                if (newValue == null || newValue.trim().isEmpty()) {
+                    loadClients();
+                }
+            }
+            
+            
+        });
+    }
+    
+    
+    
+    
+    
+    
+    
     public void setUser(String userID) throws SQLException {
         this.userID = userID;
         System.out.println("Setting User Details: userID=" + userID);
@@ -680,29 +742,57 @@ public class DashboardController implements Initializable {
     @FXML
     private void myRecSave(ActionEvent event) {
 
-        Alert noRecordSelectedAlert = new Alert(Alert.AlertType.INFORMATION);
-        noRecordSelectedAlert.setTitle("Warning");
-        noRecordSelectedAlert.setHeaderText(null);
-        noRecordSelectedAlert.setContentText("Case Data updated successfully.");
-        noRecordSelectedAlert.showAndWait();
+        
+        String CN = csID.getText();
+        String CI = cID.getText();
+      
 
-        csID.setDisable(true);
-        cID.setDisable(true);
-        fName.setDisable(true);
-        lName.setDisable(true);
-        mobileNum.setDisable(true);
-        address.setDisable(true);
-        mediCare.setDisable(true);
-        asignedCSO.setDisable(true);
+        String AT = cmbAssessment.getValue();
+        String PR = cmbPriority.getValue();
+        String AA = asignedCSO.getValue().toString();
+        
+        
+           String csoID = AA.substring(0, 5); // 
+        String csoName = AA.substring(8);
+      
+        // Construct the SQL UPDATE query
+ String upCase = "UPDATE clientCases SET caseType = '" + AT + "', caseAssignment = '" + csoName + "', casePriority = '" + PR +"', userID = '" + csoID + "' WHERE caseID = '" + CN +  "'";
+
+        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD); Statement statement = connection.createStatement()) {
+            // Execute the update query
+            int caseUpdated = statement.executeUpdate(upCase);
+
+            // Check if the update was successful
+            if (caseUpdated > 0) {
+                // Display success alert
+                Alert successAlert = new Alert(Alert.AlertType.INFORMATION);
+                successAlert.setTitle("Success");
+                successAlert.setHeaderText(null);
+                successAlert.setContentText("Case details updated successfully.");
+                successAlert.showAndWait();
+
+                loadClients();
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+
+        }
+
+     
+
+
+      asignedCSO.setDisable(true);
         cmbAssessment.setDisable(true);
-        dateCreate.setDisable(true);
         cmbPriority.setDisable(true);
         myRecSave.setDisable(true);
         myRecCancel.setDisable(true);
         updateCase.setDisable(false);
         finaliseBtn.setDisable(false);
-        reassignBtn.setDisable(false);
-        casesTbl.setDisable(true);
+           loadCases();
+        casesTbl.setDisable(false);
+        
+     
 
     }
 
@@ -1135,7 +1225,7 @@ public class DashboardController implements Initializable {
         }
 
         String aStats = assessmentStats.getText();
-        if (!aStats.equals("Not Started")) {
+        if (aStats.equals("Not Started")) {
             // Display a message if the assessment has already been started
             Alert assessmentStartedAlert = new Alert(Alert.AlertType.INFORMATION);
             assessmentStartedAlert.setTitle("Warning");
@@ -1146,45 +1236,46 @@ public class DashboardController implements Initializable {
         }
 
         initComboBox();
-
-        csID.setDisable(false);
-        cID.setDisable(false);
-        fName.setDisable(false);
-        lName.setDisable(false);
-        mobileNum.setDisable(false);
-        address.setDisable(false);
-        mediCare.setDisable(false);
-        asignedCSO.setDisable(false);
-        cmbAssessment.setDisable(false);
-        dateCreate.setDisable(false);
-        cmbPriority.setDisable(false);
+cmbAssessment.setDisable(false);
+ cmbPriority.setDisable(false);
+      asignedCSO.setDisable(false);
+//        csID.setDisable(false);
+//        cID.setDisable(false);
+//        fName.setDisable(false);
+//        lName.setDisable(false);
+//        mobileNum.setDisable(false);
+//        address.setDisable(false);
+//        mediCare.setDisable(false);
+   
+        
+       // dateCreate.setDisable(false);
+       
         myRecSave.setDisable(false);
         myRecCancel.setDisable(false);
         updateCase.setDisable(true);
         finaliseBtn.setDisable(true);
-        reassignBtn.setDisable(true);
+      //  reassignBtn.setDisable(true);
         casesTbl.setDisable(true);
     }
 
     @FXML
     private void myRecCancel(ActionEvent event) {
-
-        csID.setDisable(true);
-        cID.setDisable(true);
-        fName.setDisable(true);
-        lName.setDisable(true);
-        mobileNum.setDisable(true);
-        address.setDisable(true);
-        mediCare.setDisable(true);
+//        dateCreate.setDisable(true);
+//        csID.setDisable(true);
+//        cID.setDisable(true);
+//        fName.setDisable(true);
+//        lName.setDisable(true);
+//        mobileNum.setDisable(true);
+//        address.setDisable(true);
+//        mediCare.setDisable(true);
         asignedCSO.setDisable(true);
         cmbAssessment.setDisable(true);
-        dateCreate.setDisable(true);
         cmbPriority.setDisable(true);
         myRecSave.setDisable(true);
         myRecCancel.setDisable(true);
         updateCase.setDisable(false);
         finaliseBtn.setDisable(false);
-        reassignBtn.setDisable(false);
+
         casesTbl.setDisable(false);
     }
 
