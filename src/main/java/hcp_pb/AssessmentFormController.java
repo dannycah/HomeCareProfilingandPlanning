@@ -7,6 +7,7 @@ package hcp_pb;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -33,6 +34,7 @@ import javafx.stage.Stage;
 
 import javafx.scene.control.ProgressIndicator;
 import javafx.concurrent.Task;
+import javafx.scene.Node;
 import javafx.scene.layout.AnchorPane;
 
 /**
@@ -47,6 +49,15 @@ public class AssessmentFormController implements Initializable {
     private static final String DB_USER = "root";
     private static final String DB_PASSWORD = "!Student1";
 
+    //closing
+    @FXML
+    private Button completeAssessment;
+    @FXML
+    private Button cancelAssess;
+    @FXML 
+            private TextArea remarks;
+    
+    
     @FXML
     private Label headerLbl;
     @FXML
@@ -1361,6 +1372,8 @@ public class AssessmentFormController implements Initializable {
     private Button btnBackClientD;
     @FXML
     private Button btnNextClientD;
+    @FXML 
+    private Label csonum;
 
     @FXML
     private Pane clientDetsPane;
@@ -1368,6 +1381,19 @@ public class AssessmentFormController implements Initializable {
     private String clientID;
     private String assessmentID;
     private String caseN;
+    
+   private String cno;
+    private String fn;
+    private String ln;
+    private String mc;
+    private String mob;
+    private String ca;
+    private String csid;
+    private String bd;
+    private String csonumb;
+    private String csonam;
+   
+  
 
     /**
      * Initializes the controller class.
@@ -1375,6 +1401,8 @@ public class AssessmentFormController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
+        
+   
         getTheMaxAssessID();
         initComboDate();
         PHygienge_BtnGrp();
@@ -1393,30 +1421,68 @@ public class AssessmentFormController implements Initializable {
         clientID = cID.getText();
         assessmentID = assessNo.getText();
 
-        caseN = caseNo.getText();
+      
 
     }
+    
+    
+       public void setClientDetails(String cno, String fn, String ln, String mc, 
+                                 String mob, String ca, String csid, String bd, String csonumb, String csonam) {
+        this.cno = cno;
+        this.fn = fn;
+        this.ln = ln;
+        this.mc = mc;
+        this.mob = mob;
+        this.ca = ca;
+        this.csid = csid;
+        this.bd = bd;
+        this.csonumb = csonumb;
+        this.csonam = csonam;
+        
+
+           cID.setText(cno);
+           cFname.setText(fn);
+           cLname.setText(ln);
+           cMedicare.setText(mc);
+           caseNo.setText(csid);
+           csoName.setText(csonam);
+           csonum.setText(csonumb);
+             caseN = caseNo.getText();
+        //        
+
+//         // Assuming you are using a ComboBox for selecting venue options
+//String selectedOption = aVenue.getValue().toString();
+//
+//// Check if the selected option is "Others - please specify"
+//boolean isOthersSelected = selectedOption != null && selectedOption.equals("Others");
+//
+//if (isOthersSelected) {
+//    // If "Others - please specify" is selected, enable aVenueOthers and clear any previous text
+//    aVenueOthers.setDisable(false);
+//    aVenueOthers.clear();
+//} else {
+//    // Disable the field if "Others" is not selected
+//    aVenueOthers.setDisable(true);
+//    aVenueOthers.clear(); // Optional: Clear if switching from "Others" to another option
+//}   
+//          
+           
+           
+       }
 
     private void initComboDate() {
-
-        aVenue.setItems(FXCollections.observableArrayList("Physically At Home", "Via Voice Call", "Via Video Call", "Others - please specify"));
-        aVenue.getSelectionModel().selectFirst();
-//        
-//        boolean isOthersSelected = "Others - please specify".equals(aVenue.getValue());
-//
-//        aVenueOthers.setDisable(!isOthersSelected);
-//        if (!isOthersSelected) {
-//            aVenueOthers.clear();
-// 
-//        } else {
-//            aVenueOthers.clear();
-//                       aVenueOthers.setDisable(false);
-//        }
-//
+        
         aDate.setValue(LocalDate.now());
         dateDentistVisit.setValue(LocalDate.now());
         dateLastVisit.setValue(LocalDate.now());
 
+        aVenue.setItems(FXCollections.observableArrayList("Physically At Home", "Via Voice Call", "Via Video Call", "Others"));
+        aVenue.getSelectionModel().selectFirst();
+//        
+
+
+//
+   
     }
 
     private void getTheMaxAssessID() {
@@ -2119,11 +2185,16 @@ public class AssessmentFormController implements Initializable {
 //             String aID = assessNo.getText();
 //        String ID = cID.getText();
         String CSO = csoName.getText();
+ 
+        
+        String av = aVenue.getValue().toString();
+        String ov = aVenueOthers.getText();
+        System.out.println(caseN);
 
         String asessDate = aDate.getValue() != null ? aDate.getValue().toString() : "";
 //     //Create an entry to Assessment Table
-        String insertAssessment = "INSERT INTO clientassessment (clientID, assessmentID,assignedCSO, assessmentDate, caseID)"
-                + "VALUES ('" + clientID + "', '" + assessmentID + "', '" + CSO + "', '" + asessDate + "', '" + caseN + "')";
+        String insertAssessment = "INSERT INTO clientassessment (clientID, assessmentID,assignedCSO, assessmentDate, caseID, assessVenue, assessAddress)"
+                + "VALUES ('" + clientID + "', '" + assessmentID + "', '" + CSO + "', '" + asessDate + "', '" + caseN + "', '" + av + "', '" + ov + "')";
 
         //, '" + aVenue + "', '" + aVenueOthers + "')";
         //create budgetstaging entry for this particular client,case and assessment
@@ -2145,6 +2216,9 @@ public class AssessmentFormController implements Initializable {
                 int rowsAffected3 = stmt.executeUpdate(insertBudgetStaging);
 
                 System.out.println("Record inserted successfully.");
+                       clientDetsPane.setVisible(false);
+        paneClientHygiene.setVisible(true);
+        startAssesmentBtn.setDisable(true);
             } else {
                 System.out.println("Insert failed.");
             }
@@ -2280,6 +2354,7 @@ public class AssessmentFormController implements Initializable {
 
                 if (rowsAffected > 0) {
                     System.out.println("Record inserted or updated successfully.");
+                    lblPersonalHygiene.setDisable(false);
                 }
             }
         } catch (SQLException e) {
@@ -2355,6 +2430,7 @@ public class AssessmentFormController implements Initializable {
             int rowsAffected = stmt.executeUpdate(upsertQuery);
             if (rowsAffected > 0) {
                 System.out.println("Record inserted or updated successfully.");
+                lblOralHygiene.setDisable(false);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -2440,6 +2516,7 @@ public class AssessmentFormController implements Initializable {
             int rowsAffected = stmt.executeUpdate(clientToiletingQuery);
             if (rowsAffected > 0) {
                 System.out.println("Continence needs data inserted or updated successfully.");
+                lblToileting.setDisable(false);
             }
 
         } catch (SQLException e) {
@@ -2540,6 +2617,7 @@ public class AssessmentFormController implements Initializable {
             int rowsAffected = stmt.executeUpdate(clientMobilityQuery);
             if (rowsAffected > 0) {
                 System.out.println("Mobility needs data inserted or updated successfully.");
+                lblMobility.setDisable(false);
             }
 
         } catch (SQLException e) {
@@ -2615,6 +2693,7 @@ public class AssessmentFormController implements Initializable {
             int rowsAffected = stmt.executeUpdate(otherMobilityQuery);
             if (rowsAffected > 0) {
                 System.out.println("Record inserted or updated successfully.");
+                lblOtherMobility.setDisable(false);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -2699,6 +2778,7 @@ public class AssessmentFormController implements Initializable {
                 int rowsAffected = stmt.executeUpdate(upsertQuery);
                 if (rowsAffected > 0) {
                     System.out.println("Record inserted or updated successfully.");
+                    lblNutrition.setDisable(false);
                 }
             }
 
@@ -2789,6 +2869,7 @@ public class AssessmentFormController implements Initializable {
                 int rowsAffected = stmt.executeUpdate(upsertQuery);
                 if (rowsAffected > 0) {
                     System.out.println("Record inserted or updated successfully.");
+                    lblSkinIntegrity.setDisable(false);
                 }
             }
 
@@ -2861,6 +2942,7 @@ public class AssessmentFormController implements Initializable {
                 int rowsAffected = stmt.executeUpdate(upsertQuery);
                 if (rowsAffected > 0) {
                     System.out.println("Record inserted or updated successfully.");
+                    lblMentalHealth.setDisable(false);
                 }
             }
 
@@ -2961,6 +3043,7 @@ public class AssessmentFormController implements Initializable {
                 int rowsAffected = stmt.executeUpdate(upsertQuery);
                 if (rowsAffected > 0) {
                     System.out.println("Record inserted or updated successfully.");
+                    lblMedication.setDisable(false);
                 }
             }
         } catch (SQLException e) {
@@ -3027,6 +3110,7 @@ public class AssessmentFormController implements Initializable {
                 int rowsAffected = stmt.executeUpdate(upsertQuery);
                 if (rowsAffected > 0) {
                     System.out.println("Record inserted or updated successfully.");
+                    lblPainManagement.setDisable(false);
                 }
             }
         } catch (SQLException e) {
@@ -3091,6 +3175,7 @@ public class AssessmentFormController implements Initializable {
                 int rowsAffected = stmt.executeUpdate(upsertQuery);
                 if (rowsAffected > 0) {
                     System.out.println("Record inserted or updated successfully.");
+                    lvlHousing.setDisable(false);
                 }
             }
         } catch (SQLException e) {
@@ -3206,6 +3291,7 @@ public class AssessmentFormController implements Initializable {
                 int rowsAffectedTransport = stmt.executeUpdate(upsertTransportQuery);
                 if (rowsAffectedTransport > 0) {
                     System.out.println("clientTransport record inserted or updated successfully.");
+                    lblHouseEnvironment.setDisable(false);
                 }
             }
         } catch (SQLException e) {
@@ -3602,5 +3688,58 @@ public class AssessmentFormController implements Initializable {
         paneNDP.setVisible(false);
         paneClientContact.setVisible(true);
     }
+    
+    
+
+        @FXML
+private void completeAssessment(ActionEvent event) {
+    String outcome = remarks.getText(); // Get the remarks text
+    String aID = caseNo.getText();      // Get the case number
+
+    // SQL query with placeholders for parameters
+    String closeCases = "UPDATE clientcases SET assessmentStatus = ?, closingReason = ? WHERE caseID = ?";
+
+    try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+         PreparedStatement preparedStatement = connection.prepareStatement(closeCases)) {
+
+        // Set the parameters for the PreparedStatement
+        preparedStatement.setString(1, "Complete");  // First parameter (assessmentStatus)
+        preparedStatement.setString(2, outcome);   // Second parameter (closingReason)
+        preparedStatement.setString(3, aID);       // Third parameter (caseID)
+
+        // Execute the update query
+        int rowsUpdated = preparedStatement.executeUpdate();
+
+        // Check if the update was successful
+        if (rowsUpdated > 0) {
+            // Display success alert
+            Alert successAlert = new Alert(Alert.AlertType.INFORMATION);
+            successAlert.setTitle("Success");
+            successAlert.setHeaderText(null);
+            successAlert.setContentText("Assessment Complete.");
+            successAlert.showAndWait();
+
+            // Close the current stage/window after success
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.close();
+        }
+
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+}
+
+        
+        
+        
+        
+        
+        
+        
+        
+        
+    
+    
+    
 
 }
