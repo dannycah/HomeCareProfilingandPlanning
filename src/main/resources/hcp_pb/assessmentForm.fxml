@@ -40,7 +40,7 @@
                   <Insets left="20.0" />
                </padding>
             </Label>
-            <Label fx:id="lblPersonalHygiene" accessibleRole="CHECK_BOX" onMouseClicked="#lblPersonalHygiene" prefHeight="35.0" prefWidth="300.0" text="Personal Hygiene" textFill="#a9a6a6">
+            <Label fx:id="lblPersonalHygiene" accessibleRole="CHECK_BOX" disable="true" onMouseClicked="#lblPersonalHygiene" prefHeight="35.0" prefWidth="300.0" text="Personal Hygiene" textFill="#a9a6a6">
                <font>
                   <Font size="15.0" />
                </font>
@@ -51,7 +51,7 @@
                   <Insets left="20.0" />
                </padding>
             </Label>
-            <Label fx:id="lblOralHygiene" accessibleRole="CHECK_BOX" onMouseClicked="#lblOralHygiene" prefHeight="35.0" prefWidth="300.0" text="Oral Hygiene" textFill="#a9a6a6">
+            <Label fx:id="lblOralHygiene" accessibleRole="CHECK_BOX" disable="true" onMouseClicked="#lblOralHygiene" prefHeight="35.0" prefWidth="300.0" text="Oral Hygiene" textFill="#a9a6a6">
                <font>
                   <Font size="15.0" />
                </font>
@@ -62,7 +62,7 @@
                   <Insets left="20.0" />
                </padding>
             </Label>
-            <Label fx:id="lblToileting" accessibleRole="CHECK_BOX" onMouseClicked="#lblToileting" prefHeight="35.0" prefWidth="300.0" text="Toileting" textFill="#a9a6a6">
+            <Label fx:id="lblToileting" accessibleRole="CHECK_BOX" disable="true" onMouseClicked="#lblToileting" prefHeight="35.0" prefWidth="300.0" text="Toileting" textFill="#a9a6a6">
                <font>
                   <Font size="15.0" />
                </font>
@@ -73,7 +73,7 @@
                   <Insets left="20.0" />
                </padding>
             </Label>
-            <Label fx:id="lblMobility" accessibleRole="CHECK_BOX" onMouseClicked="#lblMobility" prefHeight="35.0" prefWidth="300.0" text="Mobility" textFill="#a9a6a6">
+            <Label fx:id="lblMobility" accessibleRole="CHECK_BOX" disable="true" onMouseClicked="#lblMobility" prefHeight="35.0" prefWidth="300.0" text="Mobility" textFill="#a9a6a6">
                <font>
                   <Font size="15.0" />
                </font>
@@ -84,7 +84,7 @@
                   <Insets left="20.0" />
                </padding>
             </Label>
-            <Label fx:id="lblOtherMobility" accessibleRole="CHECK_BOX" onMouseClicked="#lblOtherMobility" prefHeight="35.0" prefWidth="300.0" text="Other Mobility" textFill="#a9a6a6">
+            <Label fx:id="lblOtherMobility" accessibleRole="CHECK_BOX" disable="true" onMouseClicked="#lblOtherMobility" prefHeight="35.0" prefWidth="300.0" text="Other Mobility" textFill="#a9a6a6">
                <font>
                   <Font size="15.0" />
                </font>
@@ -95,7 +95,7 @@
                   <Insets left="20.0" />
                </padding>
             </Label>
-            <Label fx:id="lblNutrition" accessibleRole="CHECK_BOX" onMouseClicked="#lblNutrition" prefHeight="35.0" prefWidth="300.0" text="Nutrition" textFill="#a9a6a6">
+            <Label fx:id="lblNutrition" accessibleRole="CHECK_BOX" disable="true" onMouseClicked="#lblNutrition" prefHeight="35.0" prefWidth="300.0" text="Nutrition" textFill="#a9a6a6">
                <font>
                   <Font size="15.0" />
                </font>
@@ -106,7 +106,7 @@
                   <Insets left="20.0" />
                </padding>
             </Label>
-            <Label fx:id="lblSkinIntegrity" accessibleRole="CHECK_BOX" onMouseClicked="#lblSkinIntegrity" prefHeight="35.0" prefWidth="300.0" text="Skin Integrity and Podiatry" textFill="#a9a6a6">
+            <Label fx:id="lblSkinIntegrity" accessibleRole="CHECK_BOX" disable="true" onMouseClicked="#lblSkinIntegrity" prefHeight="35.0" prefWidth="300.0" text="Skin Integrity and Podiatry" textFill="#a9a6a6">
                <font>
                   <Font size="15.0" />
                </font>
@@ -117,7 +117,7 @@
                   <Insets left="20.0" />
                </padding>
             </Label>
-            <Label fx:id="lblMentalHealth" accessibleRole="CHECK_BOX" onMouseClicked="#lblMentalHealth" prefHeight="35.0" prefWidth="300.0" text="Mental Health" textFill="#a9a6a6">
+            <Label fx:id="lblMentalHealth" accessibleRole="CHECK_BOX" disable="true" onMouseClicked="#lblMentalHealth" prefHeight="35.0" prefWidth="300.0" text="Mental Health" textFill="#a9a6a6">
                <font>
                   <Font size="15.0" />
                </font>
@@ -128,7 +128,7 @@
                   <Insets left="20.0" />
                </padding>
             </Label>
-            <Label fx:id="lblMedication" accessibleRole="CHECK_BOX" onMouseClicked="#lblMedication" prefHeight="35.0" prefWidth="300.0" text="Medication" textFill="#a9a6a6">
+            <Label fx:id="lblMedication" accessibleRole="CHECK_BOX" disable="true" onMouseClicked="#lblMedication" prefHeight="35.0" prefWidth="300.0" text="Medication" textFill="#a9a6a6">
                <font>
                   <Font size="15.0" />
                </font>
@@ -139,7 +139,7 @@
                   <Insets left="20.0" />
                </padding>
             </Label>
-            <Label fx:id="lblPainManagement" accessibleRole="CHECK_BOX" onMouseClicked="#lblPainManagement" prefHeight="35.0" prefWidth="300.0" text="Pain Management" textFill="#a9a6a6">
+            <Label fx:id="lblPainManagement" accessibleRole="CHECK_BOX" disable="true" onMouseClicked="#lblPainManagement" prefHeight="35.0" prefWidth="300.0" text="Pain Management" textFill="#a9a6a6">
                <font>
                   <Font size="15.0" />
                </font>
@@ -150,7 +150,7 @@
                   <Insets left="20.0" />
                </padding>
             </Label>
-            <Label fx:id="lvlHousing" accessibleRole="CHECK_BOX" onMouseClicked="#lvlHousing" prefHeight="35.0" prefWidth="300.0" text="Housing" textFill="#a9a6a6">
+            <Label fx:id="lvlHousing" accessibleRole="CHECK_BOX" disable="true" onMouseClicked="#lvlHousing" prefHeight="35.0" prefWidth="300.0" text="Housing" textFill="#a9a6a6">
                <font>
                   <Font size="15.0" />
                </font>
@@ -161,7 +161,7 @@
                   <Insets left="20.0" />
                </padding>
             </Label>
-            <Label fx:id="lblHouseEnvironment" accessibleRole="CHECK_BOX" onMouseClicked="#lblHouseEnvironment" prefHeight="35.0" prefWidth="300.0" text="Home Environment and Transport" textFill="#a9a6a6">
+            <Label fx:id="lblHouseEnvironment" accessibleRole="CHECK_BOX" disable="true" onMouseClicked="#lblHouseEnvironment" prefHeight="35.0" prefWidth="300.0" text="Home Environment and Transport" textFill="#a9a6a6">
                <font>
                   <Font size="15.0" />
                </font>
@@ -172,7 +172,7 @@
                   <Insets left="20.0" />
                </padding>
             </Label>
-            <Label fx:id="lblEndOfLife" accessibleRole="CHECK_BOX" onMouseClicked="#lblEndOfLife" prefHeight="35.0" prefWidth="300.0" text="End of Life" textFill="#a9a6a6">
+            <Label fx:id="lblEndOfLife" accessibleRole="CHECK_BOX" disable="true" onMouseClicked="#lblEndOfLife" prefHeight="35.0" prefWidth="300.0" text="End of Life" textFill="#a9a6a6">
                <font>
                   <Font size="15.0" />
                </font>
@@ -183,7 +183,7 @@
                   <Insets left="20.0" />
                </padding>
             </Label>
-            <Label fx:id="lblContactInfo" accessibleRole="CHECK_BOX" onMouseClicked="#lblContactInfo" prefHeight="35.0" prefWidth="300.0" text="Contact Info" textFill="#a9a6a6">
+            <Label fx:id="lblContactInfo" accessibleRole="CHECK_BOX" disable="true" onMouseClicked="#lblContactInfo" prefHeight="35.0" prefWidth="300.0" text="Complete Assessment" textFill="#a9a6a6">
                <font>
                   <Font size="15.0" />
                </font>
@@ -219,7 +219,7 @@
                               <Font name="System Bold" size="12.0" />
                            </font>
                         </Label>
-                        <TextField fx:id="caseNo" editable="false" layoutX="210.0" layoutY="124.0" text="201" />
+                        <TextField fx:id="caseNo" editable="false" layoutX="210.0" layoutY="124.0" />
                         <Label layoutX="149.0" layoutY="128.0" text="Case No:" />
                      </children>
                   </Pane>
@@ -249,12 +249,12 @@
                               <Font name="System Bold" size="12.0" />
                            </font>
                         </Label>
-                        <Label layoutX="74.0" layoutY="31.0" text="put information about the assessment here, the pre-condition," />
-                        <Label layoutX="134.0" layoutY="62.0" text="the steps and upon completion herer" />
+                        <TextArea layoutX="14.0" layoutY="24.0" prefHeight="123.0" prefWidth="468.0" text="This form collects personal information about client for the purpose of delivering care and services.&#10;Ensure that the client is informed about the following:&#10;&#10; 1. That we will not use or release of their information for other purposes without their consent.&#10; 2. However, we are permitted to exchange required information with relevant agencies without their consent.&#10; 3. It is their right to withdraw consent at any time and to obtain access to the information we hold about them." />
                      </children>
                   </Pane>
                   <Button fx:id="startAssesmentBtn" layoutX="295.0" layoutY="558.0" mnemonicParsing="false" onAction="#startAssesmentBtn" style="-fx-background-color: #364bbf;" text="Start Assessment" textFill="WHITE" />
                   <Button fx:id="cancelAssessment" layoutX="413.0" layoutY="558.0" mnemonicParsing="false" onAction="#cancelAssessment" prefHeight="25.0" prefWidth="108.0" style="-fx-background-color: #364bbf;" text="Cancel" textFill="WHITE" />
+                  <Label fx:id="csonum" layoutX="42.0" layoutY="575.0" text="Label" />
                </children>
             </Pane>
             <Pane fx:id="paneClientHygiene" layoutX="7.0" layoutY="1.0" prefHeight="607.0" prefWidth="554.0" style="-fx-background-color: FFFF;" visible="false">
@@ -1035,72 +1035,32 @@
             </Pane>
             <Pane fx:id="paneClientContact" layoutY="2.0" prefHeight="605.0" prefWidth="539.0" style="-fx-background-color: #FFF;" visible="false">
                <children>
-                  <Pane layoutX="7.0" layoutY="27.0" prefHeight="95.0" prefWidth="524.0" style="-fx-border-color: #000000; -fx-background-color: #d9d9d9;">
-                     <children>
-                        <Pane layoutY="291.0" prefHeight="92.0" prefWidth="524.0" style="-fx-background-color: #d9d9d9; -fx-border-color: #000000;" />
-                        <Pane layoutY="195.0" prefHeight="92.0" prefWidth="524.0" style="-fx-background-color: #d9d9d9; -fx-border-color: #000000;" />
-                        <Pane layoutY="99.0" prefHeight="92.0" prefWidth="524.0" style="-fx-background-color: #d9d9d9; -fx-border-color: #000000;" />
-                        <TextField fx:id="txtPrimaryContact" layoutX="72.0" layoutY="29.0" prefHeight="25.0" prefWidth="194.0" />
-                        <TextField fx:id="txtPrimaryRelationship" layoutX="360.0" layoutY="29.0" prefHeight="1.0" prefWidth="149.0" />
-                        <Text layoutX="284.0" layoutY="46.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Relationship:" />
-                        <Text layoutX="7.0" layoutY="14.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Primary Contact ">
-                           <font>
-                              <Font name="System Bold" size="12.0" />
-                           </font>
-                        </Text>
-                        <TextField fx:id="txtPrimaryEmail" layoutX="71.0" layoutY="60.0" prefHeight="25.0" prefWidth="194.0" />
-                        <TextField fx:id="txtPrimaryPhone" layoutX="359.0" layoutY="61.0" prefHeight="25.0" prefWidth="149.0" />
-                        <Text layoutX="8.0" layoutY="77.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Email:" />
-                        <Text layoutX="286.0" layoutY="77.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Phone:" />
-                        <TextField fx:id="txtSecondaryContact" layoutX="71.0" layoutY="124.0" prefHeight="25.0" prefWidth="194.0" />
-                        <TextField fx:id="txtSecondaryRelationship" layoutX="357.0" layoutY="124.0" prefHeight="1.0" prefWidth="149.0" />
-                        <Text layoutX="282.0" layoutY="141.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Relationship:" />
-                        <Text layoutX="6.0" layoutY="113.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Secodary Contact ">
-                           <font>
-                              <Font name="System Bold" size="12.0" />
-                           </font>
-                        </Text>
-                        <TextField fx:id="txtSecondaryEmail" layoutX="71.0" layoutY="155.0" prefHeight="25.0" prefWidth="194.0" />
-                        <TextField fx:id="txtSecondaryPhone" layoutX="357.0" layoutY="155.0" prefHeight="25.0" prefWidth="149.0" />
-                        <Text layoutX="8.0" layoutY="173.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Email:" />
-                        <Text layoutX="286.0" layoutY="173.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Phone:" />
-                        <Text layoutX="8.0" layoutY="141.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Full Name:" />
-                        <TextField fx:id="txtMedPractitioner" layoutX="70.0" layoutY="223.0" prefHeight="25.0" prefWidth="194.0" />
-                        <TextField fx:id="txtPracticePhone" layoutX="359.0" layoutY="219.0" prefHeight="1.0" prefWidth="149.0" />
-                        <Text layoutX="7.0" layoutY="209.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Medical Practitioner">
-                           <font>
-                              <Font name="System Bold" size="12.0" />
-                           </font>
-                        </Text>
-                        <TextField fx:id="txtPracticeAddress" layoutX="70.0" layoutY="254.0" prefHeight="25.0" prefWidth="194.0" />
-                        <TextField fx:id="txtPracticeEmail" layoutX="359.0" layoutY="250.0" prefHeight="1.0" prefWidth="149.0" />
-                        <Text layoutX="286.0" layoutY="236.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Phone:" />
-                        <Text layoutX="8.0" layoutY="240.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Full Name:" />
-                        <Text layoutX="9.0" layoutY="271.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Address:" />
-                        <TextField fx:id="txtMedPharma" layoutX="71.0" layoutY="318.0" prefHeight="25.0" prefWidth="194.0" />
-                        <TextField fx:id="txtPharmaPhone" layoutX="360.0" layoutY="318.0" prefHeight="1.0" prefWidth="149.0" />
-                        <Text layoutX="284.0" layoutY="335.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Phone:" />
-                        <Text layoutX="7.0" layoutY="306.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Pharmacy">
-                           <font>
-                              <Font name="System Bold" size="12.0" />
-                           </font>
-                        </Text>
-                        <TextField fx:id="txtPharmaAddress" layoutX="71.0" layoutY="348.0" prefHeight="25.0" prefWidth="194.0" />
-                        <TextField fx:id="txtPharmaEmail" layoutX="360.0" layoutY="348.0" prefHeight="25.0" prefWidth="149.0" />
-                        <Text layoutX="285.0" layoutY="363.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Email:" />
-                        <Text layoutX="9.0" layoutY="335.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Name:" />
-                        <Text layoutX="10.0" layoutY="364.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Adress:" />
-                        <Text layoutX="286.0" layoutY="268.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Email:" />
-                     </children>
-                  </Pane>
-                  <Text layoutX="12.0" layoutY="20.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Client Contact">
+                  <Text layoutX="12.0" layoutY="20.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Complete Assessment:">
                      <font>
                         <Font name="System Bold" size="12.0" />
                      </font>
                   </Text>
-                  <Text layoutX="15.0" layoutY="72.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Full Name:" />
-                  <Button fx:id="btnBackClientContact" layoutX="6.0" layoutY="574.0" mnemonicParsing="false" onAction="#btnBackClientContact" style="-fx-background-color: #364bbf;" text="Back" textFill="WHITE" />
-                  <Button fx:id="btnNextClientContact" layoutX="493.0" layoutY="574.0" mnemonicParsing="false" onAction="#btnNextClientContact" style="-fx-background-color: #364bbf;" text="Next" textFill="WHITE" />
+                  <Pane layoutX="11.0" layoutY="36.0" prefHeight="219.0" prefWidth="517.0" style="-fx-background-color: d9d9d9; -fx-border-color: black;">
+                     <children>
+                        <Label layoutX="14.0" layoutY="21.0" text="Confirm with client that they are informed that the information collected about them were" />
+                        <Label layoutX="14.0" layoutY="40.0" text="necessary to:" />
+                        <Label layoutX="23.0" layoutY="65.0" text="A. Deliver services under their agreed care plan" />
+                        <Label layoutX="23.0" layoutY="84.0" text="B. Other health professionals" />
+                        <Label layoutX="23.0" layoutY="105.0" text="C. The Australian Government Department of Health" />
+                        <Label layoutX="23.0" layoutY="124.0" text="D. The Aged Care Quality and Safety Commission" />
+                        <Label layoutX="23.0" layoutY="145.0" text="E. Other Commonwealth and state/territory agencies as required by legislation and" />
+                        <Label layoutX="23.0" layoutY="165.0" text="F. Authorise those who may be contacted for giving, providing and accessing" />
+                        <Label layoutX="36.0" layoutY="185.0" text="information about them." />
+                     </children>
+                  </Pane>
+                  <Pane layoutX="11.0" layoutY="261.0" prefHeight="200.0" prefWidth="517.0" style="-fx-background-color: d9d9d9; -fx-border-color: black;">
+                     <children>
+                        <Label layoutX="10.0" layoutY="11.0" text="Remarks:" />
+                        <TextArea fx:id="remarks" layoutX="66.0" layoutY="11.0" prefHeight="145.0" prefWidth="430.0" />
+                        <Button fx:id="completeAssessment" layoutX="302.0" layoutY="161.0" mnemonicParsing="false" onAction="#completeAssessment" text="Complete Assessment" />
+                        <Button fx:id="cancelAssessment" layoutX="444.0" layoutY="161.0" mnemonicParsing="false" text="Cancel" />
+                     </children>
+                  </Pane>
                </children>
             </Pane>
          </children>

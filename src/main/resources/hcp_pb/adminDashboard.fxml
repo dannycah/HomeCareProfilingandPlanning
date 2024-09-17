@@ -67,17 +67,6 @@
                                     <Insets left="20.0" />
                                  </padding>
                               </Label>
-                              <Label fx:id="logsLbl" layoutY="112.0" onMouseClicked="#logsLbl" prefHeight="35.0" prefWidth="300.0" text="Logs" textFill="#a9a6a6">
-                                 <font>
-                                    <Font size="15.0" />
-                                 </font>
-                                 <opaqueInsets>
-                                    <Insets />
-                                 </opaqueInsets>
-                                 <padding>
-                                    <Insets left="20.0" />
-                                 </padding>
-                              </Label>
                            </children>
                         </Pane>
                      </children>
@@ -117,35 +106,70 @@
                   </Pane>
                   <Pane fx:id="motherPane" prefHeight="556.0" prefWidth="724.0" style="-fx-background-color: d9d9d9;">
                      <children>
-                        <Pane fx:id="dashboardPane" prefHeight="556.0" prefWidth="724.0" visible="false">
+                        <Pane fx:id="dashboardPane" prefHeight="556.0" prefWidth="724.0">
                            <children>
-                              <Pane layoutX="190.0" layoutY="15.0" prefHeight="200.0" prefWidth="181.0" style="-fx-background-color: #364bbf;" />
-                              <TableView layoutX="380.0" layoutY="15.0" prefHeight="200.0" prefWidth="336.0">
-                                 <columns>
-                                    <TableColumn prefWidth="75.0" text="C1" />
-                                    <TableColumn prefWidth="75.0" text="C2" />
-                                 </columns>
-                              </TableView>
-                              <Label layoutX="380.0" layoutY="222.0" text="User Accounts" textFill="#a9a6a6">
+                              <Pane layoutX="14.0" layoutY="197.0" prefHeight="346.0" prefWidth="695.0" style="-fx-background-color: white;">
+                                 <children>
+                                    <TableView layoutX="6.0" layoutY="5.0" prefHeight="337.0" prefWidth="683.0">
+                                       <columns>
+                                          <TableColumn prefWidth="75.0" text="Log ID" />
+                                          <TableColumn prefWidth="118.0" text="Time Stamp" />
+                                          <TableColumn prefWidth="123.0" text="Log Details" />
+                                       </columns>
+                                    </TableView>
+                                 </children></Pane>
+                              <Pane layoutX="14.0" layoutY="9.0" prefHeight="75.0" prefWidth="237.0" style="-fx-background-color: white;">
+                                 <children>
+                                    <Label layoutX="137.0" layoutY="20.0" text="0">
+                                       <font>
+                                          <Font size="24.0" />
+                                       </font>
+                                    </Label>
+                                    <Label layoutX="36.0" layoutY="30.0" text="Total Users" textFill="#797777">
+                                       <font>
+                                          <Font size="11.0" />
+                                       </font>
+                                    </Label>
+                                 </children>
+                              </Pane>
+                              <Pane layoutX="256.0" layoutY="9.0" prefHeight="75.0" prefWidth="224.0" style="-fx-background-color: white;">
+                                 <children>
+                                    <Label layoutX="140.0" layoutY="21.0" text="0">
+                                       <font>
+                                          <Font size="24.0" />
+                                       </font>
+                                    </Label>
+                                    <Label layoutX="32.0" layoutY="30.0" text="Lockouts: " textFill="#797777">
+                                       <font>
+                                          <Font size="11.0" />
+                                       </font>
+                                    </Label>
+                                 </children>
+                              </Pane>
+                              <Pane layoutX="486.0" layoutY="9.0" prefHeight="75.0" prefWidth="224.0" style="-fx-background-color: white;">
+                                 <children>
+                                    <Label layoutX="145.0" layoutY="22.0" text="0">
+                                       <font>
+                                          <Font size="24.0" />
+                                       </font>
+                                    </Label>
+                                    <Label layoutX="26.0" layoutY="31.0" text="Active Users:" textFill="#797777">
+                                       <font>
+                                          <Font size="11.0" />
+                                       </font>
+                                    </Label>
+                                 </children>
+                              </Pane>
+                              <Pane layoutX="14.0" layoutY="84.0" prefHeight="5.0" prefWidth="695.0" style="-fx-background-color: #364bbf;" />
+                              <Pane layoutX="14.0" layoutY="94.0" prefHeight="75.0" prefWidth="695.0" style="-fx-background-color: white;" />
+                              <Label fx:id="headLbl1" layoutX="17.0" layoutY="177.0" text="Instance Logs" textFill="#847e7e">
                                  <font>
-                                    <Font name="System Bold" size="14.0" />
+                                    <Font name="System Bold" size="12.0" />
                                  </font>
                               </Label>
-                              <Label layoutX="14.0" layoutY="222.0" text="Active Users" textFill="#a9a6a6">
-                                 <font>
-                                    <Font name="System Bold" size="14.0" />
-                                 </font>
-                              </Label>
-                              <Label layoutX="199.0" layoutY="222.0" text="Lockouts" textFill="#a9a6a6">
-                                 <font>
-                                    <Font name="System Bold" size="14.0" />
-                                 </font>
-                              </Label>
-                              <Pane layoutX="8.0" layoutY="15.0" prefHeight="200.0" prefWidth="173.0" style="-fx-background-color: #364bbf;" />
-                              <Button layoutX="619.0" layoutY="220.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="97.0" style="-fx-background-color: #364bbf;" text="Deactivate" textFill="WHITE" />
                            </children>
                         </Pane>
-                        <Pane fx:id="manageUsersPane" prefHeight="556.0" prefWidth="724.0">
+                        <Pane fx:id="manageUsersPane" prefHeight="556.0" prefWidth="724.0" visible="false">
                            <children>
                               <TableView fx:id="tblUser" layoutX="12.0" layoutY="45.0" prefHeight="496.0" prefWidth="275.0">
                                  <columns>
