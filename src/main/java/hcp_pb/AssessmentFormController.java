@@ -455,14 +455,14 @@ public class AssessmentFormController implements Initializable {
 
     //Question 2/
     @FXML
-    private TextArea txtIssueDets;
-
-    //Question 3/
-    @FXML
     private RadioButton rdoMobilityIssueY;
     @FXML
     private RadioButton rdoMobilityIssueN;
-    private ToggleGroup M1Q3_toggleGroup;
+    private ToggleGroup M1Q2_toggleGroup;
+
+    //Question 3/
+    @FXML
+    private TextArea txtIssueDets;
 
     //Question 4/
     @FXML
@@ -540,7 +540,7 @@ public class AssessmentFormController implements Initializable {
     private RadioButton rdoFallHistoryN;
     private ToggleGroup M1Q13_toggleGroup;
 
-    //Question 13/
+    //Question 14/
     @FXML
     private TextArea txtFallDets;
 
@@ -549,6 +549,7 @@ public class AssessmentFormController implements Initializable {
     private Button btnBackMobilityNeeds;
     @FXML
     private Button btnNextMobilityNeeds;
+
 
     // Other Mobility/
     @FXML
@@ -1013,18 +1014,19 @@ public class AssessmentFormController implements Initializable {
     //Housing/
     @FXML
     private Pane paneClientHousing;
+    
+    
 
-    //Question 1/
+//Question 1/
     @FXML
     private RadioButton rdoHousingOwnershipY;
     @FXML
-    private RadioButton rdoHousingSetupR;
+    private RadioButton rdoHousingOwnershipR;
     @FXML
-    private RadioButton rdoHousingSetupG;
+    private RadioButton rdoHousingOwnershipG;
     @FXML
-    private RadioButton rdoHousingSetupO;
+    private RadioButton rdoHousingOwnershipO;
     private ToggleGroup H1Q1_toggleGroup;
-
     //Question 2/
     @FXML
     private RadioButton rdoLivingSetupY;
@@ -1121,6 +1123,15 @@ public class AssessmentFormController implements Initializable {
     @FXML
     private RadioButton rdoCanDriveN;
     private ToggleGroup HE1Q5_toggleGroup;
+    
+    
+    //Secondary Qustion 6/
+    @FXML
+    private CheckBox ckTaxiVoucher;
+    @FXML
+    private CheckBox ckShoppingAssist;
+    @FXML
+    private CheckBox ckDocAptAssist;
 
     //Secondary Qustion 6/
     @FXML
@@ -1502,8 +1513,7 @@ public class AssessmentFormController implements Initializable {
             e.printStackTrace();
         }
     }
-
-    private void PHygienge_BtnGrp() {
+private void PHygienge_BtnGrp() {
 
         //Question 1
         P1Q1_toggleGroup = new ToggleGroup();
@@ -1722,10 +1732,23 @@ public class AssessmentFormController implements Initializable {
         rdoMobilityRequirement1.setSelected(true);
 
         //Question 3
-        M1Q3_toggleGroup = new ToggleGroup();
-        rdoMobilityIssueY.setToggleGroup(M1Q3_toggleGroup);
-        rdoMobilityIssueN.setToggleGroup(M1Q3_toggleGroup);
+        M1Q2_toggleGroup = new ToggleGroup();
+        rdoMobilityIssueY.setToggleGroup(M1Q2_toggleGroup);
+        rdoMobilityIssueN.setToggleGroup(M1Q2_toggleGroup);
         rdoMobilityIssueY.setSelected(true);
+
+        // Initially, Assistance Required text field is enabled because "Yes" (rdoMobilityIssueY) is selected
+        txtIssueDets.setDisable(false);
+
+        M1Q2_toggleGroup.selectedToggleProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue == rdoMobilityIssueY) {
+                // Enable Assistance Required text field when "Yes" is selected
+                txtIssueDets.setDisable(false);
+            } else if (newValue == rdoMobilityIssueN) {
+                // Disable Assistance Required text field when "No" is selected
+                txtIssueDets.setDisable(true);
+            }
+        });
 
         //Question 4
         M1Q4_toggleGroup = new ToggleGroup();
@@ -1789,6 +1812,19 @@ public class AssessmentFormController implements Initializable {
         rdoFallHistoryN.setToggleGroup(M1Q13_toggleGroup);
         rdoFallHistoryY.setSelected(true);
 
+        // Initially, txtFallDets is enabled because "Yes" (rdoFallHistoryY) is selected
+        txtFallDets.setDisable(false);
+
+        M1Q13_toggleGroup.selectedToggleProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue == rdoFallHistoryY) {
+                // Enable txtFallDets when "Yes" is selected
+                txtFallDets.setDisable(false);
+            } else if (newValue == rdoFallHistoryN) {
+                // Disable txtFallDets when "No" is selected
+                txtFallDets.setDisable(true);
+            }
+        });
+
     }
 
     private void OMobility_BtnGrp() {
@@ -1797,6 +1833,20 @@ public class AssessmentFormController implements Initializable {
         rdoExerciseY.setToggleGroup(OM1Q1_toggleGroup);
         rdoExerciseN.setToggleGroup(OM1Q1_toggleGroup);
         rdoExerciseY.setSelected(true);
+
+        // Initially enable txtExerciseDets because "Yes" (rdoExerciseY) is selected
+        txtExerciseDets.setDisable(false);
+
+        // Add listener to the toggle group for Exercise question
+        OM1Q1_toggleGroup.selectedToggleProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue == rdoExerciseY) {
+                // Enable txtExerciseDets when "Yes" is selected
+                txtExerciseDets.setDisable(false);
+            } else if (newValue == rdoExerciseN) {
+                // Disable txtExerciseDets when "No" is selected
+                txtExerciseDets.setDisable(true);
+            }
+        });
 
         //Question 3
         OM1Q3_toggleGroup = new ToggleGroup();
@@ -1827,6 +1877,20 @@ public class AssessmentFormController implements Initializable {
         rdoBreathIssueY.setToggleGroup(OM1Q7_toggleGroup);
         rdoBreathIssueN.setToggleGroup(OM1Q7_toggleGroup);
         rdoBreathIssueY.setSelected(true);
+
+        // Initially enable txtBreathIssueDets because "Yes" (rdoBreathIssueY) is selected
+        txtBreathIssueDets.setDisable(false);
+
+        // Add listener to the toggle group for breathing issue question
+        OM1Q7_toggleGroup.selectedToggleProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue == rdoBreathIssueY) {
+                // Enable txtBreathIssueDets when "Yes" is selected
+                txtBreathIssueDets.setDisable(false);
+            } else if (newValue == rdoBreathIssueN) {
+                // Disable txtBreathIssueDets when "No" is selected
+                txtBreathIssueDets.setDisable(true);
+            }
+        });
 
         //Question 9
         OM1Q9_toggleGroup = new ToggleGroup();
@@ -1940,6 +2004,34 @@ public class AssessmentFormController implements Initializable {
         rdoPrescribedP.setToggleGroup(S1Q3S_toggleGroup);
         rdoPrescribedO.setToggleGroup(S1Q3S_toggleGroup);
 
+        // Initially enable txtSkinProductDets because "Yes" (rdoUseSkinProductY) is selected
+        txtSkinProductDets.setDisable(false);
+
+        // Add listener to the S1Q3_toggleGroup for Use of Skin Products
+        S1Q3_toggleGroup.selectedToggleProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue == rdoUseSkinProductY) {
+                // Enable txtSkinProductDets if "Yes" is selected
+                txtSkinProductDets.setDisable(false);
+                // Deselect any option in S1Q3S_toggleGroup
+                S1Q3S_toggleGroup.selectToggle(null);
+            } else if (newValue == rdoUseSkinProductN) {
+                // Disable txtSkinProductDets if "No" is selected
+                txtSkinProductDets.setDisable(true);
+                // Deselect any option in S1Q3S_toggleGroup
+                S1Q3S_toggleGroup.selectToggle(null);
+            }
+        });
+
+        // Add listener to the S1Q3S_toggleGroup for Prescribed Products
+        S1Q3S_toggleGroup.selectedToggleProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue == rdoPrescribedP || newValue == rdoPrescribedO) {
+                // Disable txtSkinProductDets if either prescribed option is selected
+                txtSkinProductDets.setDisable(true);
+                // Deselect any option in S1Q3_toggleGroup
+                S1Q3_toggleGroup.selectToggle(null);
+            }
+        });
+
         //Question 5/
         S1Q5_toggleGroup = new ToggleGroup();
         rdoWoundDressY.setToggleGroup(S1Q5_toggleGroup);
@@ -1958,11 +2050,42 @@ public class AssessmentFormController implements Initializable {
         rdoPressureInjuryN.setToggleGroup(S1Q7_toggleGroup);
         rdoPressureInjuryY.setSelected(true);
 
+        // Initially enable txtInjuryDets because "Yes" (rdoPressureInjuryY) is selected
+        txtInjuryDets.setDisable(false);
+
+        // Add listener to the S1Q7_toggleGroup
+        S1Q7_toggleGroup.selectedToggleProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue == rdoPressureInjuryY) {
+                // Enable txtInjuryDets if "Yes" is selected
+                txtInjuryDets.setDisable(false);
+            } else if (newValue == rdoPressureInjuryN) {
+                // Disable txtInjuryDets if "No" is selected
+                txtInjuryDets.setDisable(true);
+            }
+        });
+
         //Question 9/
         S1Q9_toggleGroup = new ToggleGroup();
         rdoAttendPodiatristY.setToggleGroup(S1Q9_toggleGroup);
         rdoAttendPodiatristN.setToggleGroup(S1Q9_toggleGroup);
         rdoAttendPodiatristY.setSelected(true);
+
+        // Initially enable txtPodiatrist and txtVisitFreq because "Yes" is selected
+        txtPodiatrist.setDisable(false);
+        txtVisitFreq.setDisable(false);
+
+        // Add listener to the S1Q9_toggleGroup
+        S1Q9_toggleGroup.selectedToggleProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue == rdoAttendPodiatristY) {
+                // Enable txtPodiatrist and txtVisitFreq if "Yes" is selected
+                txtPodiatrist.setDisable(false);
+                txtVisitFreq.setDisable(false);
+            } else if (newValue == rdoAttendPodiatristN) {
+                // Disable txtPodiatrist and txtVisitFreq if "No" is selected
+                txtPodiatrist.setDisable(true);
+                txtVisitFreq.setDisable(true);
+            }
+        });
 
     }
 
@@ -2095,6 +2218,23 @@ public class AssessmentFormController implements Initializable {
         rdoPainMedN.setToggleGroup(PM1Q2_toggleGroup);
         rdoPainMedY.setSelected(true);
 
+        // Initially enable txtPainMedFreq and txtPainLevel because "Yes" is selected
+        txtPainMedFreq.setDisable(false);
+        txtPainLevel.setDisable(false);
+
+        // Add listener to the PM1Q2_toggleGroup
+        PM1Q2_toggleGroup.selectedToggleProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue == rdoPainMedY) {
+                // Enable txtPainMedFreq and txtPainLevel if "Yes" is selected
+                txtPainMedFreq.setDisable(false);
+                txtPainLevel.setDisable(false);
+            } else if (newValue == rdoPainMedN) {
+                // Disable txtPainMedFreq and txtPainLevel if "No" is selected
+                txtPainMedFreq.setDisable(true);
+                txtPainLevel.setDisable(true);
+            }
+        });
+
         //Question 5/
         PM1Q5_toggleGroup = new ToggleGroup();
         txtRespiteRequireY.setToggleGroup(PM1Q5_toggleGroup);
@@ -2106,15 +2246,28 @@ public class AssessmentFormController implements Initializable {
         rdoRespiteDeliveryI.setToggleGroup(PM1SQ5_toggleGroup);
         rdoRespiteDeliveryR.setToggleGroup(PM1SQ5_toggleGroup);
 
+        // Add listener to the PM1Q5_toggleGroup
+        PM1Q5_toggleGroup.selectedToggleProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue == txtRespiteRequireY) {
+                // Enable respite delivery options if "Yes" is selected
+                rdoRespiteDeliveryI.setDisable(false);
+                rdoRespiteDeliveryR.setDisable(false);
+            } else if (newValue == rdoRespiteRequireN) {
+                // Disable respite delivery options if "No" is selected
+                rdoRespiteDeliveryI.setDisable(true);
+                rdoRespiteDeliveryR.setDisable(true);
+            }
+        });
+
     }
 
     private void House_BtnGrp() {
         //Question 1/
         H1Q1_toggleGroup = new ToggleGroup();
         rdoHousingOwnershipY.setToggleGroup(H1Q1_toggleGroup);
-        rdoHousingSetupR.setToggleGroup(H1Q1_toggleGroup);
-        rdoHousingSetupG.setToggleGroup(H1Q1_toggleGroup);
-        rdoHousingSetupO.setToggleGroup(H1Q1_toggleGroup);
+        rdoHousingOwnershipR.setToggleGroup(H1Q1_toggleGroup);
+        rdoHousingOwnershipG.setToggleGroup(H1Q1_toggleGroup);
+        rdoHousingOwnershipO.setToggleGroup(H1Q1_toggleGroup);
         rdoHousingOwnershipY.setSelected(true);
 
         //Question 2/
@@ -2130,11 +2283,49 @@ public class AssessmentFormController implements Initializable {
         rdoPersonalAlarmN.setToggleGroup(H1Q3_toggleGroup);
         rdoPersonalAlarmY.setSelected(true);
 
+        // Initially enable txtAlarmCompany because "Yes" is selected
+        txtAlarmCompany.setDisable(false);
+
+        // Add listener to the H1Q3_toggleGroup
+        H1Q3_toggleGroup.selectedToggleProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue == rdoPersonalAlarmY) {
+                // Enable txtAlarmCompany if "Yes" is selected
+                txtAlarmCompany.setDisable(false);
+                txtPodiatrist.setDisable(false);  // Enable txtPodiatrist when "Yes" is selected
+            } else if (newValue == rdoPersonalAlarmN) {
+                // Disable txtAlarmCompany and txtPodiatrist if "No" is selected
+                txtAlarmCompany.setDisable(true);
+                txtPodiatrist.setDisable(true);
+            }
+        });
+
         //Question 6/
         H1Q6_toggleGroup = new ToggleGroup();
         rdoKeyLockBoxY.setToggleGroup(H1Q6_toggleGroup);
         rdoKeyLockBoxN.setToggleGroup(H1Q6_toggleGroup);
         rdoKeyLockBoxY.setSelected(true);
+
+        //Question 6/
+        H1Q6_toggleGroup = new ToggleGroup();
+        rdoKeyLockBoxY.setToggleGroup(H1Q6_toggleGroup);
+        rdoKeyLockBoxN.setToggleGroup(H1Q6_toggleGroup);
+        rdoKeyLockBoxY.setSelected(true);
+
+        // Initially enable txtKeyLockCode because "Yes" is selected
+        txtKeyLockCode.setDisable(false);
+
+        // Add listener to the H1Q6_toggleGroup
+        H1Q6_toggleGroup.selectedToggleProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue == rdoKeyLockBoxY) {
+                // Enable txtKeyLockCode if "Yes" is selected
+                txtKeyLockCode.setDisable(false);
+                txtPodiatrist.setDisable(false);  // Enable txtPodiatrist when "Yes" is selected
+            } else if (newValue == rdoKeyLockBoxN) {
+                // Disable txtKeyLockCode and txtPodiatrist if "No" is selected
+                txtKeyLockCode.setDisable(true);
+                txtPodiatrist.setDisable(true);
+            }
+        });
 
     }
 
@@ -2163,12 +2354,26 @@ public class AssessmentFormController implements Initializable {
         rdoCanDriveN.setToggleGroup(HE1Q5_toggleGroup);
         rdoCanDriveY.setSelected(true);
 
-        //Secondary Question 6/
-        HE1SQ6_toggleGroup = new ToggleGroup();
-        rdoTaxiVoucher.setToggleGroup(HE1SQ6_toggleGroup);
-        rdoShoppingAssist.setToggleGroup(HE1SQ6_toggleGroup);
-        rdoDocAptAssist.setToggleGroup(HE1SQ6_toggleGroup);
-        rdoOtherAssist.setToggleGroup(HE1SQ6_toggleGroup);
+//              //Secondary Question 6/
+//        HE1SQ6_toggleGroup = new ToggleGroup();
+//        rdoTaxiVoucher.setToggleGroup(HE1SQ6_toggleGroup);
+//        rdoShoppingAssist.setToggleGroup(HE1SQ6_toggleGroup);
+//        rdoDocAptAssist.setToggleGroup(HE1SQ6_toggleGroup);
+//        rdoOtherAssist.setToggleGroup(HE1SQ6_toggleGroup);
+//
+//        // Initially disable txtOtherAssist because a specific option (not "Other") might be selected
+//        txtOtherAssist.setDisable(true);
+//
+//        // Add listener to the HE1SQ6_toggleGroup
+//        HE1SQ6_toggleGroup.selectedToggleProperty().addListener((observable, oldValue, newValue) -> {
+//            if (newValue == rdoOtherAssist) {
+//                // Enable txtOtherAssist if "Other" is selected
+//                txtOtherAssist.setDisable(false);
+//            } else {
+//                // Disable txtOtherAssist if any other option is selected
+//                txtOtherAssist.setDisable(true);
+//            }
+//        });
     }
 
     @FXML
@@ -2305,7 +2510,8 @@ public class AssessmentFormController implements Initializable {
             } else {
 
                 //
-                //create staging entry for this client
+                //update or insert entry for this client
+                //dont forget to change the rdoBpgRequirement3 with the correct button in each panel
                 String counter = "1";
                 String sID = "PCA";
                 String upsertBudgetStaging = "INSERT INTO budget_staging (clientID, assessmentID, caseID, counter, serviceID) "
@@ -2320,10 +2526,9 @@ public class AssessmentFormController implements Initializable {
                         + "serviceID = VALUES(serviceID)";
 
                 if (!rdoBpgRequirement3.isSelected()) {
-                    // String test = "1"; // Set test to "1" if the radio button is not selected
-                    int rowsAffected1 = stmt.executeUpdate(upsertBudgetStaging);
+
+                    int rowsAffected = stmt.executeUpdate(upsertBudgetStaging);
                 }
-                
 
                 // SQL query for upsert
                 String upsertQuery = "INSERT INTO clientHygiene (clientID, assessmentID, bpgRequirement, bathing, bodyb, groominScrug, showerIntervals, showerCarerGender, showerPrefDay, dressingRequirement, dressing, undressing, socks, shoes, dressingCarerGender, dressingPrefDay) "
@@ -2351,10 +2556,8 @@ public class AssessmentFormController implements Initializable {
 
                 // Execute the upsert query
                 int rowsAffected = stmt.executeUpdate(upsertQuery);
-
                 if (rowsAffected > 0) {
                     System.out.println("Record inserted or updated successfully.");
-                    lblPersonalHygiene.setDisable(false);
                 }
             }
         } catch (SQLException e) {
@@ -2430,7 +2633,7 @@ public class AssessmentFormController implements Initializable {
             int rowsAffected = stmt.executeUpdate(upsertQuery);
             if (rowsAffected > 0) {
                 System.out.println("Record inserted or updated successfully.");
-                lblOralHygiene.setDisable(false);
+
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -2516,7 +2719,6 @@ public class AssessmentFormController implements Initializable {
             int rowsAffected = stmt.executeUpdate(clientToiletingQuery);
             if (rowsAffected > 0) {
                 System.out.println("Continence needs data inserted or updated successfully.");
-                lblToileting.setDisable(false);
             }
 
         } catch (SQLException e) {
@@ -2541,83 +2743,102 @@ public class AssessmentFormController implements Initializable {
         String mobilityRequirement = m1_Selected != null ? m1_Selected.getText() : null;
 
         // Question 2
-        String issueDets = txtIssueDets.getText();
+        RadioButton m2_Selected = (RadioButton) M1Q2_toggleGroup.getSelectedToggle();
+        String mobilityIssue = m2_Selected != null ? m2_Selected.getText() : null;
 
         // Question 3
-        RadioButton m3_Selected = (RadioButton) M1Q3_toggleGroup.getSelectedToggle();
-        String tStand = m3_Selected != null ? m3_Selected.getText() : null;
+        String issueDets = txtIssueDets.getText();
 
         // Question 4
         RadioButton m4_Selected = (RadioButton) M1Q4_toggleGroup.getSelectedToggle();
-        String tSit = m4_Selected != null ? m4_Selected.getText() : null;
+        String tStand = m4_Selected != null ? m4_Selected.getText() : null;
 
         // Question 5
         RadioButton m5_Selected = (RadioButton) M1Q5_toggleGroup.getSelectedToggle();
-        String tLying = m5_Selected != null ? m5_Selected.getText() : null;
+        String tSit = m5_Selected != null ? m5_Selected.getText() : null;
 
         // Question 6
         RadioButton m6_Selected = (RadioButton) M1Q6_toggleGroup.getSelectedToggle();
-        String tSitting = m6_Selected != null ? m6_Selected.getText() : null;
+        String tLying = m6_Selected != null ? m6_Selected.getText() : null;
 
         // Question 7
         RadioButton m7_Selected = (RadioButton) M1Q7_toggleGroup.getSelectedToggle();
-        String walking = m7_Selected != null ? m7_Selected.getText() : null;
+        String tSitting = m7_Selected != null ? m7_Selected.getText() : null;
 
         // Question 8
         RadioButton m8_Selected = (RadioButton) M1Q8_toggleGroup.getSelectedToggle();
-        String carRide = m8_Selected != null ? m8_Selected.getText() : null;
+        String walking = m8_Selected != null ? m8_Selected.getText() : null;
 
         // Question 9
         RadioButton m9_Selected = (RadioButton) M1Q9_toggleGroup.getSelectedToggle();
-        String useStairs = m9_Selected != null ? m9_Selected.getText() : null;
+        String carRide = m9_Selected != null ? m9_Selected.getText() : null;
 
         // Question 10
         RadioButton m10_Selected = (RadioButton) M1Q10_toggleGroup.getSelectedToggle();
-        String mobilityAids = m10_Selected != null ? m10_Selected.getText() : null;
+        String useStairs = m10_Selected != null ? m10_Selected.getText() : null;
 
         // Question 11
         RadioButton m11_Selected = (RadioButton) M1Q11_toggleGroup.getSelectedToggle();
-        String lifterRequirement = m11_Selected != null ? m11_Selected.getText() : null;
+        String mobilityAids = m11_Selected != null ? m11_Selected.getText() : null;
 
         // Question 12
         RadioButton m12_Selected = (RadioButton) M1Q12_toggleGroup.getSelectedToggle();
-        String fallHistory = m12_Selected != null ? m12_Selected.getText() : null;
+        String lifterRequirement = m12_Selected != null ? m12_Selected.getText() : null;
 
         // Question 13
         RadioButton m13_Selected = (RadioButton) M1Q13_toggleGroup.getSelectedToggle();
-        String fallDets = m13_Selected != null ? m13_Selected.getText() : null;
+        String fallHistory = m13_Selected != null ? m13_Selected.getText() : null;
 
         // Question 14
-        String fallDetsText = txtFallDets.getText();
-
-        // SQL query for inserting or updating mobility needs
-        String clientMobilityQuery = "INSERT INTO clientMobility (clientID, assessmentID, mobilityRequirement, issueDets, tStand, tSit, tLying, tSitting, walking, carRide, useStairs, mobilityAids, lifterRequirement, fallHistory, fallDets) "
-                + "VALUES ('" + clientID + "', '" + assessmentID + "', '"
-                + mobilityRequirement + "', '" + issueDets + "', '"
-                + tStand + "', '" + tSit + "', '" + tLying + "', '"
-                + tSitting + "', '" + walking + "', '" + carRide + "', '"
-                + useStairs + "', '" + mobilityAids + "', '" + lifterRequirement + "', '"
-                + fallHistory + "', '" + fallDetsText + "') "
-                + "ON DUPLICATE KEY UPDATE "
-                + "mobilityRequirement = VALUES(mobilityRequirement), "
-                + "issueDets = VALUES(issueDets), "
-                + "tStand = VALUES(tStand), "
-                + "tSit = VALUES(tSit), "
-                + "tLying = VALUES(tLying), "
-                + "tSitting = VALUES(tSitting), "
-                + "walking = VALUES(walking), "
-                + "carRide = VALUES(carRide), "
-                + "useStairs = VALUES(useStairs), "
-                + "mobilityAids = VALUES(mobilityAids), "
-                + "lifterRequirement = VALUES(lifterRequirement), "
-                + "fallHistory = VALUES(fallHistory), "
-                + "fallDets = VALUES(fallDets)";
-
+        String fallDets = txtFallDets.getText();
         try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD); Statement stmt = conn.createStatement()) {
+
+            String counter = "1";
+            String sID = "CA";
+            String upsertBudgetStaging = "INSERT INTO budget_staging (clientID, assessmentID, caseID, counter, serviceID) "
+                    + "SELECT '" + clientID + "', '" + assessmentID + "', '" + caseN + "', '" + counter + "', serviceID "
+                    + "FROM serviceoffered "
+                    + "WHERE serviceID = '" + sID + "' "
+                    + "ON DUPLICATE KEY UPDATE "
+                    + "clientID = VALUES(clientID), "
+                    + "assessmentID = VALUES(assessmentID), "
+                    + "caseID = VALUES(caseID), "
+                    + "counter = VALUES(counter), "
+                    + "serviceID = VALUES(serviceID)";
+
+            if (!rdoMobilityRequirement1.isSelected()) {
+
+                int rowsAffected2 = stmt.executeUpdate(upsertBudgetStaging);
+            }
+
+            // SQL query for inserting or updating mobility needs
+            String clientMobilityQuery = "INSERT INTO clientMobility (clientID, assessmentID, mobilityRequirement, mobilityIssue, issueDets, tStand, tSit, tLying, tSitting, walking, carRide, useStairs, mobilityAids, lifterRequirement, fallHistory, fallDets) "
+                    + "VALUES ('" + clientID + "', '" + assessmentID + "', '"
+                    + mobilityRequirement + "', '" + mobilityIssue + "', '" + issueDets + "', '"
+                    + tStand + "', '" + tSit + "', '" + tLying + "', '"
+                    + tSitting + "', '" + walking + "', '" + carRide + "', '"
+                    + useStairs + "', '" + mobilityAids + "', '" + lifterRequirement + "', '"
+                    + fallHistory + "', '" + fallDets + "') "
+                    + "ON DUPLICATE KEY UPDATE "
+                    + "mobilityRequirement = VALUES(mobilityRequirement), "
+                    + "mobilityIssue = VALUES(mobilityIssue), "
+                    + "issueDets = VALUES(issueDets), "
+                    + "tStand = VALUES(tStand), "
+                    + "tSit = VALUES(tSit), "
+                    + "tLying = VALUES(tLying), "
+                    + "tSitting = VALUES(tSitting), "
+                    + "walking = VALUES(walking), "
+                    + "carRide = VALUES(carRide), "
+                    + "useStairs = VALUES(useStairs), "
+                    + "mobilityAids = VALUES(mobilityAids), "
+                    + "lifterRequirement = VALUES(lifterRequirement), "
+                    + "fallHistory = VALUES(fallHistory), "
+                    + "fallDets = VALUES(fallDets)";
+
             int rowsAffected = stmt.executeUpdate(clientMobilityQuery);
             if (rowsAffected > 0) {
                 System.out.println("Mobility needs data inserted or updated successfully.");
-                lblMobility.setDisable(false);
+
             }
 
         } catch (SQLException e) {
@@ -2693,7 +2914,6 @@ public class AssessmentFormController implements Initializable {
             int rowsAffected = stmt.executeUpdate(otherMobilityQuery);
             if (rowsAffected > 0) {
                 System.out.println("Record inserted or updated successfully.");
-                lblOtherMobility.setDisable(false);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -2776,9 +2996,28 @@ public class AssessmentFormController implements Initializable {
 
                 // Execute the upsert query
                 int rowsAffected = stmt.executeUpdate(upsertQuery);
+
+                String counter = "1";
+                String sID = "MP";
+                String upsertBudgetStaging = "INSERT INTO budget_staging (clientID, assessmentID, caseID, counter, serviceID) "
+                        + "SELECT '" + clientID + "', '" + assessmentID + "', '" + caseN + "', '" + counter + "', serviceID "
+                        + "FROM serviceoffered "
+                        + "WHERE serviceID = '" + sID + "' "
+                        + "ON DUPLICATE KEY UPDATE "
+                        + "clientID = VALUES(clientID), "
+                        + "assessmentID = VALUES(assessmentID), "
+                        + "caseID = VALUES(caseID), "
+                        + "counter = VALUES(counter), "
+                        + "serviceID = VALUES(serviceID)";
+
+                if (!rdoNutritionRequirement1.isSelected()) {
+
+                    int rowsAffected2 = stmt.executeUpdate(upsertBudgetStaging);
+                }
+
                 if (rowsAffected > 0) {
                     System.out.println("Record inserted or updated successfully.");
-                    lblNutrition.setDisable(false);
+
                 }
             }
 
@@ -2869,7 +3108,6 @@ public class AssessmentFormController implements Initializable {
                 int rowsAffected = stmt.executeUpdate(upsertQuery);
                 if (rowsAffected > 0) {
                     System.out.println("Record inserted or updated successfully.");
-                    lblSkinIntegrity.setDisable(false);
                 }
             }
 
@@ -2942,7 +3180,6 @@ public class AssessmentFormController implements Initializable {
                 int rowsAffected = stmt.executeUpdate(upsertQuery);
                 if (rowsAffected > 0) {
                     System.out.println("Record inserted or updated successfully.");
-                    lblMentalHealth.setDisable(false);
                 }
             }
 
@@ -3041,9 +3278,27 @@ public class AssessmentFormController implements Initializable {
 
                 // Execute the upsert query
                 int rowsAffected = stmt.executeUpdate(upsertQuery);
+
+                String counter = "2";
+                String sID = "MP";
+                String upsertBudgetStaging = "INSERT INTO budget_staging (clientID, assessmentID, caseID, counter, serviceID) "
+                        + "SELECT '" + clientID + "', '" + assessmentID + "', '" + caseN + "', '" + counter + "', serviceID "
+                        + "FROM serviceoffered "
+                        + "WHERE serviceID = '" + sID + "' "
+                        + "ON DUPLICATE KEY UPDATE "
+                        + "clientID = VALUES(clientID), "
+                        + "assessmentID = VALUES(assessmentID), "
+                        + "caseID = VALUES(caseID), "
+                        + "counter = VALUES(counter), "
+                        + "serviceID = VALUES(serviceID)";
+
+                if (!rdoMedicationRequirement1.isSelected()) {
+
+                    int rowsAffected2 = stmt.executeUpdate(upsertBudgetStaging);
+                }
+
                 if (rowsAffected > 0) {
                     System.out.println("Record inserted or updated successfully.");
-                    lblMedication.setDisable(false);
                 }
             }
         } catch (SQLException e) {
@@ -3077,7 +3332,7 @@ public class AssessmentFormController implements Initializable {
         String q5_selectedValue = q5_Selected != null ? q5_Selected.getText() : null;
 
         RadioButton q5S_Selected = (RadioButton) PM1SQ5_toggleGroup.getSelectedToggle();
-        String q5S_selectedValue = q5S_Selected != null ? q5S_Selected.getText() : null;
+        String q5S_selectedValue = q5S_Selected != null ? q5S_Selected.getText() : "";
 
         // SQL query to check if assessmentID exists
         String checkAssessmentExistenceQuery = "SELECT COUNT(*) FROM clientassessment WHERE assessmentID = '" + assessmentID + "'";
@@ -3110,7 +3365,6 @@ public class AssessmentFormController implements Initializable {
                 int rowsAffected = stmt.executeUpdate(upsertQuery);
                 if (rowsAffected > 0) {
                     System.out.println("Record inserted or updated successfully.");
-                    lblPainManagement.setDisable(false);
                 }
             }
         } catch (SQLException e) {
@@ -3175,7 +3429,6 @@ public class AssessmentFormController implements Initializable {
                 int rowsAffected = stmt.executeUpdate(upsertQuery);
                 if (rowsAffected > 0) {
                     System.out.println("Record inserted or updated successfully.");
-                    lvlHousing.setDisable(false);
                 }
             }
         } catch (SQLException e) {
@@ -3195,10 +3448,11 @@ public class AssessmentFormController implements Initializable {
 
     @FXML
     private void btnNextMHEN(ActionEvent event) {
-
+        // Home Maintain Support
         RadioButton q1_Selected = (RadioButton) HE1Q1_toggleGroup.getSelectedToggle();
         String homeMaintainSupport = q1_Selected != null ? q1_Selected.getText() : null;
 
+        // Various Home Maintenance Activities
         String cleaning = ckCleaning.isSelected() ? "Yes" : "No";
         String decluttering = ckDecluttering.isSelected() ? "Yes" : "No";
         String dusting = ckDusting.isSelected() ? "Yes" : "No";
@@ -3225,12 +3479,10 @@ public class AssessmentFormController implements Initializable {
         RadioButton q5_Selected = (RadioButton) HE1Q5_toggleGroup.getSelectedToggle();
         String canDrive = q5_Selected != null ? q5_Selected.getText() : null;
 
-        // Type of Assistance
-        RadioButton q6S_Selected = (RadioButton) HE1SQ6_toggleGroup.getSelectedToggle();
-        String activityAssist = q6S_Selected != null ? q6S_Selected.getText() : null;
-
-        // Other Assistance Details
-        String otherAssistDetails = txtOtherAssist.getText();
+        // Now move the taxi, shopping, and appointment assist strings after canDrive
+        String taxiVoucher = ckTaxiVoucher.isSelected() ? "Yes" : "No";
+        String shoppingAssist = ckShoppingAssist.isSelected() ? "Yes" : "No";
+        String docAptAssist = ckDocAptAssist.isSelected() ? "Yes" : "No";
 
         // Check if assessmentID exists
         String checkAssessmentExistenceQuery = "SELECT COUNT(*) FROM clientassessment WHERE assessmentID = '" + assessmentID + "'";
@@ -3269,31 +3521,69 @@ public class AssessmentFormController implements Initializable {
                         + "gutterCleaning = VALUES(gutterCleaning), "
                         + "bedroomCleaning = VALUES(bedroomCleaning)";
 
-                // Execute the upsert query
+                // Execute the upsert query for clientHome
                 int rowsAffectedHome = stmt.executeUpdate(upsertHomeQuery);
+
+                String counter = "1";
+                String sID = "DA";
+                String upsertBudgetStaging = "INSERT INTO budget_staging (clientID, assessmentID, caseID, counter, serviceID) "
+                        + "SELECT '" + clientID + "', '" + assessmentID + "', '" + caseN + "', '" + counter + "', serviceID "
+                        + "FROM serviceoffered "
+                        + "WHERE serviceID = '" + sID + "' "
+                        + "ON DUPLICATE KEY UPDATE "
+                        + "clientID = VALUES(clientID), "
+                        + "assessmentID = VALUES(assessmentID), "
+                        + "caseID = VALUES(caseID), "
+                        + "counter = VALUES(counter), "
+                        + "serviceID = VALUES(serviceID)";
+
+                if (!rdoHomeMaintainSupportN.isSelected()) {
+
+                    int rowsAffected2 = stmt.executeUpdate(upsertBudgetStaging);
+                }
+
                 if (rowsAffectedHome > 0) {
                     System.out.println("clientHome record inserted or updated successfully.");
                 }
 
                 // SQL query for upsert for clientTransport
-                String upsertTransportQuery = "INSERT INTO clientTransport (clientID, assessmentID, socialActivity, transportAssist, canDrive, activityAssist, otherAssist) "
+                String upsertTransportQuery = "INSERT INTO clientTransport (clientID, assessmentID, socialActivity, transportAssist, canDrive, TaxiVoucher, ShoppingAssist, DocAptAssist) "
                         + "VALUES ('" + clientID + "', '" + assessmentID + "', '"
                         + socialActivity + "', '" + transportAssist + "', '" + canDrive + "', '"
-                        + activityAssist + "', '" + otherAssistDetails + "') "
+                        + taxiVoucher + "', '" + shoppingAssist + "', '" + docAptAssist + "') "
                         + "ON DUPLICATE KEY UPDATE "
                         + "socialActivity = VALUES(socialActivity), "
                         + "transportAssist = VALUES(transportAssist), "
                         + "canDrive = VALUES(canDrive), "
-                        + "activityAssist = VALUES(activityAssist), "
-                        + "otherAssist = VALUES(otherAssist)";
+                        + "TaxiVoucher = VALUES(TaxiVoucher), "
+                        + "ShoppingAssist = VALUES(ShoppingAssist), "
+                        + "DocAptAssist = VALUES(DocAptAssist)";
 
-                // Execute the upsert query
+                // Execute the upsert query for clientTransport
                 int rowsAffectedTransport = stmt.executeUpdate(upsertTransportQuery);
+
+                String sSID = "TA";
+                String upsertBudgetStaging2 = "INSERT INTO budget_staging (clientID, assessmentID, caseID, counter, serviceID) "
+                        + "SELECT '" + clientID + "', '" + assessmentID + "', '" + caseN + "', '" + counter + "', serviceID "
+                        + "FROM serviceoffered "
+                        + "WHERE serviceID = '" + sSID + "' "
+                        + "ON DUPLICATE KEY UPDATE "
+                        + "clientID = VALUES(clientID), "
+                        + "assessmentID = VALUES(assessmentID), "
+                        + "caseID = VALUES(caseID), "
+                        + "counter = VALUES(counter), "
+                        + "serviceID = VALUES(serviceID)";
+
+                if (!rdoSocialActivityN.isSelected()) {
+
+                    int rowsAffected2 = stmt.executeUpdate(upsertBudgetStaging2);
+                }
+
                 if (rowsAffectedTransport > 0) {
                     System.out.println("clientTransport record inserted or updated successfully.");
-                    lblHouseEnvironment.setDisable(false);
                 }
             }
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -3688,7 +3978,9 @@ public class AssessmentFormController implements Initializable {
         paneNDP.setVisible(false);
         paneClientContact.setVisible(true);
     }
-    
+
+
+
     
 
         @FXML

@@ -905,9 +905,9 @@
                      <children>
                         <Text layoutX="8.0" layoutY="37.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Do you own your Home?" />
                         <RadioButton fx:id="rdoHousingOwnershipY" layoutX="152.0" layoutY="24.0" mnemonicParsing="false" text="Yes" />
-                        <RadioButton fx:id="rdoHousingSetupR" layoutX="220.0" layoutY="23.0" mnemonicParsing="false" text="Renting" />
-                        <RadioButton fx:id="rdoHousingSetupG" layoutX="306.0" layoutY="9.0" mnemonicParsing="false" prefHeight="39.0" prefWidth="96.0" text="Government Housing" wrapText="true" />
-                        <RadioButton fx:id="rdoHousingSetupO" layoutX="414.0" layoutY="10.0" mnemonicParsing="false" prefHeight="39.0" prefWidth="96.0" text="Owned by family" wrapText="true" />
+                        <RadioButton fx:id="rdoHousingOwnershipR" layoutX="220.0" layoutY="23.0" mnemonicParsing="false" text="Renting" />
+                        <RadioButton fx:id="rdoHousingOwnershipG" layoutX="306.0" layoutY="9.0" mnemonicParsing="false" prefHeight="39.0" prefWidth="96.0" text="Government Housing" wrapText="true" />
+                        <RadioButton fx:id="rdoHousingOwnershipO" layoutX="414.0" layoutY="10.0" mnemonicParsing="false" prefHeight="39.0" prefWidth="96.0" text="Owned by family" wrapText="true" />
                         <RadioButton fx:id="rdoLivingSetupN2" layoutX="344.0" layoutY="75.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="116.0" text="Lives with Family" wrapText="true" />
                         <TextArea fx:id="txtAlarmCompany" layoutX="154.0" layoutY="165.0" prefHeight="39.0" prefWidth="300.0" />
                         <TextField fx:id="txtKeyLockCode" layoutX="155.0" layoutY="265.0" prefHeight="25.0" prefWidth="62.0" />
