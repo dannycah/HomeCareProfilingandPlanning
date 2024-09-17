@@ -8,19 +8,24 @@ package hcp_pb;
  *
  * @author mark
  */
+
+
 public class MyCases {
     private int caseID;
     private String clientName;
     private String caseType;
     private String casePriority;
-    private int clientID; // Add clientID field
+    private int clientID;
+    private long cAge; // Client age field
 
-    public MyCases(int caseID, int clientID, String clientName, String caseType, String casePriority) {
+    // Constructor including clientID and other fields
+    public MyCases(int caseID, int clientID, String clientName, String caseType, String casePriority, long cAge) {
         this.caseID = caseID;
         this.clientID = clientID; // Initialize clientID
         this.clientName = clientName;
         this.caseType = caseType;
         this.casePriority = casePriority;
+        this.cAge = cAge; // Initialize cAge
     }
 
     // Getters
@@ -40,8 +45,12 @@ public class MyCases {
         return casePriority;
     }
 
-    public int getClientID() { // Getter for clientID
+    public int getClientID() {
         return clientID;
+    }
+
+    public long getCAge() { // Getter for cAge
+        return cAge;
     }
 
     // Setters
@@ -61,7 +70,11 @@ public class MyCases {
         this.casePriority = casePriority;
     }
 
-    public void setClientID(int clientID) { // Setter for clientID
+    public void setClientID(int clientID) {
         this.clientID = clientID;
+    }
+
+    public void setCAge(long cAge) { // Setter for cAge
+        this.cAge = cAge;
     }
 }
