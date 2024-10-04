@@ -1,5 +1,8 @@
 package hcp_pb;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.Connection;
@@ -18,6 +21,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 public class SplashScreenController implements Initializable {
 
@@ -26,10 +30,14 @@ public class SplashScreenController implements Initializable {
     @FXML
     private ProgressBar barProgress;
 
-    private final String MYSQL_URL = "jdbc:mysql://localhost:3306";
-    private final String DB_URL = MYSQL_URL + "/HCP_PBP";
-    private final String USER_NAME = "root";
-    private final String PASSWORD = "!Student1";
+    private static final String IS_OPEN_FILE = "config/isOpen.txt"; // Relative path to isOpen file
+    private static final String DB_CONFIG_FILE = "config/dbConfig.txt"; // Relative path to dbConfig file
+
+    private static Scene scene;
+    private String DB_URL;
+    private String DB_USER;
+    private String DB_PASSWORD;
+
     private final String dbCreateSQL = "CREATE DATABASE IF NOT EXISTS HCP_PBP";
     private final String TABLE_FUNDING_LEVEL = "CREATE TABLE IF NOT EXISTS fundingLevel ("
             + "levelID VARCHAR(20) PRIMARY KEY, "
@@ -68,11 +76,16 @@ public class SplashScreenController implements Initializable {
             + "userPass VARCHAR(100) NOT NULL, "
             + "isActive int, "
             + "stats int, "
-            + "FOREIGN KEY (employeeID) REFERENCES employeeList(employeeID)"
-            + ");";
+            //            + "FOREIGN KEY (employeeID) REFERENCES employeeList(employeeID)"
+               + "resetFlag VARCHAR(5), " 
+        + "resetToken VARCHAR(20) "
+        + ");";
+    
+    
+
 
     private final String TABLE_SERVICE_OFFERED = "CREATE TABLE IF NOT EXISTS serviceoffered ("
-            + "serviceID VARCHAR(10), "
+            + "serviceID VARCHAR(10) PRIMARY KEY, "
             + "servicedesc VARCHAR(255), "
             + "dayshift DECIMAL(10, 2), "
             + "eveningshift DECIMAL(10, 2), "
@@ -102,11 +115,11 @@ public class SplashScreenController implements Initializable {
 //            + "FOREIGN KEY (userName) REFERENCES userAccounts(userName))";
 
     private final String TABLE_AUDIT_TRAIL = "CREATE TABLE IF NOT EXISTS auditTrail ("
-            + "logID INT PRIMARY KEY, "
+            + "logID INT  AUTO_INCREMENT PRIMARY KEY, "
             + "logDateTime DATETIME, "
             + "logDetails TEXT, "
-            + "userID INT, "
-            + "FOREIGN KEY (userID) REFERENCES userAccounts(userID))";
+            + "userID INT "
+              + ");";
 
     private final String TABLE_CLIENT_DATA = "CREATE TABLE IF NOT EXISTS clientData ("
             + "clientID INT PRIMARY KEY, "
@@ -169,7 +182,7 @@ public class SplashScreenController implements Initializable {
             + "clientID INT, "
             + "userID INT, "
             + "assessmentStatus VARCHAR(20), "
-                 + "createUser VARCHAR(20),"
+            + "createUser VARCHAR(20),"
             + "closingReason VARCHAR(500), "
             + "FOREIGN KEY (userID) REFERENCES userAccounts(userID), "
             + "FOREIGN KEY (clientID) REFERENCES clientData(clientID))";
@@ -503,44 +516,69 @@ public class SplashScreenController implements Initializable {
             + "FOREIGN KEY (serviceID) REFERENCES serviceProvided(serviceID), "
             + "FOREIGN KEY (carePlanID) REFERENCES carePlan(carePlanID))";
 
+    private static final String TABLE_BUDGET_SUMMARY = "CREATE TABLE IF NOT EXISTS budgetSummary ("
+            + "budgetSummaryID INT AUTO_INCREMENT PRIMARY KEY, "
+            + "clientID INT NOT NULL, "
+            + "clientName VARCHAR(100) NOT NULL, "
+            + "clientDOB DATE NOT NULL, "
+            + "clientLevel VARCHAR(50), "
+            + "prepBy VARCHAR(100), "
+            + "prepDate DATE, "
+            + "dailySubsidy DECIMAL(10, 2), "
+            + "manPerc DECIMAL(5, 2), "
+            + "carePerc DECIMAL(5, 2), "
+            + "monthlySubsidy DECIMAL(10, 2), "
+            + "manFee DECIMAL(10, 2), "
+            + "careFee DECIMAL(10, 2), "
+            + "toSpend DECIMAL(10, 2)"
+            + ")";
+
+    private static final String TABLE_EXPENSE_SUMMARY = "CREATE TABLE IF NOT EXISTS expenseSummary ("
+            + "expenseSummaryID INT AUTO_INCREMENT PRIMARY KEY, "
+            + "clientID INT NOT NULL, "
+            + "prepDate DATE, "
+            + "serviceDesc TEXT, "
+            + "numUnits INT, "
+            + "subTotal DECIMAL(10, 2), "
+            + "totalExpense DECIMAL(10, 2)"
+            + ")";
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        loadDatabaseConfig();
         lblProgress.setText("Initializing...");
         barProgress.setProgress(ProgressBar.INDETERMINATE_PROGRESS);
 
         // Perform database setup in a separate thread
         new Thread(() -> {
             try {
-                // Connect to MySQL server
-                try (Connection sqlConnection = DriverManager.getConnection(MYSQL_URL, USER_NAME, PASSWORD)) {
+                // Step 1: Connect to MySQL server (without specifying the database)
+                String serverUrl = DB_URL.substring(0, DB_URL.lastIndexOf("/")); // Remove the database name from the URL
+                try (Connection sqlConnection = DriverManager.getConnection(serverUrl, DB_USER, DB_PASSWORD)) {
                     if (sqlConnection != null) {
-                        Platform.runLater(() -> {
-                            lblProgress.setText("Connecting to database...");
-                        });
+                        Platform.runLater(() -> lblProgress.setText("Connecting to database..."));
                         System.out.println("MySQL Connection Successful!");
 
                         // Pause for visual effect
                         Thread.sleep(2000);
 
-                        // Create database if it does not exist
-                        if (!databaseExists(sqlConnection, "HCP_PBP")) {
+                        // Step 2: Check if the database exists, and create it if not
+                        if (!databaseExists(sqlConnection, "hcp_pbp")) {
                             try (Statement statement = sqlConnection.createStatement()) {
-                                statement.executeUpdate(dbCreateSQL);
+                                statement.executeUpdate(dbCreateSQL); // Create the database
                             }
                         }
 
-                        // Connect to the specific database
-                        try (Connection dbConnection = DriverManager.getConnection(DB_URL, USER_NAME, PASSWORD)) {
+                        // Step 3: Now connect to the 'hcp_pbp' database
+                        try (Connection dbConnection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
                             if (dbConnection != null) {
-                                Platform.runLater(() -> {
-                                    lblProgress.setText("Checking database schema...");
-                                });
+                                Platform.runLater(() -> lblProgress.setText("Checking database schema..."));
                                 System.out.println("HCP_PBP Database Connection Successful!");
 
                                 // Pause for visual effect
                                 Thread.sleep(2000);
 
-                                // Create tables if they do not exist
+                                // Step 4: Create tables if they do not exist
                                 try (Statement statement = dbConnection.createStatement()) {
                                     statement.executeUpdate(TABLE_FUNDING_LEVEL);
                                     statement.executeUpdate(TABLE_USER_ROLES);
@@ -572,6 +610,9 @@ public class SplashScreenController implements Initializable {
                                     statement.executeUpdate(TABLE_CARE_PLAN);
                                     statement.executeUpdate(TABLE_SERVICE_PROVIDED);
                                     statement.executeUpdate(TABLE_BUDGET_PLAN);
+                                    statement.executeUpdate(TABLE_BUDGET_SUMMARY);
+                                    statement.executeUpdate(TABLE_EXPENSE_SUMMARY);
+
                                     System.out.println("Tables Created Successfully!");
 
                                     Platform.runLater(() -> {
@@ -591,14 +632,27 @@ public class SplashScreenController implements Initializable {
                                                 alert.setHeaderText(null);
                                                 alert.setContentText("Set up system for first time use, please create an admin profile");
                                                 alert.showAndWait();
+                                                
+                                                initData();
 
                                                 // Proceed to user creation
                                                 try {
                                                     Parent enrolStaffRoot = FXMLLoader.load(getClass().getResource("registerAdmin.fxml"));
                                                     Scene enrolStaffScene = new Scene(enrolStaffRoot);
+
+// Get the primary stage
                                                     Stage primaryStage = (Stage) barProgress.getScene().getWindow();
+
+// Set the scene on the stage
                                                     primaryStage.setScene(enrolStaffScene);
+
+// Set the title of the stage
                                                     primaryStage.setTitle("Administrator Registration");
+
+// Set the width and height of the stage
+                                                    primaryStage.setWidth(545); // Set desired width
+                                                    primaryStage.setHeight(580); // Set desired height
+
                                                     //primaryStage.initStyle(StageStyle.UNDECORATED);
                                                 } catch (IOException e) {
                                                     e.printStackTrace();
@@ -626,6 +680,7 @@ public class SplashScreenController implements Initializable {
                                                     stage.setWidth(680);  // Set the width 
                                                     stage.setHeight(520); // Set the height
 
+//                                                     stage.initStyle(StageStyle.DECORATED);
                                                 } catch (IOException e) {
                                                     e.printStackTrace();
                                                 }
@@ -648,6 +703,42 @@ public class SplashScreenController implements Initializable {
             }
         }).start();
     }
+
+    private void loadDatabaseConfig() {
+        try {
+            File configFile = new File(DB_CONFIG_FILE);
+            if (!configFile.exists()) {
+                // Optionally create a default config file if it doesn't exist
+
+                // createDefaultConfigFile();
+            }
+
+            // Read the database configuration
+            try (BufferedReader reader = new BufferedReader(new FileReader(configFile))) {
+                DB_URL = reader.readLine(); // Read the first line (URL)
+                DB_USER = reader.readLine(); // Read the second line (username)
+                DB_PASSWORD = reader.readLine(); // Read the third line (password)
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+//            showAlert("Error reading the database configuration.", "Error", Alert.AlertType.ERROR);
+//        
+//            
+
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Error");
+            alert.setHeaderText(null);
+            alert.setContentText("Error reading the database configuration.");
+//                alert.showAndWait();
+            System.exit(1); // Exit if an error occurs while reading the file
+        }
+        
+        
+     
+    }
+    
+    
+    
 
 //    @Override
 //    public void initialize(URL url, ResourceBundle rb) {
@@ -731,4 +822,58 @@ public class SplashScreenController implements Initializable {
         System.out.println("SQLState: " + e.getSQLState());
         e.printStackTrace();
     }
+    
+    
+    
+private void initData() {
+    try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+         Statement stmt = conn.createStatement()) {
+
+        // UPSERT for fundingLevel
+        String upsertFundingLevel = "INSERT INTO hcp_pbp.fundingLevel (levelID, dailyFund, fortnightlyFund, monthlyFund, dementiaFlag) VALUES "
+                + "('Level 0', 0.00, 0.00, 0.00, 0), "
+                + "('Level 1', 29.01, 406.14, 812.28, 0), "
+                + "('Level 2', 51.02, 714.28, 1428.56, 0), "
+                + "('Level 3', 111.04, 1554.56, 0.00, 0), "
+                + "('Level 4', 168.33, 2356.62, 4713.24, 0) "
+                + "ON DUPLICATE KEY UPDATE dailyFund = VALUES(dailyFund), "
+                + "fortnightlyFund = VALUES(fortnightlyFund), "
+                + "monthlyFund = VALUES(monthlyFund), "
+                + "dementiaFlag = VALUES(dementiaFlag);";
+        
+        stmt.executeUpdate(upsertFundingLevel);
+
+        // UPSERT for userRoles
+        String upsertUserRoles = "INSERT INTO hcp_pbp.userRoles (roleID, roleDesc, dateAdded) VALUES "
+                + "(1, 'Case Manager', CURDATE()), "
+                + "(2, 'Care Services Officer', CURDATE()), "
+                + "(3, 'System Administrator', CURDATE()) "
+                + "ON DUPLICATE KEY UPDATE roleDesc = VALUES(roleDesc), dateAdded = VALUES(dateAdded);";
+        
+        stmt.executeUpdate(upsertUserRoles);
+
+        // UPSERT for serviceoffered
+        String upsertServiceOffered = "INSERT INTO hcp_pbp.serviceoffered (serviceID, servicedesc, dayshift, eveningshift, satShift, sunShift, holidayShift, satNight, sunNight, holidayNight) VALUES "
+                + "('PCA', 'Personal Care Assistance', 67.00, 76.00, 99.00, 121.00, 153.00, 108.00, 133.00, 175.00), "
+                + "('CA', 'Community Access', 67.00, 76.00, 99.00, 121.00, 153.00, 108.00, 133.00, 175.00), "
+                + "('MP', 'Meal Preparation', 67.00, 76.00, 99.00, 121.00, 153.00, 108.00, 133.00, 175.00), "
+                + "('DA', 'Domestic Assistance', 67.00, 76.00, 99.00, 121.00, 153.00, 108.00, 133.00, 175.00), "
+                + "('TA', 'Transport Assistance', 67.00, 76.00, 99.00, 121.00, 153.00, 108.00, 133.00, 175.00), "
+                + "('KM', 'Kilometre Allowance', 1.40, 1.40, 1.40, 1.40, 1.40, 1.40, 1.40, 1.40), "
+                + "('SSG', 'Social Support', 90.00, 90.00, 90.00, 90.00, 90.00, 90.00, 90.00, 90.00), "
+                + "('PM', 'Package Management', 0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15), "
+                + "('CM', 'Care Management', 0.20, 0.20, 0.20, 0.20, 0.20, 0.20, 0.20, 0.20) "
+                + "ON DUPLICATE KEY UPDATE servicedesc = VALUES(servicedesc), dayshift = VALUES(dayshift), "
+                + "eveningshift = VALUES(eveningshift), satShift = VALUES(satShift), sunShift = VALUES(sunShift), "
+                + "holidayShift = VALUES(holidayShift), satNight = VALUES(satNight), sunNight = VALUES(sunNight), "
+                + "holidayNight = VALUES(holidayNight);";
+        
+        stmt.executeUpdate(upsertServiceOffered);
+
+    } catch (SQLException e) {
+        e.printStackTrace();
+        // Handle exception, possibly alert the user
+    }
+}
+
 }

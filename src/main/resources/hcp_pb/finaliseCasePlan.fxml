@@ -40,7 +40,7 @@
             <Label layoutX="33.0" layoutY="280.0" text="Address:" textFill="WHITE" />
             <TextField fx:id="cAddress" editable="false" layoutX="87.0" layoutY="277.0" prefHeight="25.0" prefWidth="159.0" />
             <Button fx:id="genCP" layoutX="67.0" layoutY="382.0" mnemonicParsing="false" onAction="#genCP" prefHeight="25.0" prefWidth="131.0" style="-fx-background-color: #364bbf;" text="Generate" textFill="WHITE" />
-            <Button layoutX="67.0" layoutY="417.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="131.0" style="-fx-background-color: #364bbf;" text="Cancel" textFill="WHITE" />
+            <Button fx:id="canFin" layoutX="67.0" layoutY="417.0" mnemonicParsing="false" onAction="#canFin" prefHeight="25.0" prefWidth="131.0" style="-fx-background-color: #364bbf;" text="Cancel" textFill="WHITE" />
             <Button fx:id="confirmBtn" disable="true" layoutX="67.0" layoutY="451.0" mnemonicParsing="false" onAction="#confirmBtn" prefHeight="25.0" prefWidth="131.0" style="-fx-background-color: #364bbf;" text="Confirm and Submit" textFill="WHITE" />
          </children>
       </Pane>

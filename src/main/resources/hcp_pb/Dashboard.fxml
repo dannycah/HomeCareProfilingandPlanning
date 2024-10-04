@@ -1,15 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.chart.BarChart?>
-<?import javafx.scene.chart.CategoryAxis?>
-<?import javafx.scene.chart.NumberAxis?>
 <?import javafx.scene.chart.PieChart?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Hyperlink?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextArea?>
@@ -19,6 +17,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
 
 <AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1024.0" stylesheets="@../../java/hcp_pb/styles.css" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="hcp_pb.DashboardController">
     <children>
@@ -35,9 +34,9 @@
                             </font>
                         </Label>
                         <Pane prefHeight="12.0" prefWidth="300.0" />
-                        <VBox prefHeight="224.0" prefWidth="300.0">
+                        <VBox prefHeight="153.0" prefWidth="300.0">
                             <children>
-                                <Pane fx:id="cmPane" prefHeight="23.0" prefWidth="300.0">
+                                <Pane fx:id="cmPane" prefHeight="0.0" prefWidth="300.0">
                                     <children>
                                         <Label fx:id="dashboardLbl" layoutY="7.0" onMouseClicked="#dashboardLbl" prefHeight="35.0" prefWidth="300.0" text="Dashboard" textFill="#a9a6a6">
                                             <font>
@@ -72,29 +71,7 @@
                                                 <Insets left="20.0" />
                                             </padding>
                                         </Label>
-                                        <Label fx:id="assessmentLbl" layoutY="112.0" onMouseClicked="#assessmentLbl" prefHeight="35.0" prefWidth="300.0" text="Assessments" textFill="#a9a6a6">
-                                            <font>
-                                                <Font size="15.0" />
-                                            </font>
-                                            <opaqueInsets>
-                                                <Insets />
-                                            </opaqueInsets>
-                                            <padding>
-                                                <Insets left="20.0" />
-                                            </padding>
-                                        </Label>
-                                        <Label fx:id="carePlanLbl" layoutY="147.0" onMouseClicked="#carePlanLbl" prefHeight="35.0" prefWidth="300.0" text="Care Plan" textFill="#a9a6a6">
-                                            <font>
-                                                <Font size="15.0" />
-                                            </font>
-                                            <opaqueInsets>
-                                                <Insets />
-                                            </opaqueInsets>
-                                            <padding>
-                                                <Insets left="20.0" />
-                                            </padding>
-                                        </Label>
-                                        <Label fx:id="budgetPlanLbl" layoutY="182.0" onMouseClicked="#budgetPlanLbl" prefHeight="35.0" prefWidth="300.0" text="Budget Plan" textFill="#a9a6a6">
+                                        <Label fx:id="budgetPlanLbl" layoutY="112.0" onMouseClicked="#budgetPlanLbl" prefHeight="35.0" prefWidth="300.0" text="Budget Plan" textFill="#a9a6a6">
                                             <font>
                                                 <Font size="15.0" />
                                             </font>
@@ -107,7 +84,7 @@
                                         </Label>
                                     </children>
                                 </Pane>
-                                <Pane fx:id="csoPane" layoutX="10.0" layoutY="10.0" prefHeight="516.0" prefWidth="300.0" visible="false">
+                                <Pane fx:id="csoPane" layoutX="10.0" layoutY="10.0" prefHeight="222.0" prefWidth="300.0" visible="false">
                                     <children>
                                         <Label fx:id="csoDashboardLbl" layoutY="7.0" onMouseClicked="#csoDashboardLbl" prefHeight="35.0" prefWidth="300.0" text="Dashboard" textFill="#a9a6a6">
                                             <font>
@@ -153,37 +130,37 @@
                                                 <Insets left="20.0" />
                                             </padding>
                                         </Label>
-                                        <Label fx:id="reportsLbl" layoutY="147.0" onMouseClicked="#reportsLbl" prefHeight="35.0" prefWidth="300.0" text="Reports" textFill="#a9a6a6">
-                                            <font>
-                                                <Font size="15.0" />
-                                            </font>
-                                            <opaqueInsets>
-                                                <Insets />
-                                            </opaqueInsets>
-                                            <padding>
-                                                <Insets left="20.0" />
-                                            </padding>
-                                        </Label>
-                                        <Label fx:id="requestsLbl" layoutY="182.0" onMouseClicked="#requestsLbl" prefHeight="35.0" prefWidth="300.0" text="Requests" textFill="#a9a6a6">
-                                            <font>
-                                                <Font size="15.0" />
-                                            </font>
-                                            <opaqueInsets>
-                                                <Insets />
-                                            </opaqueInsets>
-                                            <padding>
-                                                <Insets left="20.0" />
-                                            </padding>
-                                        </Label>
                                     </children>
                                 </Pane>
                             </children>
                         </VBox>
-                        <Pane prefHeight="268.0" prefWidth="300.0">
-                            <children>
-                                <Line endX="169.79998779296875" endY="5.7220458984375E-6" layoutX="115.0" layoutY="14.0" startX="-100.0" stroke="WHITE" strokeLineCap="ROUND" strokeLineJoin="ROUND" strokeWidth="5.0" />
-                            </children>
-                        </Pane>
+                  <Pane prefHeight="360.0" prefWidth="300.0">
+                     <children>
+                        <Hyperlink fx:id="helpLink" layoutX="116.0" layoutY="297.0" onMouseClicked="#helpLink" text="Need help?" textFill="WHITE" />
+                        <Label fx:id="budgetViewer" layoutY="-3.0" onMouseClicked="#budgetViewer" prefHeight="35.0" prefWidth="300.0" text="Budget Viewer" textFill="#a9a6a6">
+                           <font>
+                              <Font size="15.0" />
+                           </font>
+                           <opaqueInsets>
+                              <Insets />
+                           </opaqueInsets>
+                           <padding>
+                              <Insets left="20.0" />
+                           </padding>
+                        </Label>
+                        <Label fx:id="reportsLbl" layoutY="32.0" onMouseClicked="#reportsLbl" prefHeight="35.0" prefWidth="300.0" text="Reports" textFill="#a9a6a6">
+                           <font>
+                              <Font size="15.0" />
+                           </font>
+                           <opaqueInsets>
+                              <Insets />
+                           </opaqueInsets>
+                           <padding>
+                              <Insets left="20.0" />
+                           </padding>
+                        </Label>
+                     </children>
+                  </Pane>
                     </children>
                 </VBox>
                 <VBox layoutX="300.0" layoutY="3.0" prefHeight="600.0" prefWidth="724.0">
@@ -197,54 +174,55 @@
                                 </Label>
                                 <Label fx:id="userHolder" layoutX="515.0" layoutY="15.0" prefHeight="17.0" prefWidth="157.0" text="Label" visible="false" />
                                 <Hyperlink fx:id="logoutBtn" layoutX="664.0" layoutY="14.0" onMouseClicked="#logoutBtn" text="Logout" />
+                        <Label fx:id="txtCaseID" layoutX="389.0" layoutY="15.0" text="Label" visible="false" />
                             </children>
                         </Pane>
                         <Pane fx:id="motherPane" prefHeight="556.0" prefWidth="724.0" style="-fx-background-color: d9d9d9;">
                             <children>
-                                <Pane fx:id="dashboardPane" prefHeight="556.0" prefWidth="724.0">
+                                <Pane fx:id="dashboardPane" prefHeight="556.0" prefWidth="724.0" style="-fx-background-color: white;">
                                     <children>
-                                        <Pane layoutX="14.0" layoutY="9.0" prefHeight="75.0" prefWidth="237.0" style="-fx-background-color: white;">
+                                        <Pane layoutX="14.0" layoutY="9.0" prefHeight="75.0" prefWidth="237.0" style="-fx-background-color: d9d9d9;">
                                  <children>
-                                    <Label layoutX="137.0" layoutY="20.0" text="0">
+                                    <Label fx:id="activeCasesCount" layoutX="181.0" layoutY="18.0" text="0" textFill="#3875eb">
                                        <font>
-                                          <Font size="24.0" />
+                                          <Font name="Arial Black" size="31.0" />
                                        </font>
                                     </Label>
-                                    <Label layoutX="36.0" layoutY="30.0" text="Active Cases:" textFill="#797777">
+                                    <Label layoutX="15.0" layoutY="30.0" text="Active Cases:" textFill="#5b5858">
                                        <font>
-                                          <Font size="11.0" />
+                                          <Font name="Arial Black" size="14.0" />
                                        </font>
                                     </Label>
                                  </children></Pane>
-                              <Pane layoutX="256.0" layoutY="9.0" prefHeight="75.0" prefWidth="224.0" style="-fx-background-color: white;">
+                              <Pane layoutX="256.0" layoutY="9.0" prefHeight="75.0" prefWidth="224.0" style="-fx-background-color: d9d9d9;">
                                  <children>
-                                    <Label layoutX="140.0" layoutY="21.0" text="0">
+                                    <Label fx:id="activeAgeingCount" layoutX="183.0" layoutY="17.0" text="0" textFill="#3875eb">
                                        <font>
-                                          <Font size="24.0" />
+                                          <Font name="Arial Black" size="31.0" />
                                        </font>
                                     </Label>
-                                    <Label layoutX="32.0" layoutY="30.0" text="Ageing Cases:" textFill="#797777">
+                                    <Label layoutX="19.0" layoutY="30.0" text="Ageing Cases:" textFill="#5b5858">
                                        <font>
-                                          <Font size="11.0" />
+                                          <Font name="Arial Black" size="14.0" />
                                        </font>
                                     </Label>
                                  </children>
                               </Pane>
-                              <Pane layoutX="486.0" layoutY="9.0" prefHeight="75.0" prefWidth="224.0" style="-fx-background-color: white;">
+                              <Pane layoutX="486.0" layoutY="9.0" prefHeight="75.0" prefWidth="224.0" style="-fx-background-color: d9d9d9;">
                                  <children>
-                                    <Label layoutX="145.0" layoutY="22.0" text="0">
+                                    <Label fx:id="pendingCaseCount" layoutX="183.0" layoutY="17.0" text="0" textFill="#3875eb">
                                        <font>
-                                          <Font size="24.0" />
+                                          <Font name="Arial Black" size="31.0" />
                                        </font>
                                     </Label>
-                                    <Label layoutX="26.0" layoutY="31.0" text="Pending Case Plan:" textFill="#797777">
+                                    <Label layoutX="17.0" layoutY="30.0" text="Pending Care Plan:" textFill="#5b5858">
                                        <font>
-                                          <Font size="11.0" />
+                                          <Font name="Arial Black" size="14.0" />
                                        </font>
                                     </Label>
                                  </children>
                               </Pane>
-                              <Pane layoutX="14.0" layoutY="92.0" prefHeight="441.0" prefWidth="237.0" style="-fx-background-color: white;">
+                              <Pane layoutX="14.0" layoutY="92.0" prefHeight="441.0" prefWidth="237.0" style="-fx-background-color: d9d9d9;">
                                  <children>
                                     <Label layoutX="9.0" layoutY="8.0" text="Statistics:" textFill="#797777">
                                        <font>
@@ -266,66 +244,36 @@
                                           <Font size="14.0" />
                                        </font>
                                     </Label>
-                                    <Label layoutX="106.0" layoutY="40.0" text="0 Cases" textFill="RED">
+                                    <Label fx:id="highLevelCount" layoutX="106.0" layoutY="40.0" text="0 Cases" textFill="RED">
                                        <font>
                                           <Font name="System Bold" size="17.0" />
                                        </font>
                                     </Label>
-                                    <Label layoutX="106.0" layoutY="77.0" text="0 Cases" textFill="#0005ff">
+                                    <Label fx:id="medLevelCount" layoutX="106.0" layoutY="77.0" text="0 Cases" textFill="#0005ff">
                                        <font>
                                           <Font name="System Bold" size="17.0" />
                                        </font>
                                     </Label>
-                                    <Label layoutX="106.0" layoutY="112.0" text="0 Cases" textFill="#02ff63">
+                                    <Label fx:id="lowLevelCount" layoutX="106.0" layoutY="112.0" text="0 Cases" textFill="#02ff63">
                                        <font>
                                           <Font name="System Bold" size="17.0" />
                                        </font>
                                     </Label>
                                  </children>
                               </Pane>
-                              <Pane layoutX="256.0" layoutY="326.0" prefHeight="207.0" prefWidth="454.0" style="-fx-background-color: white;">
+                              <Pane layoutX="256.0" layoutY="92.0" prefHeight="441.0" prefWidth="454.0" style="-fx-background-color: d9d9d9;">
                                  <children>
-                                    <BarChart layoutX="11.0" layoutY="30.0" prefHeight="169.0" prefWidth="435.0">
-                                      <xAxis>
-                                        <CategoryAxis side="BOTTOM" />
-                                      </xAxis>
-                                      <yAxis>
-                                        <NumberAxis side="LEFT" />
-                                      </yAxis>
-                                    </BarChart>
-                                    <Label layoutX="17.0" layoutY="7.0" text="Care Level Satus" textFill="#797777">
-                                       <font>
-                                          <Font size="11.0" />
-                                       </font>
-                                    </Label>
+                                    <PieChart fx:id="weeklyCasesGraph" layoutX="-2.0" layoutY="-1.0" prefHeight="441.0" prefWidth="454.0" />
                                  </children>
                               </Pane>
-                              <Pane layoutX="256.0" layoutY="92.0" prefHeight="230.0" prefWidth="454.0" style="-fx-background-color: white;">
-                                 <children>
-                                    <PieChart layoutX="10.0" layoutY="27.0" prefHeight="192.0" prefWidth="211.0" style="-fx-background-color: gray;" />
-                                    <Label layoutX="13.0" layoutY="5.0" text="Weekly Cases Metrics" textFill="#797777">
-                                       <font>
-                                          <Font size="11.0" />
-                                       </font>
-                                    </Label>
-                                    <PieChart layoutX="232.0" layoutY="27.0" prefHeight="192.0" prefWidth="211.0" style="-fx-background-color: gray;" />
-                                    <Label layoutX="232.0" layoutY="5.0" text="Monthly Cases Metrics" textFill="#797777">
-                                       <font>
-                                          <Font size="11.0" />
-                                       </font>
-                                    </Label>
-                                    <Pane layoutX="-242.0" layoutY="149.0" prefHeight="5.0" prefWidth="237.0" style="-fx-background-color: #364bbf;" />
-                                 </children>
-                              </Pane>
-                              <Pane layoutX="15.0" layoutY="80.0" prefHeight="5.0" prefWidth="695.0" style="-fx-background-color: #364bbf;" />
                                     </children>
                            <opaqueInsets>
                               <Insets />
                            </opaqueInsets>
                                 </Pane>
-                                <Pane fx:id="manageCasePane" layoutX="-3.0" layoutY="-2.0" prefHeight="556.0" prefWidth="731.0" visible="false">
+                                <Pane fx:id="manageCasePane" layoutX="1.0" layoutY="1.0" prefHeight="553.0" prefWidth="724.0" style="-fx-background-color: white;" visible="false">
                                     <children>
-                                        <Pane layoutX="376.0" layoutY="38.0" prefHeight="441.0" prefWidth="340.0" style="-fx-border-color: black; -fx-background-color: d9d9d9;">
+                                        <Pane layoutX="389.0" layoutY="8.0" prefHeight="279.0" prefWidth="327.0" style="-fx-border-color: black; -fx-background-color: d9d9d9;">
                                             <children>
                                                 <Label layoutX="47.0" layoutY="82.0" prefHeight="17.0" prefWidth="117.0" text="First Name:" />
                                                 <Label layoutX="48.0" layoutY="115.0" prefHeight="17.0" prefWidth="117.0" text="Last Name:" />
@@ -343,53 +291,53 @@
                                                 <TextField fx:id="address" disable="true" layoutX="113.0" layoutY="239.0" prefHeight="25.0" prefWidth="193.0" />
                                                 <Label layoutX="32.0" layoutY="21.0" prefHeight="17.0" prefWidth="117.0" text="Case Number:" />
                                                 <TextField fx:id="csID" disable="true" editable="false" layoutX="113.0" layoutY="17.0" prefHeight="25.0" prefWidth="193.0" />
-                                                <Line endX="206.99993896484375" layoutX="116.0" layoutY="279.0" startX="-100.0" />
-                                                <Label layoutX="15.0" layoutY="289.0" prefHeight="17.0" prefWidth="100.0" text="Assessment Type:" />
-                                                <Label layoutX="67.0" layoutY="351.0" prefHeight="17.0" prefWidth="47.0" text="Priority:" />
-                                                <Label layoutX="30.0" layoutY="381.0" prefHeight="17.0" prefWidth="82.0" text="Assigned CSO:" />
-                                                <Label layoutX="36.0" layoutY="323.0" prefHeight="17.0" prefWidth="82.0" text="Date Created:" />
-                                                <ComboBox fx:id="cmbAssessment" disable="true" layoutX="115.0" layoutY="285.0" prefHeight="25.0" prefWidth="193.0" />
-                                                <DatePicker fx:id="dateCreate" disable="true" layoutX="116.0" layoutY="316.0" prefHeight="25.0" prefWidth="193.0" />
-                                                <ComboBox fx:id="cmbPriority" disable="true" layoutX="115.0" layoutY="347.0" prefHeight="25.0" prefWidth="193.0" />
-                                                <ComboBox fx:id="asignedCSO" disable="true" layoutX="115.0" layoutY="377.0" prefHeight="25.0" prefWidth="193.0" />
-                                                <Label layoutX="72.0" layoutY="411.0" prefHeight="17.0" prefWidth="82.0" text="Status:" />
-                                                <TextField fx:id="assessmentStats" disable="true" editable="false" layoutX="116.0" layoutY="407.0" prefHeight="25.0" prefWidth="193.0">
+                                            </children>
+                                        </Pane>
+                                        <Button fx:id="updateCase" layoutX="9.0" layoutY="492.0" mnemonicParsing="false" onAction="#updateCase" prefHeight="26.0" prefWidth="91.0" style="-fx-background-color: #364bbf;" text="Update" textFill="WHITE" />
+                                        <Button fx:id="finaliseBtn" layoutX="108.0" layoutY="492.0" mnemonicParsing="false" onAction="#finaliseBtn" prefHeight="26.0" prefWidth="91.0" style="-fx-background-color: #364bbf;" text="Finalise" textFill="WHITE" />
+                                        <Button fx:id="myRecSave" disable="true" layoutX="526.0" layoutY="492.0" mnemonicParsing="false" onAction="#myRecSave" prefHeight="26.0" prefWidth="91.0" style="-fx-background-color: #364bbf;" text="Save" textFill="WHITE" />
+                                        <Button fx:id="myRecCancel" disable="true" layoutX="624.0" layoutY="492.0" mnemonicParsing="false" onAction="#myRecCancel" prefHeight="26.0" prefWidth="91.0" style="-fx-background-color: #364bbf;" text="Cancel" textFill="WHITE" />
+                              <Pane layoutX="8.0" layoutY="7.0" prefHeight="477.0" prefWidth="373.0" style="-fx-background-color: d9d9d9; -fx-border-color: black;">
+                                 <children>
+                                              <TableView fx:id="casesTbl" layoutX="7.0" layoutY="48.0" prefHeight="424.0" prefWidth="362.0">
+                                                  <columns>
+                                                      <TableColumn fx:id="caseID" text="Case No" />
+                                                      <TableColumn fx:id="clientName" text="Client Name" />
+                                                      <TableColumn fx:id="caseType" text="Case Type" />
+                                                      <TableColumn fx:id="assignedCSO" text="assignedCSO" />
+                                                      <TableColumn fx:id="status" text="Status" />
+                                       
+                                        
+                                                  </columns>
+                                              </TableView>
+                                              <TextField fx:id="aCaseSearch" layoutX="6.0" layoutY="8.0" prefHeight="25.0" prefWidth="275.0" promptText="Search Case" />
+                                              <Button fx:id="searchCase" layoutX="285.0" layoutY="8.0" mnemonicParsing="false" onAction="#searchCase" prefHeight="17.0" prefWidth="82.0" style="-fx-background-color: #364bbf;" text="Search" textFill="WHITE" />
+                                    <Line endX="272.0" layoutX="101.0" layoutY="42.0" startX="-100.0" />
+                                 </children>
+                              </Pane>
+                              <Pane layoutX="389.0" layoutY="295.0" prefHeight="189.0" prefWidth="327.0" style="-fx-background-color: d9d9d9; -fx-border-color: black;">
+                                 <children>
+                                                <Label layoutX="15.0" layoutY="20.0" prefHeight="17.0" prefWidth="100.0" text="Assessment Type:" />
+                                                <Label layoutX="67.0" layoutY="82.0" prefHeight="17.0" prefWidth="47.0" text="Priority:" />
+                                                <Label layoutX="30.0" layoutY="112.0" prefHeight="17.0" prefWidth="82.0" text="Assigned CSO:" />
+                                                <Label layoutX="36.0" layoutY="54.0" prefHeight="17.0" prefWidth="82.0" text="Date Created:" />
+                                                <ComboBox fx:id="cmbAssessment" disable="true" layoutX="115.0" layoutY="16.0" prefHeight="25.0" prefWidth="193.0" />
+                                                <DatePicker fx:id="dateCreate" disable="true" layoutX="116.0" layoutY="47.0" prefHeight="25.0" prefWidth="193.0" />
+                                                <ComboBox fx:id="cmbPriority" disable="true" layoutX="115.0" layoutY="78.0" prefHeight="25.0" prefWidth="193.0" />
+                                                <ComboBox fx:id="asignedCSO" disable="true" layoutX="115.0" layoutY="108.0" prefHeight="25.0" prefWidth="193.0" />
+                                                <Label layoutX="72.0" layoutY="142.0" prefHeight="17.0" prefWidth="82.0" text="Status:" />
+                                                <TextField fx:id="assessmentStats" disable="true" editable="false" layoutX="116.0" layoutY="138.0" prefHeight="25.0" prefWidth="193.0">
                                                     <font>
                                                         <Font name="System Bold" size="12.0" />
                                                     </font>
                                                 </TextField>
-                                            </children>
-                                        </Pane>
-                                        <Button fx:id="updateCase" layoutX="17.0" layoutY="488.0" mnemonicParsing="false" onAction="#updateCase" prefHeight="26.0" prefWidth="91.0" style="-fx-background-color: #364bbf;" text="Update" textFill="WHITE" />
-                                        <Button fx:id="finaliseBtn" layoutX="119.0" layoutY="488.0" mnemonicParsing="false" onAction="#finaliseBtn" prefHeight="26.0" prefWidth="91.0" style="-fx-background-color: #364bbf;" text="Finalise" textFill="WHITE" />
-                                        <Button fx:id="myRecSave" disable="true" layoutX="526.0" layoutY="488.0" mnemonicParsing="false" onAction="#myRecSave" prefHeight="26.0" prefWidth="91.0" style="-fx-background-color: #364bbf;" text="Save" textFill="WHITE" />
-                                        <Button fx:id="myRecCancel" disable="true" layoutX="624.0" layoutY="488.0" mnemonicParsing="false" onAction="#myRecCancel" prefHeight="26.0" prefWidth="91.0" style="-fx-background-color: #364bbf;" text="Cancel" textFill="WHITE" />
-                                        <TextField fx:id="aCaseSearch" layoutX="16.0" layoutY="32.0" prefHeight="25.0" prefWidth="261.0" promptText="Search Case" />
-                                        <Button fx:id="searchCase" layoutX="283.0" layoutY="32.0" mnemonicParsing="false" onAction="#searchCase" prefHeight="17.0" prefWidth="82.0" style="-fx-background-color: #364bbf;" text="Search" textFill="WHITE" />
-                                        <TableView fx:id="casesTbl" layoutX="16.0" layoutY="65.0" prefHeight="417.0" prefWidth="349.0">
-                                            <columns>
-                                                <TableColumn fx:id="caseID" text="Case No" />
-                                                <TableColumn fx:id="clientName" text="Client Name" />
-                                                <TableColumn fx:id="caseType" text="Case Type" />
-                                                <TableColumn fx:id="assignedCSO" text="assignedCSO" />
-                                                <TableColumn fx:id="status" text="Status" />
-                                 
-                                  
-                                            </columns>
-                                        </TableView>
-                                        <Hyperlink fx:id="viewAssessment" layoutX="385.0" layoutY="494.0" onMouseClicked="#viewAssessment" text="View Assessment &gt;&gt;" />
+                                 </children>
+                              </Pane>
                                     </children>
                                 </Pane>
-                                <Pane fx:id="myCasePane" layoutX="-4.0" layoutY="-2.0" prefHeight="565.0" prefWidth="731.0" visible="false">
+                                <Pane fx:id="myCasePane" layoutY="-2.0" prefHeight="565.0" prefWidth="724.0" style="-fx-background-color: white;" visible="false">
                                     <children>
-                                        <Label layoutX="16.0" layoutY="16.0" text="Assigned Cases:">
-                                            <font>
-                                                <Font name="System Bold" size="13.0" />
-                                            </font>
-                                        </Label>
-                                        <TextField fx:id="caseSearch" layoutX="361.0" layoutY="13.0" prefHeight="25.0" prefWidth="255.0" promptText="Search Case" />
-                                        <Button fx:id="sCase" layoutX="624.0" layoutY="13.0" mnemonicParsing="false" onAction="#sCase" prefHeight="25.0" prefWidth="91.0" style="-fx-background-color: #364bbf;" text="Search" textFill="WHITE" />
-                                        <Pane layoutX="16.0" layoutY="261.0" prefHeight="255.0" prefWidth="336.0" style="-fx-background-color: d9d9d9; -fx-border-color: black;">
+                                        <Pane layoutX="10.0" layoutY="273.0" prefHeight="251.0" prefWidth="339.0" style="-fx-background-color: d9d9d9; -fx-border-color: black;">
                                             <children>
                                                 <Label layoutX="31.0" layoutY="54.0" prefHeight="17.0" prefWidth="117.0" text="First Name:" />
                                                 <Label layoutX="31.0" layoutY="87.0" prefHeight="17.0" prefWidth="117.0" text="Last Name:" />
@@ -421,23 +369,21 @@
                                                 <TextField editable="false" layoutX="117.0" layoutY="129.0" prefHeight="25.0" prefWidth="193.0" />
                                             </children>
                                         </Pane>
-                              <Pane layoutX="361.0" layoutY="316.0" prefHeight="200.0" prefWidth="349.0" style="-fx-border-color: black;">
+                              <Pane layoutX="357.0" layoutY="325.0" prefHeight="200.0" prefWidth="355.0" style="-fx-border-color: black; -fx-background-color: d9d9d9;">
                                  <children>
-                                    <Label layoutX="16.0" layoutY="18.0" prefHeight="17.0" prefWidth="117.0" text="Case ID:" />
-                                    <Label layoutX="175.0" layoutY="18.0" prefHeight="17.0" prefWidth="117.0" text="Date:" />
-                                    <TextField fx:id="clID" editable="false" layoutX="68.0" layoutY="14.0" prefHeight="25.0" prefWidth="97.0" />
-                                    <TextArea fx:id="clReason" disable="true" layoutX="15.0" layoutY="72.0" prefHeight="83.0" prefWidth="317.0" />
-                                    <TextField fx:id="clDate" editable="false" layoutX="202.0" layoutY="14.0" prefHeight="25.0" prefWidth="132.0" />
-                                    <Label layoutX="16.0" layoutY="49.0" prefHeight="17.0" prefWidth="117.0" text="Closing Reasons:" />
-                                    <Button fx:id="clConfirm" disable="true" layoutX="162.0" layoutY="161.0" mnemonicParsing="false" onAction="#clConfirm" prefHeight="25.0" prefWidth="82.0" text="Confirm" />
-                                    <Button fx:id="clCancel" disable="true" layoutX="252.0" layoutY="161.0" mnemonicParsing="false" onAction="#clCancel" prefHeight="25.0" prefWidth="82.0" text="Cancel" />
+                                    <Label layoutX="16.0" layoutY="13.0" prefHeight="17.0" prefWidth="117.0" text="Case ID:" />
+                                    <Label layoutX="175.0" layoutY="13.0" prefHeight="17.0" prefWidth="117.0" text="Date:" />
+                                    <TextField fx:id="clID" editable="false" layoutX="68.0" layoutY="9.0" prefHeight="25.0" prefWidth="97.0" />
+                                    <TextArea fx:id="clReason" disable="true" layoutX="15.0" layoutY="63.0" prefHeight="83.0" prefWidth="317.0" />
+                                    <TextField fx:id="clDate" editable="false" layoutX="202.0" layoutY="9.0" prefHeight="25.0" prefWidth="132.0" />
+                                    <Label layoutX="16.0" layoutY="40.0" prefHeight="17.0" prefWidth="117.0" text="Closing Reasons:" />
+                                    <Button fx:id="clConfirm" disable="true" layoutX="162.0" layoutY="158.0" mnemonicParsing="false" onAction="#clConfirm" prefHeight="25.0" prefWidth="82.0" style="-fx-background-color: #364bbf;" text="Confirm" textFill="WHITE" />
+                                    <Button fx:id="clCancel" disable="true" layoutX="252.0" layoutY="158.0" mnemonicParsing="false" onAction="#clCancel" prefHeight="25.0" prefWidth="82.0" style="-fx-background-color: #364bbf;" text="Cancel" textFill="WHITE" />
                                  </children>
                               </Pane>
-                                        <Button fx:id="clientAssessment" layoutX="412.0" layoutY="265.0" mnemonicParsing="false" onAction="#clientAssessment" prefHeight="28.0" prefWidth="121.0" style="-fx-background-color: #364bbf;" text="Start Assessment" textFill="WHITE" />
-                                        <Button fx:id="completeTaskBtn" layoutX="564.0" layoutY="265.0" mnemonicParsing="false" onAction="#completeTaskBtn" prefHeight="29.0" prefWidth="121.0" style="-fx-background-color: #364bbf;" text="Complete/Close" textFill="WHITE" />
-                              <Pane layoutX="17.0" layoutY="46.0" prefHeight="207.0" prefWidth="695.0" style="-fx-border-color: black;">
+                              <Pane layoutX="11.0" layoutY="66.0" prefHeight="200.0" prefWidth="702.0" style="-fx-background-color: d9d9d9; -fx-border-color: black;">
                                  <children>
-                                              <TableView fx:id="myCaseTbl" layoutX="6.0" layoutY="3.0" prefHeight="200.0" prefWidth="684.0">
+                                              <TableView fx:id="myCaseTbl" layoutX="6.0" layoutY="7.0" prefHeight="189.0" prefWidth="688.0">
                                                   <columns>
                                                       <TableColumn fx:id="case_ID" text="Case ID" />
                                                       <TableColumn fx:id="client_ID" text="Client ID" />
@@ -449,19 +395,28 @@
                                               </TableView>
                                  </children>
                               </Pane>
+                              <Pane layoutX="11.0" layoutY="14.0" prefHeight="47.0" prefWidth="702.0" style="-fx-background-color: d9d9d9; -fx-border-color: black;">
+                                 <children>
+                                              <Label layoutX="17.0" layoutY="13.0" text="Assigned Cases:">
+                                                  <font>
+                                                      <Font name="System Bold" size="13.0" />
+                                                  </font>
+                                              </Label>
+                                              <TextField fx:id="caseSearch" layoutX="340.0" layoutY="12.0" prefHeight="25.0" prefWidth="255.0" promptText="Search Case" />
+                                              <Button fx:id="sCase" layoutX="603.0" layoutY="12.0" mnemonicParsing="false" onAction="#sCase" prefHeight="25.0" prefWidth="91.0" style="-fx-background-color: #364bbf;" text="Search" textFill="WHITE" />
+                                 </children>
+                              </Pane>
+                              <Pane layoutX="357.0" layoutY="273.0" prefHeight="47.0" prefWidth="355.0" style="-fx-background-color: d9d9d9; -fx-border-color: black;">
+                                 <children>
+                                              <Button fx:id="clientAssessment" layoutX="39.0" layoutY="8.0" mnemonicParsing="false" onAction="#clientAssessment" prefHeight="28.0" prefWidth="121.0" style="-fx-background-color: #364bbf;" text="Start Assessment" textFill="WHITE" />
+                                              <Button fx:id="completeTaskBtn" layoutX="191.0" layoutY="8.0" mnemonicParsing="false" onAction="#completeTaskBtn" prefHeight="29.0" prefWidth="121.0" style="-fx-background-color: #364bbf;" text="Complete/Close" textFill="WHITE" />
+                                 </children>
+                              </Pane>
                                     </children>
                                 </Pane>
-                                <Pane fx:id="manageClientPane" prefHeight="553.0" prefWidth="724.0" visible="false">
+                                <Pane fx:id="manageClientPane" prefHeight="553.0" prefWidth="724.0" style="-fx-background-color: white;" visible="false">
                                     <children>
-                                        <TableView fx:id="tblClient" layoutX="14.0" layoutY="42.0" prefHeight="496.0" prefWidth="275.0">
-                                            <columns>
-                                                <TableColumn fx:id="acID" text="Client ID" />
-                                                <TableColumn fx:id="acName" text="Client Name" />
-                                            </columns>
-                                        </TableView>
-                                        <TextField fx:id="clientSearches" layoutX="14.0" layoutY="13.0" prefHeight="25.0" prefWidth="211.0" promptText="Search Client" />
-                                        <Button fx:id="clientSearch" layoutX="229.0" layoutY="13.0" mnemonicParsing="false" onAction="#clientSearch" prefHeight="25.0" prefWidth="59.0" style="-fx-background-color: #364bbf;" text="Search" textFill="WHITE" />
-                                        <Pane layoutX="295.0" layoutY="14.0" prefHeight="180.0" prefWidth="418.0" style="-fx-border-color: black;">
+                                        <Pane layoutX="295.0" layoutY="7.0" prefHeight="180.0" prefWidth="418.0" style="-fx-border-color: black; -fx-background-color: d9d9d9;">
                                             <children>
                                                 <Label layoutX="29.0" layoutY="33.0" text="Client ID:" />
                                                 <Label layoutX="17.0" layoutY="60.0" text="First Name:" />
@@ -488,7 +443,7 @@
                                                 <Label layoutX="227.0" layoutY="119.0" text="Birthday:" />
                                             </children>
                                         </Pane>
-                                        <Pane layoutX="295.0" layoutY="296.0" prefHeight="207.0" prefWidth="418.0" style="-fx-border-color: black;">
+                                        <Pane layoutX="295.0" layoutY="289.0" prefHeight="189.0" prefWidth="418.0" style="-fx-border-color: black; -fx-background-color: d9d9d9;">
                                             <children>
                                                 <Label layoutX="14.0" layoutY="31.0" text="Funding Level:" />
                                                 <Label layoutX="14.0" layoutY="60.0" text="Referral Code:" />
@@ -505,7 +460,7 @@
                                                 <ComboBox fx:id="aCMCombo" disable="true" layoutX="271.0" layoutY="27.0" prefHeight="25.0" prefWidth="132.0" />
                                             </children>
                                         </Pane>
-                                        <Pane layoutX="295.0" layoutY="199.0" prefHeight="90.0" prefWidth="418.0" style="-fx-border-color: black;">
+                                        <Pane layoutX="295.0" layoutY="192.0" prefHeight="90.0" prefWidth="418.0" style="-fx-border-color: black; -fx-background-color: d9d9d9;">
                                             <children>
                                                 <Label layoutX="9.0" layoutY="5.0" text="Emergency Contact">
                                                     <font>
@@ -522,12 +477,183 @@
                                                 <TextField fx:id="aEMail" disable="true" layoutX="258.0" layoutY="55.0" prefHeight="25.0" prefWidth="149.0" />
                                             </children>
                                         </Pane>
-                                        <Button fx:id="aUpdateClient" layoutX="295.0" layoutY="513.0" mnemonicParsing="false" onAction="#aUpdateClient" prefHeight="25.0" prefWidth="97.0" style="-fx-background-color: #364bbf;" text="Update" textFill="WHITE" />
-                                        <Button fx:id="aDeactClient" layoutX="401.0" layoutY="513.0" mnemonicParsing="false" onAction="#aDeactClient" prefHeight="25.0" prefWidth="97.0" style="-fx-background-color: #364bbf;" text="Deactivate" textFill="WHITE" />
-                                        <Button fx:id="aCancelUpdate" disable="true" layoutX="648.0" layoutY="513.0" mnemonicParsing="false" onAction="#aCancelUpdate" prefHeight="25.0" prefWidth="68.0" style="-fx-background-color: #364bbf;" text="Cancel" textFill="WHITE" />
-                                        <Button fx:id="aSaveUpdate" disable="true" layoutX="573.0" layoutY="513.0" mnemonicParsing="false" onAction="#aSaveUpdate" prefHeight="25.0" prefWidth="68.0" style="-fx-background-color: #364bbf;" text="Save" textFill="WHITE" />
+                              <Pane layoutX="295.0" layoutY="484.0" prefHeight="47.0" prefWidth="418.0" style="-fx-background-color: d9d9d9; -fx-border-color: black;">
+                                 <children>
+                                              <Button fx:id="aUpdateClient" layoutX="3.0" layoutY="13.0" mnemonicParsing="false" onAction="#aUpdateClient" prefHeight="25.0" prefWidth="97.0" style="-fx-background-color: #364bbf;" text="Update" textFill="WHITE" />
+                                              <Button fx:id="aDeactClient" layoutX="109.0" layoutY="13.0" mnemonicParsing="false" onAction="#aDeactClient" prefHeight="25.0" prefWidth="97.0" style="-fx-background-color: #364bbf;" text="Deactivate" textFill="WHITE" />
+                                              <Button fx:id="aCancelUpdate" disable="true" layoutX="340.0" layoutY="13.0" mnemonicParsing="false" onAction="#aCancelUpdate" prefHeight="25.0" prefWidth="68.0" style="-fx-background-color: #364bbf;" text="Cancel" textFill="WHITE" />
+                                              <Button fx:id="aSaveUpdate" disable="true" layoutX="265.0" layoutY="13.0" mnemonicParsing="false" onAction="#aSaveUpdate" prefHeight="25.0" prefWidth="68.0" style="-fx-background-color: #364bbf;" text="Save" textFill="WHITE" />
+                                 </children>
+                              </Pane>
+                              <Pane layoutX="5.0" layoutY="8.0" prefHeight="47.0" prefWidth="285.0" style="-fx-background-color: d9d9d9; -fx-border-color: black;">
+                                 <children>
+                                              <TextField fx:id="clientSearches" layoutX="6.0" layoutY="11.0" prefHeight="25.0" prefWidth="207.0" promptText="Search Client" />
+                                              <Button fx:id="clientSearch" layoutX="220.0" layoutY="10.0" mnemonicParsing="false" onAction="#clientSearch" prefHeight="25.0" prefWidth="59.0" style="-fx-background-color: #364bbf;" text="Search" textFill="WHITE" />
+                                 </children>
+                              </Pane>
+                              <Pane layoutX="5.0" layoutY="60.0" prefHeight="471.0" prefWidth="285.0" style="-fx-background-color: d9d9d9; -fx-border-color: black;">
+                                 <children>
+                                              <TableView fx:id="tblClient" layoutX="5.0" layoutY="6.0" prefHeight="456.0" prefWidth="275.0">
+                                                  <columns>
+                                                      <TableColumn fx:id="acID" text="Client ID" />
+                                                      <TableColumn fx:id="acName" text="Client Name" />
+                                                  </columns>
+                                              </TableView>
+                                 </children>
+                              </Pane>
                                     </children>
                                 </Pane>
+                        <Pane fx:id="budgetPane" layoutY="-2.0" prefHeight="556.0" prefWidth="724.0" style="-fx-background-color: white;" visible="false">
+                           <children>
+                              <Pane layoutX="233.0" layoutY="7.0" prefHeight="117.0" prefWidth="484.0" style="-fx-border-color: black; -fx-background-color: d9d9d9;">
+                                 <children>
+                                    <Label layoutX="28.0" layoutY="28.0" text="Client No:" />
+                                    <Label layoutX="22.0" layoutY="55.0" text="Client DOB:" />
+                                    <Label layoutX="16.0" layoutY="83.0" prefHeight="17.0" prefWidth="73.0" text="Prepared By:" />
+                                    <Label layoutX="265.0" layoutY="83.0" text="Date:" />
+                                    <TextField fx:id="txtcname" editable="false" layoutX="304.0" layoutY="24.0" prefHeight="25.0" prefWidth="157.0" />
+                                    <TextField fx:id="txtCdate" editable="false" layoutX="304.0" layoutY="82.0" prefHeight="25.0" prefWidth="157.0" />
+                                    <TextField fx:id="txtCdob" editable="false" layoutX="88.0" layoutY="53.0" prefHeight="25.0" prefWidth="124.0" />
+                                    <TextField fx:id="txtPby" editable="false" layoutX="88.0" layoutY="82.0" prefHeight="25.0" prefWidth="124.0" />
+                                    <Label layoutX="233.0" layoutY="57.0" text="Fund Level:" />
+                                    <TextField fx:id="txtCli" editable="false" layoutX="88.0" layoutY="24.0" prefHeight="25.0" prefWidth="124.0" />
+                                    <TextField fx:id="txtFlevel" editable="false" layoutX="304.0" layoutY="53.0" prefHeight="25.0" prefWidth="157.0" />
+                                    <Label layoutX="225.0" layoutY="28.0" text="Client Name:" />
+                                    <Label layoutX="7.0" layoutY="3.0" text="Client Details">
+                                       <font>
+                                          <Font name="System Bold" size="12.0" />
+                                       </font>
+                                    </Label>
+                                 </children>
+                              </Pane>
+                              <Pane layoutX="233.0" layoutY="172.0" prefHeight="153.0" prefWidth="484.0" style="-fx-border-color: black; -fx-background-color: d9d9d9;">
+                                 <children>
+                                    <Label layoutX="10.0" layoutY="5.0" text="Management Details">
+                                       <font>
+                                          <Font name="System Bold" size="12.0" />
+                                       </font>
+                                    </Label>
+                                    <Label layoutX="55.0" layoutY="28.0" text="Government Subsidy">
+                                       <font>
+                                          <Font name="System Bold" size="12.0" />
+                                       </font></Label>
+                                    <TextField fx:id="txtGovS" editable="false" layoutX="187.0" layoutY="23.0" prefHeight="25.0" prefWidth="91.0" />
+                                    <Text layoutX="33.0" layoutY="71.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Less Care Management Fee" />
+                                    <Text layoutX="13.0" layoutY="97.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Less Package Management Fee " />
+                                    <TextField fx:id="txtSuppLessC" editable="false" layoutX="188.0" layoutY="54.0" prefHeight="25.0" prefWidth="91.0" />
+                                    <TextField fx:id="txtSuppLessP" editable="false" layoutX="188.0" layoutY="86.0" prefHeight="25.0" prefWidth="91.0" />
+                                    <Text layoutX="286.0" layoutY="71.0" strokeType="OUTSIDE" strokeWidth="0.0" text="\%" />
+                                    <Text layoutX="286.0" layoutY="98.0" strokeType="OUTSIDE" strokeWidth="0.0" text="\%" />
+                                    <TextField fx:id="txtMonth1" editable="false" layoutX="332.0" layoutY="23.0" prefHeight="25.0" prefWidth="136.0" />
+                                    <TextField fx:id="txtMonth7" editable="false" layoutX="332.0" layoutY="54.0" prefHeight="25.0" prefWidth="136.0" />
+                                    <TextField fx:id="txtMonth8" layoutX="332.0" layoutY="82.0" prefHeight="25.0" prefWidth="136.0" />
+                                    <Text layoutX="384.0" layoutY="17.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Month">
+                                       <font>
+                                          <Font name="System Bold" size="12.0" />
+                                       </font>
+                                    </Text>
+                                    <Line endX="381.29296875" layoutX="101.0" layoutY="116.0" startX="-100.0" />
+                                    <Label layoutX="188.0" layoutY="124.0" text="Total Amount to Spend">
+                                       <font>
+                                          <Font name="System Bold" size="12.0" />
+                                       </font>
+                                    </Label>
+                                    <TextField fx:id="txtTotalA" editable="false" layoutX="333.0" layoutY="121.0" prefHeight="25.0" prefWidth="136.0" />
+                                    <Line endX="5.86669921875" endY="-21.0" layoutX="320.0" layoutY="21.0" startX="5.86669921875" startY="95.0" />
+                                    <Pane layoutY="-42.0" prefHeight="35.0" prefWidth="484.0" style="-fx-background-color: d9d9d9; -fx-border-color: black;">
+                                       <children>
+                                          <Label layoutX="6.0" layoutY="8.0" prefHeight="17.0" prefWidth="332.0" text="*This budet is based on a 31 day month &amp; 365 day year.  " />
+                                          <Button fx:id="GenBudget" layoutX="379.0" layoutY="5.0" mnemonicParsing="false" onAction="#GenBudget" prefHeight="25.0" prefWidth="96.0" style="-fx-background-color: #364bbf;" text="Generate" textFill="WHITE" />
+                                       </children>
+                                    </Pane>
+                                 </children>
+                              </Pane>
+                              <Label layoutX="234.0" layoutY="328.0" prefHeight="17.0" prefWidth="332.0" text="ITEMISED MONTHLY BUDGET" />
+                              <Button fx:id="saveBudgetButton" disable="true" layoutX="553.0" layoutY="513.0" mnemonicParsing="false" onAction="#saveBudgetButton" prefHeight="25.0" prefWidth="79.0" style="-fx-background-color: #364bbf;" text="Save" textFill="WHITE" />
+                              <Button fx:id="modBudgetButton" disable="true" layoutX="638.0" layoutY="513.0" mnemonicParsing="false" onAction="#modBudgetButton" prefHeight="25.0" prefWidth="76.0" style="-fx-background-color: #364bbf;" text="Cancel" textFill="WHITE" />
+                              <Pane layoutX="4.0" layoutY="7.0" prefHeight="501.0" prefWidth="224.0" style="-fx-background-color: d9d9d9; -fx-border-color: black;">
+                                 <children>
+                                    <TableView fx:id="tblBudgetClient" layoutX="5.0" layoutY="7.0" prefHeight="486.0" prefWidth="213.0">
+                                      <columns>
+                                        <TableColumn fx:id="bClientID" prefWidth="75.0" text="Client ID" />
+                                        <TableColumn fx:id="bClientName" prefWidth="100.0" text="Client Name" />
+                                      </columns>
+                                    </TableView>
+                                 </children>
+                              </Pane>
+                              <Pane layoutX="233.0" layoutY="349.0" prefHeight="159.0" prefWidth="484.0" style="-fx-background-color: d9d9d9; -fx-border-color: black;">
+                                 <children>
+                                    <TableView fx:id="tblBudget" editable="true" layoutX="5.0" layoutY="6.0" prefHeight="146.0" prefWidth="474.0">
+                                       <columns>
+                                          <TableColumn fx:id="careDesc" prefWidth="280" text="Description of Care/ Support Services " />
+                                          <TableColumn fx:id="numUnits" prefWidth="112.26663208007812" text="Numbers of Units" />
+                                          <TableColumn fx:id="totalCare" prefWidth="112.5333251953125" text="Total" />
+                                       </columns>
+                                    </TableView>
+                                 </children>
+                              </Pane>
+                           </children>
+                        </Pane>
+                        <Pane fx:id="reportsPane" layoutY="-1.0" prefHeight="556.0" prefWidth="724.0" style="-fx-background-color: white;" visible="false">
+                           <children>
+                              <Pane layoutX="6.0" layoutY="8.0" prefHeight="85.0" prefWidth="712.0" style="-fx-background-color: d9d9d9; -fx-border-color: black;">
+                                 <children>
+                                    <ComboBox fx:id="reportCombo" layoutX="95.0" layoutY="15.0" prefHeight="25.0" prefWidth="228.0" />
+                                    <Label layoutX="19.0" layoutY="19.0" text="Report Type:" />
+                                    <RadioButton fx:id="currentRB" layoutX="97.0" layoutY="49.0" mnemonicParsing="false" selected="true" text="Current Month" />
+                                    <RadioButton fx:id="specificRB" layoutX="220.0" layoutY="49.0" mnemonicParsing="false" text="Specific Date" />
+                                    <DatePicker fx:id="reportStart" layoutX="420.0" layoutY="14.0" />
+                                    <Label layoutX="356.0" layoutY="18.0" text="Start Date:" />
+                                    <DatePicker fx:id="reportEnd" layoutX="420.0" layoutY="45.0" />
+                                    <Label layoutX="360.0" layoutY="48.0" text="End Date:" />
+                                    <Button fx:id="genReportBtn" layoutX="615.0" layoutY="28.0" mnemonicParsing="false" onAction="#genReportBtn" prefHeight="25.0" prefWidth="78.0" style="-fx-background-color: #364bbf;" text="Generate" textFill="WHITE" />
+                                 </children>
+                              </Pane>
+                              <Pane fx:id="caseRepPane" layoutX="6.0" layoutY="99.0" prefHeight="379.0" prefWidth="712.0" style="-fx-background-color: d9d9d9; -fx-border-color: black;">
+                                 <children>
+                                    <TableView fx:id="casesRepTbl" layoutX="14.0" layoutY="14.0" prefHeight="357.0" prefWidth="690.0">
+                                       <columns>
+                                          <TableColumn fx:id="cName_case" prefWidth="162.3999900817871" text="Client Name" />
+                                          <TableColumn fx:id="cDate_case" minWidth="2.399993896484375" prefWidth="110.40003967285156" text="Date Created" />
+                                          <TableColumn fx:id="csoCase" prefWidth="199.20001220703125" text="Assigned CSO" />
+                                          <TableColumn fx:id="cStat_case" prefWidth="217.59991455078125" text="Status" />
+                                       </columns>
+                                    </TableView>
+                                 </children>
+                              </Pane>
+                              <Pane fx:id="assessmentRepPane" layoutX="6.0" layoutY="99.0" prefHeight="379.0" prefWidth="712.0" style="-fx-background-color: d9d9d9; -fx-border-color: black;" visible="false">
+                                 <children>
+                                    <TableView fx:id="assessmentRepTbl" layoutX="14.0" layoutY="14.0" prefHeight="357.0" prefWidth="690.0">
+                                       <columns>
+                                          <TableColumn fx:id="assessName" prefWidth="160.79995346069336" text="Client  Name" />
+                                          <TableColumn fx:id="assessDate" prefWidth="127.20002746582031" text="Assessment Date" />
+                                          <TableColumn fx:id="assessCSO" prefWidth="160.79998779296875" text="Assigned CSO" />
+                                          <TableColumn fx:id="assessRemarks" prefWidth="242.0" text="Remarks" />
+                                       </columns>
+                                    </TableView>
+                                 </children>
+                              </Pane>
+                              <Pane fx:id="clientReppane" layoutX="6.0" layoutY="99.0" prefHeight="379.0" prefWidth="712.0" style="-fx-background-color: d9d9d9; -fx-border-color: black;" visible="false">
+                                 <children>
+                                    <TableView fx:id="clientRepTbl" layoutX="14.0" layoutY="14.0" prefHeight="357.0" prefWidth="690.0">
+                                       <columns>
+                                          <TableColumn fx:id="clientRepID" prefWidth="92.79995346069336" text="Client ID" />
+                                          <TableColumn fx:id="clientRepName" prefWidth="180.00001525878906" text="Client Name" />
+                                          <TableColumn fx:id="clientRepBirth" prefWidth="139.199951171875" text="Birthday" />
+                                          <TableColumn fx:id="clientRepLevel" minWidth="0.0" prefWidth="116.00006103515625" text="Level" />
+                                          <TableColumn fx:id="clientRepMed" prefWidth="160.80010986328125" text="Medicare" />
+                                       </columns>
+                                    </TableView>
+                                 </children>
+                              </Pane>
+                              <Pane layoutX="6.0" layoutY="484.0" prefHeight="53.0" prefWidth="712.0" style="-fx-background-color: d9d9d9; -fx-border-color: black;">
+                                 <children>
+                                    <Button fx:id="extractReportBtn" disable="true" layoutX="513.0" layoutY="14.0" mnemonicParsing="false" onAction="#extractReportBtn" prefHeight="25.0" prefWidth="90.0" style="-fx-background-color: #364bbf;" text="Extract" textFill="WHITE" />
+                                    <Button fx:id="printReportBtn" disable="true" layoutX="613.0" layoutY="14.0" mnemonicParsing="false" onAction="#printReportBtn" prefHeight="25.0" prefWidth="90.0" style="-fx-background-color: #364bbf;" text="Print" textFill="WHITE" />
+                                 </children>
+                              </Pane>
+                           </children>
+                        </Pane>
                             </children>
                         </Pane>
                     </children>

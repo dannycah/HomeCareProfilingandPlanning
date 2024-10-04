@@ -4,6 +4,9 @@
  */
 package hcp_pb;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.Connection;
@@ -105,22 +108,64 @@ public class NewClientController implements Initializable {
 
     @FXML
     private Button saveNewClient;
+    
+    
 
-    private static final String DB_URL = "jdbc:mysql://localhost:3306/HCP_PBP";
-    private static final String DB_USER = "root";
-    private static final String DB_PASSWORD = "!Student1";
+    private static final String IS_OPEN_FILE = "config/isOpen.txt"; // Relative path to isOpen file
+    private static final String DB_CONFIG_FILE = "config/dbConfig.txt"; // Relative path to dbConfig file
+
+    private static Scene scene;
+    private String DB_URL;
+    private String DB_USER;
+    private String DB_PASSWORD;
+    
+    
+    
+    
 
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-
+  loadDatabaseConfig();
         getTheMaxCid();
         initComboBox();
         cBday.setValue(LocalDate.now());
 
     }
+    
+    
+    private void loadDatabaseConfig() {
+        try {
+            File configFile = new File(DB_CONFIG_FILE);
+            if (!configFile.exists()) {
+                // Optionally create a default config file if it doesn't exist
+                
+               // createDefaultConfigFile();
+            }
+
+            // Read the database configuration
+            try (BufferedReader reader = new BufferedReader(new FileReader(configFile))) {
+                DB_URL = reader.readLine(); // Read the first line (URL)
+                DB_USER = reader.readLine(); // Read the second line (username)
+                DB_PASSWORD = reader.readLine(); // Read the third line (password)
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+//            showAlert("Error reading the database configuration.", "Error", Alert.AlertType.ERROR);
+//        
+//            
+            
+                            Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setTitle("Error");
+                alert.setHeaderText(null);
+                alert.setContentText("Error reading the database configuration.");
+//                alert.showAndWait();
+                    System.exit(1); // Exit if an error occurs while reading the file
+        }
+    }
+
 
     private void initComboBox() {
         standingCmb.setItems(FXCollections.observableArrayList("New Entry", "New-Referral", "Transfer-Referral"));
@@ -248,17 +293,13 @@ String cmName = cmValue.substring(8);
 
                 Stage stage = (Stage) saveNewClientBtn.getScene().getWindow();
                 stage.close();
+                
+                  logAudit("A new client profile for client " + cId + " has been created", "00000");
+  
+  
+  
+                
 
-//               FXMLLoader loader = new FXMLLoader(getClass().getResource("Dashboard.fxml"));
-//                Parent root = loader.load();
-//
-//                Scene scene = new Scene(root);
-//                Stage stage = (Stage) saveNewClientBtn.getScene().getWindow();
-//                stage.setScene(scene);
-//                stage.setResizable(false);
-//                stage.setWidth(680);  // Set the width 
-//                stage.setHeight(520);
-//                stage.show();
             }
 
         } catch (SQLException e) {
@@ -317,6 +358,12 @@ String cmName = cmValue.substring(8);
             showAlert(Alert.AlertType.ERROR, "Error", "Mobile number must contain 10 digit numbers.");
             return false;
         }
+        
+           if (!zipCode.matches("\\d{4}")) {
+            showAlert(Alert.AlertType.ERROR, "Error", "Zip code must contain 4 digits.");
+            return false;
+        }
+        
 
         if (!mediCare.matches(numeric)) {
 //<<<<<<< HEAD (aad685d) - Additional features and
@@ -376,9 +423,21 @@ String cmName = cmValue.substring(8);
         // Close the stage
         stage.close();
     }
+    public void logAudit(String logDesc, String useID) {
+        String insertAudit = "INSERT INTO audittrail (logDateTime, logDetails, userID) VALUES (NOW(), ?, ?)";
 
-//             
-//=======
-//
-//>>>>>>> origin/master (51df165) - Update Admin,
+        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD); PreparedStatement pstmt = conn.prepareStatement(insertAudit)) {
+
+            // Set parameters for the SQL query
+            pstmt.setString(1, logDesc);
+            pstmt.setString(2, useID);
+
+            // Execute the update
+            pstmt.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace(); // Handle the exception as necessary
+        }
+		}
+		
 }

@@ -4,6 +4,7 @@
  */
 package hcp_pb;
 
+import java.awt.Desktop;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -16,9 +17,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
+import java.util.Random;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -35,11 +38,11 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
-
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TableColumn;
@@ -60,6 +63,8 @@ import javafx.stage.Stage;
 public class AdminDashboardController implements Initializable, CloseCallBack {
 
     @FXML
+    private Hyperlink refresh;
+    @FXML
     private TableView<employeeList> empTbl;
     @FXML
     private TableColumn<employeeList, Integer> employeeID;
@@ -71,17 +76,21 @@ public class AdminDashboardController implements Initializable, CloseCallBack {
     private TableColumn<employeeList, String> startD;
     @FXML
     private TableColumn<employeeList, String> endD;
-
+    @FXML
+    private TableView<logsEntry> tblLogs;
+    @FXML
+    private TableColumn<logsEntry, Integer> logID;
+    @FXML
+    private TableColumn<logsEntry, String> tstmp;
+    @FXML
+    private TableColumn<logsEntry, String> logDets;
     @FXML
     private Button chooseFile;
     @FXML
     private Button upload;
-
     @FXML
     private TextField filePathTextField;
-
     private File selectedFile;
-
     @FXML
     private Button bulkUploadBtn;
     @FXML
@@ -94,15 +103,12 @@ public class AdminDashboardController implements Initializable, CloseCallBack {
     private Button saveEmpBtn;
     @FXML
     private Button cancelEmpBtn;
-//    @FXML private Button retireEmpBtn;
-
     @FXML
     private TextField emp_id;
     @FXML
     private TextField emp_name;
     @FXML
     private DatePicker emp_Start;
-
     @FXML
     private Pane employeeRecordsPane;
     @FXML
@@ -151,19 +157,16 @@ public class AdminDashboardController implements Initializable, CloseCallBack {
     private Button addUserBtn;
     @FXML
     private Label headLbl;
-
     @FXML
     private Label manageUsersLbl;
-
     @FXML
     private Label userHolder;
-
     @FXML
     private Label uploadLbl;
-
     @FXML
     private Label recordsLbl;
-
+    @FXML
+    private Label serviceRatesLbl;
     @FXML
     private Pane motherPane;
     @FXML
@@ -176,9 +179,8 @@ public class AdminDashboardController implements Initializable, CloseCallBack {
     private TableColumn<UserManager, Integer> uID;
     @FXML
     private TableColumn<UserManager, String> empName;
-        @FXML
+    @FXML
     private TableColumn<UserManager, String> Stats;
-    
     @FXML
     private TextField usersID;
     @FXML
@@ -203,7 +205,6 @@ public class AdminDashboardController implements Initializable, CloseCallBack {
     private TextField usnField;
     @FXML
     private PasswordField passField;
-
     @FXML
     private Button updateUser;
     @FXML
@@ -212,28 +213,48 @@ public class AdminDashboardController implements Initializable, CloseCallBack {
     private Button cancelUpdate;
     @FXML
     private Button saveUpdate;
+    @FXML
+    private Label totalUsers;
+    @FXML
+    private Label numOfLockouts;
+    @FXML
+    private Label numOfActiveUSers;
+    @FXML
+    private Hyperlink helpLink;
 
-//    private User user;
     private String userID;
     private String roleID;
+    private String accUser;
 
-    private final String DB_URL = "jdbc:mysql://localhost:3306/HCP_PBP";
-    private final String DB_USER = "root";
-    private final String DB_PASSWORD = "!Student1";
+    private static final String IS_OPEN_FILE = "config/isOpen.txt"; // Relative path to isOpen file
+    private static final String DB_CONFIG_FILE = "config/dbConfig.txt"; // Relative path to dbConfig file
+
+    private static Scene scene;
+    private String DB_URL;
+    private String DB_USER;
+    private String DB_PASSWORD;
 
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-
+        loadDatabaseConfig();
         searchChange();
         loadEmpDataFromDatabase();
         loadUserData();
+        loadLogs();
+        loadTotalUsers();
+        loadNumOfLockouts();
+        loadNumOfActiveUsers();
+
+        logID.setCellValueFactory(new PropertyValueFactory<>("logID"));
+        tstmp.setCellValueFactory(new PropertyValueFactory<>("tstmp"));
+        logDets.setCellValueFactory(new PropertyValueFactory<>("logDets"));
 
         uID.setCellValueFactory(new PropertyValueFactory<>("uID"));
         empName.setCellValueFactory(new PropertyValueFactory<>("empName"));
-                Stats.setCellValueFactory(new PropertyValueFactory<>("ustats"));
+        Stats.setCellValueFactory(new PropertyValueFactory<>("ustats"));
 
         emp_Start.setValue(LocalDate.now());
         roleCombo.setItems(FXCollections.observableArrayList("System Administrator", "Case Manager", "Care Service Officer"));
@@ -244,7 +265,6 @@ public class AdminDashboardController implements Initializable, CloseCallBack {
         startD.setCellValueFactory(new PropertyValueFactory<>("startD"));
         endD.setCellValueFactory(new PropertyValueFactory<>("endD"));
 
-        // Add a listener to monitor changes in the filePathTextField
         filePathTextField.textProperty().addListener((observable, oldValue, newValue) -> {
 
             upload.setDisable(false);
@@ -272,6 +292,114 @@ public class AdminDashboardController implements Initializable, CloseCallBack {
             }
         }
 
+        //set the status flag to 1 when the x button wasaccidentally clicked
+        Platform.runLater(() -> {
+            Scene scene = numOfActiveUSers.getScene();
+            if (scene != null) {
+                Stage stage = (Stage) scene.getWindow();
+                if (stage != null) {
+                    stage.setOnCloseRequest(event -> {
+
+                        Alert CloseWindow = new Alert(Alert.AlertType.INFORMATION);
+                        CloseWindow.setTitle("Closing the Program");
+                        CloseWindow.setHeaderText(null);
+                        CloseWindow.setContentText("You are about to turn off the system.");
+                        CloseWindow.showAndWait();
+
+                        logAudit(accUser + " have successfully logged-in", userID);
+
+                        try (Connection c = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD); Statement s = c.createStatement()) {
+
+                            // Prepare the SQL statement to update the active status of the user
+                            String sql = "UPDATE userAccounts SET stats = '1' WHERE userID = '" + userID + "'";
+
+                            // Execute the update statement
+                            int row = s.executeUpdate(sql);
+
+                        } catch (SQLException ex) {
+
+                        }
+
+                        System.out.println("Logging out...");
+
+                    });
+                }
+            }
+        });
+
+    }
+
+    private void loadDatabaseConfig() {
+        try {
+            File configFile = new File(DB_CONFIG_FILE);
+            if (!configFile.exists()) {
+
+            }
+
+            // Read the database configuration
+            try (BufferedReader reader = new BufferedReader(new FileReader(configFile))) {
+                DB_URL = reader.readLine(); // Read the first line (URL)
+                DB_USER = reader.readLine(); // Read the second line (username)
+                DB_PASSWORD = reader.readLine(); // Read the third line (password)
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Error");
+            alert.setHeaderText(null);
+            alert.setContentText("Error reading the database configuration.");
+//               
+            System.exit(1); // Exit if an error occurs while reading the file
+        }
+    }
+
+    @FXML
+    private void helpLink(MouseEvent event) {
+        try {
+            // Path to your PDF file
+            File pdfFile = new File("HCCPP-User-Manual.pdf");
+
+            // Check if the file exists
+            if (pdfFile.exists()) {
+                Desktop.getDesktop().open(pdfFile);
+            } else {
+
+                Alert alert = new Alert(Alert.AlertType.ERROR, "Manual file not found.");
+                alert.showAndWait();
+            }
+        } catch (IOException e) {
+            // Handle exceptions (e.g., file not found, no associated application)
+            e.printStackTrace();
+            Alert alert = new Alert(Alert.AlertType.ERROR, "An error occurred while trying to open the manual.");
+            alert.showAndWait();
+        }
+    }
+
+    public void loadLogs() {
+        // SQL query
+        String query = "SELECT logID, logDateTime, logDetails FROM auditTrail";
+
+        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD); Statement statement = connection.createStatement(); ResultSet resultSet = statement.executeQuery(query)) {
+
+            // Clear existing data
+            tblLogs.getItems().clear();
+
+            // Process the result set and populate the TableView
+            while (resultSet.next()) {
+                int logID = resultSet.getInt("logID");
+                String tstmp = resultSet.getString("logDateTime");
+                String logDets = resultSet.getString("logDetails");
+
+                // Create a CreateCase object
+                logsEntry logs = new logsEntry(logID, tstmp, logDets);
+
+                // Add the CreateCase object to the TableView
+                tblLogs.getItems().add(logs);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public void setUser(String userID) throws SQLException {
@@ -280,7 +408,7 @@ public class AdminDashboardController implements Initializable, CloseCallBack {
         userHolder.setText(userID);
 
         String query = "SELECT userID, roleID, CONCAT(fName, ' ', lName) AS fullName FROM userAccounts WHERE userID = ?";
-        // Run database query on a background thread to avoid blocking the JavaFX Application Thread
+
         new Thread(() -> {
             try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD); PreparedStatement statement = connection.prepareStatement(query)) {
                 statement.setString(1, userID); // Set the parameter for the userID
@@ -288,7 +416,7 @@ public class AdminDashboardController implements Initializable, CloseCallBack {
                 try (ResultSet resultSet = statement.executeQuery()) {
                     if (resultSet.next()) {
                         String roleID = resultSet.getString("roleID");
-                        String accUser = resultSet.getString("fullName");
+                        accUser = resultSet.getString("fullName");
                         System.out.println("Setting User Details: roleID=" + roleID);
                         // Update UI safely on the JavaFX Application Thread
                         Platform.runLater(() -> updateUIForRole(roleID, accUser));
@@ -300,6 +428,9 @@ public class AdminDashboardController implements Initializable, CloseCallBack {
                 e.printStackTrace();
                 Platform.runLater(() -> handleDatabaseError(e));
             }
+
+            logAudit(accUser + " have successfully logged-in", userID);
+
         }).start();
     }
 
@@ -403,18 +534,16 @@ public class AdminDashboardController implements Initializable, CloseCallBack {
         retireEmpBtn.setDisable(false);
         chooseFile.setDisable(true);
         cancelBulkBtn.setDisable(true);
-
         filePathTextField.setText("");
-
         upload.setDisable(true);
 
     }
 
     @FXML
     private void addEmpBtn(ActionEvent event) {
-        emp_id.setEditable(true);
-        emp_name.setEditable(true);
-        emp_Start.setEditable(true);
+        emp_id.setDisable(false);
+        emp_name.setDisable(false);
+        emp_Start.setDisable(false);
         bulkUploadBtn.setDisable(true);
         addEmpBtn.setDisable(true);
         retireEmpBtn.setDisable(true);
@@ -425,9 +554,9 @@ public class AdminDashboardController implements Initializable, CloseCallBack {
 
     @FXML
     private void cancelEmpBtn(ActionEvent event) {
-        emp_id.setEditable(false);
-        emp_name.setEditable(false);
-        emp_Start.setEditable(false);
+        emp_id.setDisable(true);
+        emp_name.setDisable(true);
+        emp_Start.setDisable(true);
         bulkUploadBtn.setDisable(false);
         addEmpBtn.setDisable(false);
         retireEmpBtn.setDisable(false);
@@ -444,11 +573,6 @@ public class AdminDashboardController implements Initializable, CloseCallBack {
         String EID = emp_id.getText();
         String EName = emp_name.getText();
         String EStart = emp_Start.getValue() != null ? emp_Start.getValue().toString() : "";
-
-        // Validate input (call validateInput method)
-        if (!validateInput(EID, EName)) {
-            return;
-        }
 
         String empList = "INSERT INTO employeeList (employeeID, fullName, startDate) "
                 + "VALUES ('" + EID + "', '" + EName + "', '" + EStart + "')";
@@ -479,11 +603,12 @@ public class AdminDashboardController implements Initializable, CloseCallBack {
                     alert.setHeaderText(null);
                     alert.setContentText("Employee Record Created");
                     alert.showAndWait();
+                    loadEmpDataFromDatabase();
                 }
 
-                emp_id.setEditable(false);
-                emp_name.setEditable(false);
-                emp_Start.setEditable(false);
+                emp_id.setDisable(true);
+                emp_name.setDisable(true);
+                emp_Start.setDisable(true);
                 bulkUploadBtn.setDisable(false);
                 addEmpBtn.setDisable(false);
                 retireEmpBtn.setDisable(false);
@@ -492,6 +617,7 @@ public class AdminDashboardController implements Initializable, CloseCallBack {
                 emp_name.setText("");
                 saveEmpBtn.setDisable(true);
                 cancelEmpBtn.setDisable(true);
+                logAudit(EID + " has been addedd to the employee list", userID);
 
             }
 
@@ -530,6 +656,7 @@ public class AdminDashboardController implements Initializable, CloseCallBack {
                         alreadyInactiveAlert.setContentText("This employee is already inactive.");
                         alreadyInactiveAlert.showAndWait();
                         return; // Exit method
+
                     }
                 }
 
@@ -563,6 +690,8 @@ public class AdminDashboardController implements Initializable, CloseCallBack {
                             successAlert.setHeaderText(null);
                             successAlert.setContentText("Employee successfully retired.");
                             successAlert.showAndWait();
+
+                            logAudit("Employee " + employeeID + " has been retired from the system", userID);
                         }
 
                         loadEmpDataFromDatabase();
@@ -686,7 +815,7 @@ public class AdminDashboardController implements Initializable, CloseCallBack {
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
 
-// Set values for TextFields
+
                     usersID.setText(resultSet.getString("userID"));
                     empID.setText(resultSet.getString("employeeID"));
                     Fname.setText(resultSet.getString("fName"));
@@ -696,15 +825,12 @@ public class AdminDashboardController implements Initializable, CloseCallBack {
                     Email.setText(resultSet.getString("userEmail"));
                     Zip.setText(resultSet.getString("userZip"));
                     usnField.setText(resultSet.getString("username"));
-                    //passField.setText(resultSet.getString("password"));  // Note: Password should be handled securely
-
-// Set value for DatePicker
                     Bday.setValue(resultSet.getDate("bDay").toLocalDate());
 
-// Set value for ComboBox
+
                     String roleID = resultSet.getString("roleID");
 
-// Set value for ComboBox based on roleID
+
                     switch (roleID) {
                         case "1":
                             roleCombo.setValue("Case Manager");
@@ -770,49 +896,80 @@ public class AdminDashboardController implements Initializable, CloseCallBack {
 
     @FXML
     private void UpdateClient(ActionEvent event) {
+        
+        String loggedInUserId = userID;  // or retrieve this value appropriately
 
         if (tblUser.getSelectionModel().getSelectedItem() != null) {
+            String selectedUserId = usersID.getText();  // Adjust based on your data structure
 
-// Enable all TextField components
-//empID.setDisable(false);
-            Fname.setDisable(false);
-            Lname.setDisable(false);
-            Address.setDisable(false);
-            Mobile.setDisable(false);
-            Email.setDisable(false);
-            Zip.setDisable(false);
-            usnField.setDisable(false);
+            if (selectedUserId.equals(loggedInUserId)) {
 
-// Enable DatePicker
-            Bday.setDisable(false);
+                // Enable all TextField components
+                Fname.setDisable(false);
+                Lname.setDisable(false);
+                Address.setDisable(false);
+                Mobile.setDisable(false);
+                Email.setDisable(false);
+                Zip.setDisable(false);
+                usnField.setDisable(false);
 
-// Enable ComboBox
-            roleCombo.setDisable(false);
+                // Enable DatePicker
+                Bday.setDisable(false);
 
-// Enable Button components
-            resetPassBtn.setDisable(false);
-            updateUser.setDisable(true);
-            deactUser.setDisable(true);
-            cancelUpdate.setDisable(false);
-            saveUpdate.setDisable(false);
-            tblUser.setDisable(true);
+                // Enable ComboBox
+                roleCombo.setDisable(true);
+
+                // Enable Button components
+                resetPassBtn.setDisable(false);
+                updateUser.setDisable(true);
+                deactUser.setDisable(true);
+                cancelUpdate.setDisable(false);
+                saveUpdate.setDisable(false);
+                tblUser.setDisable(true);
+
+            } else {
+
+                // Enable all TextField components
+                Fname.setDisable(false);
+                Lname.setDisable(false);
+                Address.setDisable(false);
+                Mobile.setDisable(false);
+                Email.setDisable(false);
+                Zip.setDisable(false);
+                usnField.setDisable(false);
+
+                // Enable DatePicker
+                Bday.setDisable(false);
+
+                // Enable ComboBox
+                roleCombo.setDisable(false);
+
+                // Enable Button components
+                resetPassBtn.setDisable(false);
+                updateUser.setDisable(true);
+                deactUser.setDisable(true);
+                cancelUpdate.setDisable(false);
+                saveUpdate.setDisable(false);
+                tblUser.setDisable(true);
+            }
+
         } else {
-            // Optional: Notify user or handle case where no item is selected
-
+            // Notify user that no item is selected
             Alert alert = new Alert(Alert.AlertType.WARNING);
             alert.setTitle("No Selection");
             alert.setHeaderText(null);
             alert.setContentText("A user must be selected.");
             alert.showAndWait();
         }
-
     }
+    
+    
 
     @FXML
     private void CancelUpdate(ActionEvent event) {
 
         // Disable all TextField components
-//empID.setDisable(true);
+        //empID.setDisable(true);
         Fname.setDisable(true);
         Lname.setDisable(true);
         Address.setDisable(true);
@@ -821,20 +978,20 @@ public class AdminDashboardController implements Initializable, CloseCallBack {
         Zip.setDisable(true);
         usnField.setDisable(true);
 
-// Disable DatePicker
+        // Disable DatePicker
         Bday.setDisable(true);
 
-// Disable ComboBox
+        // Disable ComboBox
         roleCombo.setDisable(true);
 
-// Disable Button components
+        // Disable Button components
         resetPassBtn.setDisable(true);
         updateUser.setDisable(false);
         deactUser.setDisable(false);
         cancelUpdate.setDisable(true);
         saveUpdate.setDisable(true);
 
-// Disable TableView
+        // Disable TableView
         tblUser.setDisable(false);
 
     }
@@ -854,10 +1011,10 @@ public class AdminDashboardController implements Initializable, CloseCallBack {
             String zipText = Zip.getText();
             String usernameText = usnField.getText();
 
-// Retrieve value from DatePicker
+            // Retrieve value from DatePicker
             LocalDate bdayDate = Bday.getValue();
 
-// Retrieve value from ComboBox
+            // Retrieve value from ComboBox
             String role = roleCombo.getValue();
             int roleID;
 
@@ -871,7 +1028,81 @@ public class AdminDashboardController implements Initializable, CloseCallBack {
                 roleID = -1; // to handle the case where the role is not recognized
             }
 
-// SQL UPDATE query
+            // Validate required fields
+            if (fnameText == null || fnameText.isEmpty()
+                    || lnameText == null || lnameText.isEmpty()
+                    || addressText == null || addressText.isEmpty()
+                    || mobileText == null || mobileText.isEmpty()
+                    || emailText == null || emailText.isEmpty()
+                    || zipText == null || zipText.isEmpty()
+                    || usernameText == null || usernameText.isEmpty()) {
+
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error");
+                alert.setHeaderText(null);
+                alert.setContentText("All fields are required!");
+                alert.showAndWait();
+                return;
+            }
+
+            // Validate mobile field as numeric
+            String numeric = "\\d+";
+            if (!mobileText.matches(numeric)) {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error");
+                alert.setHeaderText(null);
+                alert.setContentText("Contact should contain only numbers!");
+                alert.showAndWait();
+                return;
+            }
+
+            if (!mobileText.matches("\\d{10}")) {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error");
+                alert.setHeaderText(null);
+                alert.setContentText("Mobile number must contain 10 digits");
+                alert.showAndWait();
+                return;
+
+            }
+
+            String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@"
+                    + "(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
+
+            if (emailText == null || !emailText.matches(emailRegex)) {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error");
+                alert.setHeaderText(null);
+                alert.setContentText("Please enter a valid email address.");
+                alert.showAndWait();
+                return;
+
+            }
+
+            String usernameRegex = "^[a-zA-Z0-9]{6,16}$";
+
+            if (!usernameText.matches(usernameRegex)) {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error");
+                alert.setHeaderText(null);
+                alert.setContentText("Username must be 6-16 characters long and can only contain letters, and numbers.");
+                alert.showAndWait();
+                return;
+
+            }
+
+            if (!zipText.matches("\\d{4}")) {
+
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error");
+                alert.setHeaderText(null);
+                alert.setContentText("Zip code must contain 4 digits.");
+                alert.showAndWait();
+                return;
+
+            }
+
+            // SQL UPDATE query
             String updateUserData = "UPDATE userAccounts SET lName = '" + lnameText + "', fName = '" + fnameText + "', bDay = '" + bdayDate + "', userEmail = '" + emailText + "', userAddress = '" + addressText + "', userMobile = '" + mobileText + "', userZip = '" + zipText + "', roleID = '" + roleID + "', userName = '" + usernameText + "' WHERE userID = '" + uID + "'";
 
             // Establish connection and create statement
@@ -889,7 +1120,7 @@ public class AdminDashboardController implements Initializable, CloseCallBack {
                     successAlert.showAndWait();
 
                     // Disable all TextField components
-//empID.setDisable(true);
+                    //empID.setDisable(true);
                     Fname.setDisable(true);
                     Lname.setDisable(true);
                     Address.setDisable(true);
@@ -898,21 +1129,23 @@ public class AdminDashboardController implements Initializable, CloseCallBack {
                     Zip.setDisable(true);
                     usnField.setDisable(true);
 
-// Disable DatePicker
+                    // Disable DatePicker
                     Bday.setDisable(true);
 
-// Disable ComboBox
+                    // Disable ComboBox
                     roleCombo.setDisable(true);
 
-// Disable Button components
+                    // Disable Button components
                     resetPassBtn.setDisable(true);
                     updateUser.setDisable(false);
                     deactUser.setDisable(false);
                     cancelUpdate.setDisable(true);
                     saveUpdate.setDisable(true);
                     loadUserData();
-// Disable TableView
+                    // Disable TableView
                     tblUser.setDisable(false);
+
+                    logAudit("User " + empIDText + " has been updated", userID);
 
                 }
             } catch (SQLException e) {
@@ -929,6 +1162,12 @@ public class AdminDashboardController implements Initializable, CloseCallBack {
     }
 
     @FXML
+    private void refresh(MouseEvent event) {
+        loadLogs();
+        loadNumOfActiveUsers();
+    }
+
+    @FXML
     private void logoutBtn(MouseEvent event) {
         // Get the current stage (window) from the logout button
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
@@ -936,13 +1175,28 @@ public class AdminDashboardController implements Initializable, CloseCallBack {
         if (stage != null) {
             Alert confirmation = new Alert(Alert.AlertType.CONFIRMATION);
             confirmation.setTitle("Logout");
-            confirmation.setHeaderText("Are you sure you want to logout?");
-            confirmation.setContentText("Click OK to confirm logout or Cancel to stay.");
+            confirmation.setHeaderText(null);
+            confirmation.setContentText("Are you sure you want to logout?");
 
             // Show the confirmation dialog and wait for the user's response
             confirmation.showAndWait().ifPresent(response -> {
                 if (response == javafx.scene.control.ButtonType.OK) {
+
                     try {
+
+                        try (Connection c = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD); Statement s = c.createStatement()) {
+
+                            // Prepare the SQL statement to update the active status of the user
+                            String sql = "UPDATE userAccounts SET stats = '1' WHERE userID = '" + userID + "'";
+
+                            // Execute the update statement
+                            int row = s.executeUpdate(sql);
+
+                            logAudit(accUser + " have successfully logged-out", userID);
+
+                        } catch (SQLException ex) {
+
+                        }
 
                         // Load the WelcomeHCP.fxml file
                         FXMLLoader loader = new FXMLLoader(getClass().getResource("WelcomeHCP.fxml"));
@@ -958,6 +1212,7 @@ public class AdminDashboardController implements Initializable, CloseCallBack {
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
+
                 }
             });
         }
@@ -965,149 +1220,186 @@ public class AdminDashboardController implements Initializable, CloseCallBack {
 
     @FXML
     private void resetPassBtn(ActionEvent event) {
-        showUnderDevelopmentAlert();
-    }
+        if (tblUser.getSelectionModel().getSelectedItem() != null) {
+            // Get the selected user and userID
+            UserManager selectedUser = tblUser.getSelectionModel().getSelectedItem();
+            int selectedUserID = selectedUser.getUID(); // Assuming this method gets the userID of the selected user
 
-   @FXML
-private void deactUser(ActionEvent event) {
-    // Check if a user is selected in the TableView
-    if (tblUser.getSelectionModel().getSelectedItem() != null) {
-        // Get the selected user and the userID to be deactivated
-        UserManager selectedUser = tblUser.getSelectionModel().getSelectedItem();
-        int selectedUserID = selectedUser.getUID(); // Assuming this method gets the userID of the selected user
-        String currentStat = selectedUser.getUstats(); // Assuming this method gets the status of the selected user
-        int currentUserID = Integer.parseInt(userHolder.getText().trim()); // Assuming userHolder holds the current user's ID
+            int currentUserID = Integer.parseInt(userHolder.getText().trim()); // Assuming userHolder holds the current user's ID
 
-        // Check if the selected userID is not the same as the current userID
-        if (selectedUserID != currentUserID) {
-            // Check if the user is already inactive
-            if ("Inactive".equalsIgnoreCase(currentStat)) {
-                // Display warning alert if the user is already inactive
-                Alert alert = new Alert(Alert.AlertType.WARNING);
-                alert.setTitle("Already Inactive");
-                alert.setHeaderText(null);
-                alert.setContentText("The user is already inactive.");
-                alert.showAndWait();
-            } else {
-                // Display confirmation alert before deactivation
-                Alert confirmationAlert = new Alert(Alert.AlertType.CONFIRMATION);
-                confirmationAlert.setTitle("Confirm Deactivation");
-                confirmationAlert.setHeaderText(null);
-                confirmationAlert.setContentText("Are you sure you want to deactivate this user?");
+            // Confirm password reset action
+            Alert confirmAlert = new Alert(Alert.AlertType.CONFIRMATION);
+            confirmAlert.setTitle("Reset Password");
+            confirmAlert.setHeaderText(null);
+            confirmAlert.setContentText("Are you sure you want to reset this password?");
 
-                // Handle the user's response
-                confirmationAlert.showAndWait().ifPresent(response -> {
-                    if (response == ButtonType.OK) {
-                        // Proceed with deactivation
-                        String updateUserData = "UPDATE userAccounts SET isActive = '0' WHERE userID = ?";
+            // Show the confirmation alert and wait for user response
+            Optional<ButtonType> result = confirmAlert.showAndWait();
+            if (result.isPresent() && result.get() == ButtonType.OK) {
+                // If the user confirms, generate a 10-digit random alphanumeric token
+                String newToken = generateRandomToken(10);
 
-                        // Establish connection and create a prepared statement
-                        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
-                             PreparedStatement preparedStatement = connection.prepareStatement(updateUserData)) {
+                // Show the new token in a dialog
+                Alert tokenAlert = new Alert(Alert.AlertType.INFORMATION);
+                tokenAlert.setTitle("Reset Token");
+                tokenAlert.setHeaderText(null);
+                tokenAlert.setContentText("Password reset one-time token: \n\n" + newToken);
+                tokenAlert.showAndWait();
 
-                            // Set the userID parameter
-                            preparedStatement.setInt(1, selectedUserID);
+                // TODO: Implement logic to save the new token for the selected user
+                String updateQuery = "UPDATE userAccounts SET resetToken = ?, resetFlag = ? WHERE userID = ?";
 
-                            // Execute the update query
-                            int rowsUpdated = preparedStatement.executeUpdate();
+                try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD); PreparedStatement pstmt = conn.prepareStatement(updateQuery)) {
 
-                            // Check if the update was successful
-                            if (rowsUpdated > 0) {
-                                // Display success alert
-                                Alert successAlert = new Alert(Alert.AlertType.INFORMATION);
-                                successAlert.setTitle("Success");
-                                successAlert.setHeaderText(null);
-                                successAlert.setContentText("User access has been deactivated.");
-                                successAlert.showAndWait();
-                                loadUserData();
-                            }
-                        } catch (SQLException e) {
-                            e.printStackTrace();
-                        }
+                    pstmt.setString(1, newToken); // Set the resetToken
+                    pstmt.setString(2, "1"); // Set the resetFlag to '1'
+                    pstmt.setInt(3, selectedUserID); // Set the userID
+
+                    int rowsUpdated = pstmt.executeUpdate();
+                    if (rowsUpdated > 0) {
+                        System.out.println("Reset details updated successfully for user ID: " + userID);
+
+                        // Disable all TextField components
+//empID.setDisable(true);
+                        Fname.setDisable(true);
+                        Lname.setDisable(true);
+                        Address.setDisable(true);
+                        Mobile.setDisable(true);
+                        Email.setDisable(true);
+                        Zip.setDisable(true);
+                        usnField.setDisable(true);
+
+// Disable DatePicker
+                        Bday.setDisable(true);
+
+// Disable ComboBox
+                        roleCombo.setDisable(true);
+
+// Disable Button components
+                        resetPassBtn.setDisable(true);
+                        updateUser.setDisable(false);
+                        deactUser.setDisable(false);
+                        cancelUpdate.setDisable(true);
+                        saveUpdate.setDisable(true);
+
+// Disable TableView
+                        tblUser.setDisable(false);
+
+                    } else {
+                        System.out.println("No user found with ID: " + userID);
                     }
-                });
+
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                    // Handle database connection or query error
+                    Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+                    errorAlert.setTitle("Database Error");
+                    errorAlert.setHeaderText(null);
+                    errorAlert.setContentText("Error updating reset details: " + e.getMessage());
+                    errorAlert.showAndWait();
+                }
+            } else {
+
             }
         } else {
-            // Display warning alert if attempting to deactivate own account
+            // Display warning alert if no user is selected
             Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setTitle("Warning");
+            alert.setTitle("No Selection");
             alert.setHeaderText(null);
-            alert.setContentText("You cannot deactivate your own account.");
+            alert.setContentText("A user must be selected.");
             alert.showAndWait();
         }
-    } else {
-        // Display warning alert if no user is selected
-        Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setTitle("No Selection");
-        alert.setHeaderText(null);
-        alert.setContentText("A user must be selected.");
-        alert.showAndWait();
     }
-}
 
-    
-//    @FXML
-//private void deactUser(ActionEvent event) {
-//    // Check if a user is selected in the TableView
-//    if (tblUser.getSelectionModel().getSelectedItem() != null) {
-//        // Get the selected user and the userID to be deactivated
-//        UserManager selectedUser = tblUser.getSelectionModel().getSelectedItem();
-//        int selectedUserID = selectedUser.getUID(); // Assuming this method gets the userID of the selected user
-//       String currentStat = selectedUser.getUstats();
-// int currentUserID = Integer.parseInt(userHolder.getText().trim()); // Assuming usersID holds the current user's ID
-//
-//        // Check if the selected userID is not the same as the current userID
-//        if (selectedUserID != currentUserID) {
-//            String updateUserData = "UPDATE userAccounts SET isActive = '0' WHERE userID = ?";
-//
-//            // Establish connection and create a prepared statement
-//            try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
-//                 PreparedStatement preparedStatement = connection.prepareStatement(updateUserData)) {
-//
-//                // Set the userID parameter
-//                preparedStatement.setInt(1, selectedUserID);
-//
-//                // Execute the update query
-//                int rowsUpdated = preparedStatement.executeUpdate();
-//
-//                // Check if the update was successful
-//                if (rowsUpdated > 0) {
-//                    // Display success alert
-//                    Alert successAlert = new Alert(Alert.AlertType.INFORMATION);
-//                    successAlert.setTitle("Success");
-//                    successAlert.setHeaderText(null);
-//                    successAlert.setContentText("User access has been deactivated.");
-//                    successAlert.showAndWait();
-//                    loadUserData();
-//                }
-//            } catch (SQLException e) {
-//                e.printStackTrace();
-//            }
-//        } else {
-//            // Display warning alert if attempting to deactivate own account
-//            Alert alert = new Alert(Alert.AlertType.WARNING);
-//            alert.setTitle("Warning");
-//            alert.setHeaderText(null);
-//            alert.setContentText("You cannot deactivate your own account.");
-//            alert.showAndWait();
-//        }
-//    } else {
-//        // Display warning alert if no user is selected
-//        Alert alert = new Alert(Alert.AlertType.WARNING);
-//        alert.setTitle("No Selection");
-//        alert.setHeaderText(null);
-//        alert.setContentText("A user must be selected.");
-//        alert.showAndWait();
-//    }
-//}
+// Utility method to generate a random alphanumeric token
+    private String generateRandomToken(int length) {
+        String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        StringBuilder token = new StringBuilder();
+        Random random = new Random();
+        for (int i = 0; i < length; i++) {
+            token.append(chars.charAt(random.nextInt(chars.length())));
+        }
+        return token.toString();
+    }
 
-    
-    
-    
-    
-    
-    
-    
+    @FXML
+    private void deactUser(ActionEvent event) {
+        // Check if a user is selected in the TableView
+        if (tblUser.getSelectionModel().getSelectedItem() != null) {
+            // Get the selected user and the userID to be deactivated
+            UserManager selectedUser = tblUser.getSelectionModel().getSelectedItem();
+            int selectedUserID = selectedUser.getUID(); // Assuming this method gets the userID of the selected user
+            String currentStat = selectedUser.getUstats(); // Assuming this method gets the status of the selected user
+            int currentUserID = Integer.parseInt(userHolder.getText().trim()); // Assuming userHolder holds the current user's ID
+
+            // Check if the selected userID is not the same as the current userID
+            if (selectedUserID != currentUserID) {
+                // Check if the user is already inactive
+                if ("Inactive".equalsIgnoreCase(currentStat)) {
+                    // Display warning alert if the user is already inactive
+                    Alert alert = new Alert(Alert.AlertType.WARNING);
+                    alert.setTitle("Already Inactive");
+                    alert.setHeaderText(null);
+                    alert.setContentText("The user is already inactive.");
+                    alert.showAndWait();
+                } else {
+                    // Display confirmation alert before deactivation
+                    Alert confirmationAlert = new Alert(Alert.AlertType.CONFIRMATION);
+                    confirmationAlert.setTitle("Confirm Deactivation");
+                    confirmationAlert.setHeaderText(null);
+                    confirmationAlert.setContentText("Are you sure you want to deactivate this user?");
+
+                    // Handle the user's response
+                    confirmationAlert.showAndWait().ifPresent(response -> {
+                        if (response == ButtonType.OK) {
+                            // Proceed with deactivation
+                            String updateUserData = "UPDATE userAccounts SET isActive = '0' WHERE userID = ?";
+
+                            // Establish connection and create a prepared statement
+                            try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD); PreparedStatement preparedStatement = connection.prepareStatement(updateUserData)) {
+
+                                // Set the userID parameter
+                                preparedStatement.setInt(1, selectedUserID);
+
+                                // Execute the update query
+                                int rowsUpdated = preparedStatement.executeUpdate();
+
+                                // Check if the update was successful
+                                if (rowsUpdated > 0) {
+                                    // Display success alert
+                                    Alert successAlert = new Alert(Alert.AlertType.INFORMATION);
+                                    successAlert.setTitle("Success");
+                                    successAlert.setHeaderText(null);
+                                    successAlert.setContentText("User access has been deactivated.");
+                                    successAlert.showAndWait();
+                                    loadUserData();
+
+                                    logAudit("User " + selectedUserID + " has been deactivated", userID);
+                                }
+                            } catch (SQLException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    });
+                }
+            } else {
+                // Display warning alert if attempting to deactivate own account
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setTitle("Warning");
+                alert.setHeaderText(null);
+                alert.setContentText("You cannot deactivate your own account.");
+                alert.showAndWait();
+            }
+        } else {
+            // Display warning alert if no user is selected
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("No Selection");
+            alert.setHeaderText(null);
+            alert.setContentText("A user must be selected.");
+            alert.showAndWait();
+        }
+    }
+
     private void searchChange() {
         // Add a listener to usersID to call loadUserData when its value changes
         searchKey.textProperty().addListener(new ChangeListener<String>() {
@@ -1201,7 +1493,7 @@ private void deactUser(ActionEvent event) {
 
     @FXML
     private void addUserBtn(ActionEvent event) {
-        showUnderDevelopmentAlert();
+        ;
     }
 
     @FXML
@@ -1232,26 +1524,51 @@ private void deactUser(ActionEvent event) {
     }
 
     @FXML
+    private void serviceRatesLbl(MouseEvent event) {
+        try {
+
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("servicesOffered.fxml"));
+            Parent root = loader.load();
+
+            Stage stage = new Stage();
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setTitle("Services Offered");
+            stage.setScene(new Scene(root));
+            stage.setResizable(false);
+
+            stage.showAndWait(); // Wait for the dialog to close before continuing with main window
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void fundRatesLbl(MouseEvent event) {
+        try {
+
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("fundLevelUpdate.fxml"));
+            Parent root = loader.load();
+
+            Stage stage = new Stage();
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setTitle("Services Offered");
+            stage.setScene(new Scene(root));
+            stage.setResizable(false);
+
+            stage.showAndWait(); // Wait for the dialog to close before continuing with main window
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
     private void logsLbl(MouseEvent event) {
 
-        showUnderDevelopmentAlert();
     }
 
     @FXML
     private void uploadLbl(MouseEvent event) {
 
-        showUnderDevelopmentAlert();
-    }
-
-    private void showUnderDevelopmentAlert() {
-        // Create and configure the alert
-        Alert alert = new Alert(AlertType.INFORMATION);
-        alert.setTitle("Developer's Notice");
-        alert.setHeaderText(null);
-        alert.setContentText("This feature is currently under development.");
-
-        // Show the alert
-        alert.showAndWait();
     }
 
     @Override
@@ -1259,4 +1576,72 @@ private void deactUser(ActionEvent event) {
         loadEmpDataFromDatabase(); // Reload data when the second form closes
     }
 
+    //-----------------------------------------------ANALYTICS----------------------------------------
+    // Method to load the total count of users from the usersAccount table
+    public void loadTotalUsers() {
+        String query = "SELECT COUNT(*) AS total FROM userAccounts";
+
+        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD); PreparedStatement statement = connection.prepareStatement(query); ResultSet resultSet = statement.executeQuery()) {
+
+            if (resultSet.next()) {
+                int total = resultSet.getInt("total");  // Get the total count from the query result
+                totalUsers.setText(String.valueOf(total));  // Update the label with the total count
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println("Error retrieving total users: " + e.getMessage());
+        }
+    }
+    // Method to load the number of lockouts where loginCount > 3
+
+    public void loadNumOfLockouts() {
+        String query = "SELECT COUNT(*) AS lockouts FROM loginAttempts WHERE loginCount >= 3";
+
+        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD); PreparedStatement statement = connection.prepareStatement(query); ResultSet resultSet = statement.executeQuery()) {
+
+            if (resultSet.next()) {
+                int lockouts = resultSet.getInt("lockouts");  // Get the count of rows where loginCount > 3
+                numOfLockouts.setText(String.valueOf(lockouts));  // Update the label with the lockout count
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println("Error retrieving lockouts count: " + e.getMessage());
+        }
+    }
+
+    // Method to load the number of active users (where stat = 2)
+    public void loadNumOfActiveUsers() {
+        String query = "SELECT COUNT(*) AS activeUsers FROM userAccounts WHERE stats = 2";
+
+        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD); PreparedStatement statement = connection.prepareStatement(query); ResultSet resultSet = statement.executeQuery()) {
+
+            if (resultSet.next()) {
+                int activeUsers = resultSet.getInt("activeUsers");  // Get the count of active users
+                numOfActiveUSers.setText(String.valueOf(activeUsers));  // Update the label with the active user count
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println("Error retrieving active users count: " + e.getMessage());
+        }
+    }
+
+    public void logAudit(String logDesc, String useID) {
+        String insertAudit = "INSERT INTO audittrail (logDateTime, logDetails, userID) VALUES (NOW(), ?, ?)";
+
+        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD); PreparedStatement pstmt = conn.prepareStatement(insertAudit)) {
+
+            // Set parameters for the SQL query
+            pstmt.setString(1, logDesc);
+            pstmt.setString(2, useID);
+
+            // Execute the update
+            pstmt.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace(); // Handle the exception as necessary
+        }
+    }
 }

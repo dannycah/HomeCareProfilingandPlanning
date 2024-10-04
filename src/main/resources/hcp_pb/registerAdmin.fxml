@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" prefHeight="535.0" prefWidth="532.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="hcp_pb.RegisterAdminController">
+<AnchorPane id="AnchorPane" prefHeight="533.0" prefWidth="532.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="hcp_pb.RegisterAdminController">
    <children>
       <Pane prefHeight="98.0" prefWidth="532.0" style="-fx-background-color: #212c65;">
          <effect>
@@ -26,34 +26,37 @@
             <Label fx:id="lblId" layoutX="437.0" layoutY="41.0" text="." textFill="#212c65" />
          </children>
       </Pane>
-      <Pane layoutX="10.0" layoutY="107.0" prefHeight="422.0" prefWidth="512.0" style="-fx-border-color: black; -fx-background-color: d9d9d9;">
+      <Pane layoutX="10.0" layoutY="107.0" prefHeight="364.0" prefWidth="512.0" style="-fx-border-color: black; -fx-background-color: d9d9d9;">
          <children>
-            <Label layoutX="95.0" layoutY="66.0" prefHeight="17.0" prefWidth="117.0" text="First Name:" />
-            <Label layoutX="95.0" layoutY="99.0" prefHeight="17.0" prefWidth="117.0" text="Last Name:" />
-            <Label layoutX="113.0" layoutY="195.0" prefHeight="17.0" prefWidth="100.0" text="Contact:" />
-            <Label layoutX="81.0" layoutY="35.0" prefHeight="17.0" prefWidth="117.0" text="Employee ID:" />
-            <Label layoutX="123.0" layoutY="163.0" prefHeight="17.0" prefWidth="73.0" text="Email:" />
-            <Label layoutX="109.0" layoutY="130.0" prefHeight="17.0" prefWidth="100.0" text="Birthday:" />
-            <Label layoutX="108.0" layoutY="227.0" prefHeight="17.0" prefWidth="100.0" text="Address:" />
-            <Label layoutX="106.0" layoutY="259.0" prefHeight="17.0" prefWidth="53.0" text="ZipCode:" />
-            <Label layoutX="109.0" layoutY="287.0" prefHeight="17.0" prefWidth="47.0" text="Position:" />
-            <TextField fx:id="eid" layoutX="158.0" layoutY="31.0" prefHeight="25.0" prefWidth="247.0" />
-            <TextField fx:id="fName" layoutX="158.0" layoutY="62.0" prefHeight="25.0" prefWidth="247.0" />
-            <TextField fx:id="lName" layoutX="158.0" layoutY="95.0" prefHeight="25.0" prefWidth="247.0" />
-            <DatePicker fx:id="bDay" layoutX="160.0" layoutY="126.0" prefHeight="25.0" prefWidth="247.0" />
-            <TextField fx:id="eMail" layoutX="158.0" layoutY="159.0" prefHeight="25.0" prefWidth="247.0" />
-            <TextField fx:id="mobileNum" layoutX="158.0" layoutY="191.0" prefHeight="25.0" prefWidth="247.0" />
-            <TextField fx:id="address" layoutX="158.0" layoutY="223.0" prefHeight="25.0" prefWidth="247.0" />
-            <TextField fx:id="zipCode" layoutX="158.0" layoutY="255.0" prefHeight="25.0" prefWidth="247.0" />
-            <ComboBox fx:id="roleCombo" disable="true" layoutX="158.0" layoutY="283.0" prefHeight="25.0" prefWidth="247.0" promptText="System Administrator" />
-            <Label layoutX="93.0" layoutY="316.0" prefHeight="17.0" prefWidth="65.0" text="User Name:" />
-            <Label layoutX="101.0" layoutY="347.0" prefHeight="17.0" prefWidth="53.0" text="Password:" />
-            <TextField fx:id="username" layoutX="158.0" layoutY="313.0" prefHeight="25.0" prefWidth="247.0" />
-            <Button fx:id="registerButton" layoutX="107.0" layoutY="376.0" mnemonicParsing="false" onAction="#registerButton" prefHeight="25.0" prefWidth="93.0" style="-fx-background-color: #364bbf;" text="Register" textFill="WHITE" />
-            <Button layoutX="209.0" layoutY="376.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="93.0" style="-fx-background-color: #364bbf;" text="Cancel" textFill="WHITE" />
-            <Button layoutX="315.0" layoutY="376.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="93.0" style="-fx-background-color: #364bbf;" text="Clear" textFill="WHITE" />
-            <PasswordField fx:id="password" layoutX="160.0" layoutY="343.0" prefHeight="25.0" prefWidth="247.0" />
-            <PasswordField fx:id="password" layoutX="158.0" layoutY="343.0" prefHeight="25.0" prefWidth="247.0" />
+            <Label layoutX="96.0" layoutY="49.0" prefHeight="17.0" prefWidth="117.0" text="First Name:" />
+            <Label layoutX="96.0" layoutY="82.0" prefHeight="17.0" prefWidth="117.0" text="Last Name:" />
+            <Label layoutX="114.0" layoutY="178.0" prefHeight="17.0" prefWidth="100.0" text="Contact:" />
+            <Label layoutX="82.0" layoutY="18.0" prefHeight="17.0" prefWidth="117.0" text="Employee ID:" />
+            <Label layoutX="124.0" layoutY="146.0" prefHeight="17.0" prefWidth="73.0" text="Email:" />
+            <Label layoutX="110.0" layoutY="113.0" prefHeight="17.0" prefWidth="100.0" text="Birthday:" />
+            <Label layoutX="109.0" layoutY="210.0" prefHeight="17.0" prefWidth="100.0" text="Address:" />
+            <Label layoutX="107.0" layoutY="242.0" prefHeight="17.0" prefWidth="53.0" text="ZipCode:" />
+            <Label layoutX="110.0" layoutY="270.0" prefHeight="17.0" prefWidth="47.0" text="Position:" />
+            <TextField fx:id="eid" layoutX="159.0" layoutY="14.0" prefHeight="25.0" prefWidth="247.0" />
+            <TextField fx:id="fName" layoutX="159.0" layoutY="45.0" prefHeight="25.0" prefWidth="247.0" />
+            <TextField fx:id="lName" layoutX="159.0" layoutY="78.0" prefHeight="25.0" prefWidth="247.0" />
+            <DatePicker fx:id="bDay" layoutX="161.0" layoutY="109.0" prefHeight="25.0" prefWidth="247.0" />
+            <TextField fx:id="eMail" layoutX="159.0" layoutY="142.0" prefHeight="25.0" prefWidth="247.0" />
+            <TextField fx:id="mobileNum" layoutX="159.0" layoutY="174.0" prefHeight="25.0" prefWidth="247.0" />
+            <TextField fx:id="address" layoutX="159.0" layoutY="206.0" prefHeight="25.0" prefWidth="247.0" />
+            <TextField fx:id="zipCode" layoutX="159.0" layoutY="238.0" prefHeight="25.0" prefWidth="247.0" />
+            <ComboBox fx:id="roleCombo" disable="true" layoutX="159.0" layoutY="266.0" prefHeight="25.0" prefWidth="247.0" promptText="System Administrator" />
+            <Label layoutX="94.0" layoutY="299.0" prefHeight="17.0" prefWidth="65.0" text="User Name:" />
+            <Label layoutX="102.0" layoutY="330.0" prefHeight="17.0" prefWidth="53.0" text="Password:" />
+            <TextField fx:id="username" layoutX="159.0" layoutY="296.0" prefHeight="25.0" prefWidth="247.0" />
+            <PasswordField fx:id="password" layoutX="159.0" layoutY="326.0" prefHeight="25.0" prefWidth="247.0" />
+         </children>
+      </Pane>
+      <Pane layoutX="11.0" layoutY="476.0" prefHeight="48.0" prefWidth="512.0" style="-fx-background-color: d9d9d9; -fx-border-color: black;">
+         <children>
+            <Button fx:id="registerButton" layoutX="103.0" layoutY="11.0" mnemonicParsing="false" onAction="#registerButton" prefHeight="25.0" prefWidth="93.0" style="-fx-background-color: #364bbf;" text="Register" textFill="WHITE" />
+            <Button layoutX="205.0" layoutY="11.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="93.0" style="-fx-background-color: #364bbf;" text="Cancel" textFill="WHITE" />
+            <Button layoutX="311.0" layoutY="11.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="93.0" style="-fx-background-color: #364bbf;" text="Clear" textFill="WHITE" />
          </children>
       </Pane>
    </children>

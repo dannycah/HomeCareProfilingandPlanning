@@ -13,7 +13,6 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
 
 <AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1024.0" stylesheets="@../../java/hcp_pb/styles.css" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="hcp_pb.AdminDashboardController">
@@ -30,9 +29,9 @@
                         <Font name="System Bold" size="20.0" />
                      </font>
                   </Label>
-                  <VBox prefHeight="224.0" prefWidth="300.0">
+                  <VBox prefHeight="115.0" prefWidth="300.0">
                      <children>
-                        <Pane fx:id="csoPane" layoutX="10.0" layoutY="10.0" prefHeight="516.0" prefWidth="300.0">
+                        <Pane fx:id="csoPane" layoutX="10.0" layoutY="10.0" prefHeight="114.0" prefWidth="300.0">
                            <children>
                               <Label fx:id="dashboardLbl" layoutY="7.0" onMouseClicked="#dashboardLbl" prefHeight="35.0" prefWidth="300.0" text="Dashboard" textFill="#a9a6a6">
                                  <font>
@@ -71,22 +70,31 @@
                         </Pane>
                      </children>
                   </VBox>
-                  <Pane prefHeight="268.0" prefWidth="300.0">
+                  <Label fx:id="serviceRatesLbl" onMouseClicked="#serviceRatesLbl" prefHeight="35.0" prefWidth="300.0" text="Manage Service Rates" textFill="#a9a6a6">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                     <opaqueInsets>
+                        <Insets />
+                     </opaqueInsets>
+                     <padding>
+                        <Insets left="20.0" />
+                     </padding>
+                  </Label>
+                  <Label fx:id="fundRatesLbl" layoutX="10.0" layoutY="200.0" onMouseClicked="#fundRatesLbl" prefHeight="35.0" prefWidth="300.0" text="Manage Funding Rates" textFill="#a9a6a6">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                     <opaqueInsets>
+                        <Insets />
+                     </opaqueInsets>
+                     <padding>
+                        <Insets left="20.0" />
+                     </padding>
+                  </Label>
+                  <Pane prefHeight="343.0" prefWidth="300.0">
                      <children>
-                        <TableView layoutX="23.0" layoutY="50.0" prefHeight="169.0" prefWidth="255.0">
-                          <columns>
-                            <TableColumn prefWidth="75.0" text="User ID" />
-                            <TableColumn prefWidth="75.0" text="User Name" />
-                              <TableColumn prefWidth="75.0" text="Role" />
-                          </columns>
-                        </TableView>
-                        <Label layoutX="23.0" layoutY="26.0" text="Active Users:" textFill="#dfdddd">
-                           <font>
-                              <Font name="System Bold" size="12.0" />
-                           </font>
-                        </Label>
-                        <Button fx:id="addUserBtn" layoutX="84.0" layoutY="229.0" mnemonicParsing="false" onAction="#addUserBtn" prefHeight="25.0" prefWidth="132.0" style="-fx-background-color: #364bbf;" text="Add Member" textFill="WHITE" />
-                        <Line endX="169.79998779296875" endY="5.7220458984375E-6" layoutX="115.0" layoutY="14.0" startX="-100.0" stroke="WHITE" strokeLineCap="ROUND" strokeLineJoin="ROUND" strokeWidth="5.0" />
+                        <Hyperlink fx:id="helpLink" layoutX="118.0" layoutY="281.0" onMouseClicked="#helpLink" text="Need Help?" textFill="WHITE" />
                      </children>
                   </Pane>
                </children>
@@ -101,86 +109,81 @@
                            </font>
                         </Label>
                         <Hyperlink fx:id="logoutBtn" layoutX="664.0" layoutY="12.0" onMouseClicked="#logoutBtn" text="Logout" />
-                        <Label fx:id="userHolder" layoutX="566.0" layoutY="17.0" text="Label" />
+                        <Label fx:id="userHolder" layoutX="566.0" layoutY="17.0" text="Label" visible="false" />
                      </children>
                   </Pane>
                   <Pane fx:id="motherPane" prefHeight="556.0" prefWidth="724.0" style="-fx-background-color: d9d9d9;">
                      <children>
-                        <Pane fx:id="dashboardPane" prefHeight="556.0" prefWidth="724.0">
+                        <Pane fx:id="dashboardPane" prefHeight="556.0" prefWidth="724.0" style="-fx-background-color: white;">
                            <children>
-                              <Pane layoutX="14.0" layoutY="197.0" prefHeight="346.0" prefWidth="695.0" style="-fx-background-color: white;">
+                              <Pane layoutX="14.0" layoutY="111.0" prefHeight="420.0" prefWidth="695.0" style="-fx-background-color: d9d9d9;">
                                  <children>
-                                    <TableView layoutX="6.0" layoutY="5.0" prefHeight="337.0" prefWidth="683.0">
+                                    <TableView fx:id="tblLogs" layoutX="6.0" layoutY="5.0" prefHeight="409.0" prefWidth="683.0">
                                        <columns>
-                                          <TableColumn prefWidth="75.0" text="Log ID" />
-                                          <TableColumn prefWidth="118.0" text="Time Stamp" />
-                                          <TableColumn prefWidth="123.0" text="Log Details" />
+                                          <TableColumn fx:id="logID" prefWidth="75.0" text="Log ID" />
+                                          <TableColumn fx:id="tstmp" prefWidth="130" text="Time Stamp" />
+                                          <TableColumn fx:id="logDets" prefWidth="500.0" text="Log Details" />
                                        </columns>
                                     </TableView>
+                                    <Pane layoutX="-18.0" layoutY="189.0" prefHeight="355.0" prefWidth="300.0">
+                                       <children>
+                                          <Hyperlink fx:id="helpLink" layoutX="116.0" layoutY="297.0" onMouseClicked="#helpLink" text="Need help?" textFill="WHITE" />
+                                       </children>
+                                    </Pane>
                                  </children></Pane>
-                              <Pane layoutX="14.0" layoutY="9.0" prefHeight="75.0" prefWidth="237.0" style="-fx-background-color: white;">
+                              <Pane layoutX="14.0" layoutY="9.0" prefHeight="75.0" prefWidth="237.0" style="-fx-background-color: d9d9d9;">
                                  <children>
-                                    <Label layoutX="137.0" layoutY="20.0" text="0">
+                                    <Label fx:id="totalUsers" layoutX="185.0" layoutY="15.0" text="0" textFill="#3875eb">
                                        <font>
-                                          <Font size="24.0" />
+                                          <Font name="Arial Black" size="31.0" />
                                        </font>
                                     </Label>
-                                    <Label layoutX="36.0" layoutY="30.0" text="Total Users" textFill="#797777">
+                                    <Label layoutX="25.0" layoutY="27.0" text="Total Users" textFill="#5b5858">
                                        <font>
-                                          <Font size="11.0" />
+                                          <Font name="Arial Black" size="14.0" />
                                        </font>
                                     </Label>
                                  </children>
                               </Pane>
-                              <Pane layoutX="256.0" layoutY="9.0" prefHeight="75.0" prefWidth="224.0" style="-fx-background-color: white;">
+                              <Pane layoutX="256.0" layoutY="9.0" prefHeight="75.0" prefWidth="224.0" style="-fx-background-color: d9d9d9;">
                                  <children>
-                                    <Label layoutX="140.0" layoutY="21.0" text="0">
+                                    <Label fx:id="numOfLockouts" layoutX="169.0" layoutY="15.0" text="0" textFill="#3875eb">
                                        <font>
-                                          <Font size="24.0" />
+                                          <Font name="Arial Black" size="31.0" />
                                        </font>
                                     </Label>
-                                    <Label layoutX="32.0" layoutY="30.0" text="Lockouts: " textFill="#797777">
+                                    <Label layoutX="26.0" layoutY="29.0" text="Lockouts: " textFill="#5b5858">
                                        <font>
-                                          <Font size="11.0" />
+                                          <Font name="Arial Black" size="14.0" />
                                        </font>
                                     </Label>
                                  </children>
                               </Pane>
-                              <Pane layoutX="486.0" layoutY="9.0" prefHeight="75.0" prefWidth="224.0" style="-fx-background-color: white;">
+                              <Pane layoutX="486.0" layoutY="9.0" prefHeight="75.0" prefWidth="224.0" style="-fx-background-color: d9d9d9;">
                                  <children>
-                                    <Label layoutX="145.0" layoutY="22.0" text="0">
+                                    <Label fx:id="numOfActiveUSers" layoutX="174.0" layoutY="15.0" text="0" textFill="#3875eb">
                                        <font>
-                                          <Font size="24.0" />
+                                          <Font name="Arial Black" size="31.0" />
                                        </font>
                                     </Label>
-                                    <Label layoutX="26.0" layoutY="31.0" text="Active Users:" textFill="#797777">
+                                    <Label layoutX="23.0" layoutY="28.0" text="Active Users:" textFill="#5b5858">
                                        <font>
-                                          <Font size="11.0" />
+                                          <Font name="Arial Black" size="14.0" />
                                        </font>
                                     </Label>
                                  </children>
                               </Pane>
-                              <Pane layoutX="14.0" layoutY="84.0" prefHeight="5.0" prefWidth="695.0" style="-fx-background-color: #364bbf;" />
-                              <Pane layoutX="14.0" layoutY="94.0" prefHeight="75.0" prefWidth="695.0" style="-fx-background-color: white;" />
-                              <Label fx:id="headLbl1" layoutX="17.0" layoutY="177.0" text="Instance Logs" textFill="#847e7e">
+                              <Label fx:id="headLbl1" layoutX="15.0" layoutY="89.0" text="Instance Logs" textFill="#847e7e">
                                  <font>
                                     <Font name="System Bold" size="12.0" />
                                  </font>
                               </Label>
+                              <Hyperlink fx:id="refresh" layoutX="660.0" layoutY="89.0" onMouseClicked="#refresh" text="Refresh" />
                            </children>
                         </Pane>
-                        <Pane fx:id="manageUsersPane" prefHeight="556.0" prefWidth="724.0" visible="false">
+                        <Pane fx:id="manageUsersPane" prefHeight="556.0" prefWidth="724.0" style="-fx-background-color: white;" visible="false">
                            <children>
-                              <TableView fx:id="tblUser" layoutX="12.0" layoutY="45.0" prefHeight="496.0" prefWidth="275.0">
-                                 <columns>
-                                    <TableColumn fx:id="uID" prefWidth="80" text="User ID" />
-                                    <TableColumn fx:id="empName" prefWidth="150" text="Employee Name" />
-                                      <TableColumn fx:id="Stats" prefWidth="85" text="Status" />
-                                 </columns>
-                              </TableView>
-                              <TextField fx:id="searchKey" layoutX="11.0" layoutY="16.0" prefHeight="25.0" prefWidth="211.0" promptText="Search Client" />
-                              <Button fx:id="userSearch" layoutX="226.0" layoutY="16.0" mnemonicParsing="false" onAction="#userSearch" prefHeight="25.0" prefWidth="59.0" style="-fx-background-color: #364bbf;" text="Search" textFill="WHITE" />
-                              <Pane layoutX="292.0" layoutY="24.0" prefHeight="218.0" prefWidth="418.0" style="-fx-border-color: black;">
+                              <Pane layoutX="292.0" layoutY="12.0" prefHeight="218.0" prefWidth="418.0" style="-fx-background-color: d9d9d9; -fx-border-color: black;">
                                  <children>
                                     <Label layoutX="29.0" layoutY="33.0" text="User ID:" />
                                     <Label layoutX="17.0" layoutY="60.0" text="First Name:" />
@@ -209,55 +212,52 @@
                                     <ComboBox fx:id="roleCombo" disable="true" layoutX="82.0" layoutY="179.0" prefWidth="150.0" />
                                  </children>
                               </Pane>
-                              <Pane layoutX="292.0" layoutY="248.0" prefHeight="90.0" prefWidth="418.0" style="-fx-border-color: black;">
+                              <Pane layoutX="292.0" layoutY="236.0" prefHeight="136.0" prefWidth="418.0" style="-fx-background-color: d9d9d9; -fx-border-color: black;">
                                  <children>
                                     <Label layoutX="9.0" layoutY="5.0" text="User Account">
                                        <font>
                                           <Font name="System Bold" size="12.0" />
                                        </font>
                                     </Label>
-                                    <Label layoutX="37.0" layoutY="28.0" text="Username:" />
-                                    <Label layoutX="39.0" layoutY="57.0" text="Password:" />
-                                    <TextField fx:id="usnField" disable="true" layoutX="101.0" layoutY="24.0" prefHeight="25.0" prefWidth="194.0" />
-                                    <PasswordField fx:id="passField" disable="true" layoutX="101.0" layoutY="55.0" prefHeight="25.0" prefWidth="194.0" text="1111111111" />
-                                    <Button fx:id="resetPassBtn" disable="true" layoutX="306.0" layoutY="38.0" mnemonicParsing="false" onAction="#resetPassBtn" prefHeight="25.0" prefWidth="97.0" style="-fx-background-color: #364bbf;" text="Reset" textFill="WHITE" />
+                                    <Label layoutX="80.0" layoutY="28.0" text="Username:" />
+                                    <Label layoutX="82.0" layoutY="57.0" text="Password:" />
+                                    <TextField fx:id="usnField" disable="true" layoutX="144.0" layoutY="24.0" prefHeight="25.0" prefWidth="194.0" />
+                                    <PasswordField fx:id="passField" disable="true" layoutX="144.0" layoutY="55.0" prefHeight="25.0" prefWidth="194.0" text="1111111111" />
+                                    <Button fx:id="resetPassBtn" disable="true" layoutX="241.0" layoutY="87.0" mnemonicParsing="false" onAction="#resetPassBtn" prefHeight="25.0" prefWidth="97.0" style="-fx-background-color: #364bbf;" text="Reset" textFill="WHITE" />
                                  </children>
                               </Pane>
-                              <Button fx:id="updateUser" layoutX="292.0" layoutY="516.0" mnemonicParsing="false" onAction="#UpdateClient" prefHeight="25.0" prefWidth="97.0" style="-fx-background-color: #364bbf;" text="Update" textFill="WHITE" />
-                              <Button fx:id="deactUser" layoutX="398.0" layoutY="516.0" mnemonicParsing="false" onAction="#deactUser" prefHeight="25.0" prefWidth="97.0" style="-fx-background-color: #364bbf;" text="Deactivate" textFill="WHITE" />
-                              <Button fx:id="cancelUpdate" disable="true" layoutX="645.0" layoutY="516.0" mnemonicParsing="false" onAction="#CancelUpdate" prefHeight="25.0" prefWidth="68.0" style="-fx-background-color: #364bbf;" text="Cancel" textFill="WHITE" />
-                              <Button fx:id="saveUpdate" disable="true" layoutX="570.0" layoutY="516.0" mnemonicParsing="false" onAction="#SaveUpdate" prefHeight="25.0" prefWidth="68.0" style="-fx-background-color: #364bbf;" text="Save" textFill="WHITE" />
+                              <Pane layoutX="292.0" layoutY="377.0" prefHeight="47.0" prefWidth="418.0" style="-fx-background-color: d9d9d9; -fx-border-color: black;">
+                                 <children>
+                                    <Button fx:id="updateUser" layoutX="5.0" layoutY="10.0" mnemonicParsing="false" onAction="#UpdateClient" prefHeight="25.0" prefWidth="97.0" style="-fx-background-color: #364bbf;" text="Update" textFill="WHITE" />
+                                    <Button fx:id="deactUser" layoutX="109.0" layoutY="10.0" mnemonicParsing="false" onAction="#deactUser" prefHeight="25.0" prefWidth="97.0" style="-fx-background-color: #364bbf;" text="Deactivate" textFill="WHITE" />
+                                    <Button fx:id="cancelUpdate" disable="true" layoutX="344.0" layoutY="9.0" mnemonicParsing="false" onAction="#CancelUpdate" prefHeight="25.0" prefWidth="68.0" style="-fx-background-color: #364bbf;" text="Cancel" textFill="WHITE" />
+                                    <Button fx:id="saveUpdate" disable="true" layoutX="269.0" layoutY="9.0" mnemonicParsing="false" onAction="#SaveUpdate" prefHeight="25.0" prefWidth="68.0" style="-fx-background-color: #364bbf;" text="Save" textFill="WHITE" />
+                                 </children>
+                              </Pane>
+                              <Pane layoutX="6.0" layoutY="12.0" prefHeight="47.0" prefWidth="281.0" style="-fx-background-color: d9d9d9; -fx-border-color: black;">
+                                 <children>
+                                    <TextField fx:id="searchKey" layoutX="6.0" layoutY="9.0" prefHeight="25.0" prefWidth="201.0" promptText="Search Client" />
+                                    <Button fx:id="userSearch" layoutX="217.0" layoutY="8.0" mnemonicParsing="false" onAction="#userSearch" prefHeight="25.0" prefWidth="59.0" style="-fx-background-color: #364bbf;" text="Search" textFill="WHITE" />
+                                 </children>
+                              </Pane>
+                              <Pane layoutX="6.0" layoutY="62.0" prefHeight="485.0" prefWidth="281.0" style="-fx-background-color: d9d9d9; -fx-border-color: black;">
+                                 <children>
+                                    <TableView fx:id="tblUser" layoutX="6.0" layoutY="6.0" prefHeight="470.0" prefWidth="269.0">
+                                       <columns>
+                                          <TableColumn fx:id="uID" prefWidth="80" text="User ID" />
+                                          <TableColumn fx:id="empName" prefWidth="150" text="Employee Name" />
+                                            <TableColumn fx:id="Stats" prefWidth="85" text="Status" />
+                                       </columns>
+                                    </TableView>
+                                 </children>
+                              </Pane>
                            </children>
                         </Pane>
                         <Pane fx:id="employeeRecordsPane" prefHeight="556.0" prefWidth="724.0" visible="false">
                            <children>
-                              <Pane prefHeight="556.0" prefWidth="724.0">
+                              <Pane prefHeight="556.0" prefWidth="724.0" style="-fx-background-color: white;">
                                  <children>
-                                    <TableView fx:id="empTbl" layoutX="10.0" layoutY="14.0" prefHeight="311.0" prefWidth="704.0">
-                                       <columns>
-                                          <TableColumn fx:id="employeeID" text="Employee ID" />
-                                          <TableColumn fx:id="fullName" prefWidth="180.0" text="Employee Name" />
-                                          <TableColumn fx:id="status" prefWidth="181.0" text="Employment Status" />
-                                          <TableColumn fx:id="startD" minWidth="0.0" prefWidth="143.0" text="Start Date" />
-                                          <TableColumn fx:id="endD" prefWidth="198.0" text="End Date" />
-                                       </columns>
-                                    </TableView>
-                                    <Button fx:id="retireEmpBtn" layoutX="11.0" layoutY="334.0" mnemonicParsing="false" onAction="#retireEmpBtn" prefHeight="25.0" prefWidth="105.0" style="-fx-background-color: #364bbf;" text="Retire" textFill="WHITE">
-                                       <font>
-                                          <Font name="System Bold" size="12.0" />
-                                       </font>
-                                    </Button>
-                                    <Button fx:id="addEmpBtn" layoutX="123.0" layoutY="334.0" mnemonicParsing="false" onAction="#addEmpBtn" prefHeight="25.0" prefWidth="105.0" style="-fx-background-color: #364bbf;" text="Add Employee" textFill="WHITE">
-                                       <font>
-                                          <Font name="System Bold" size="12.0" />
-                                       </font>
-                                    </Button>
-                                    <Button fx:id="bulkUploadBtn" layoutX="235.0" layoutY="334.0" mnemonicParsing="false" onAction="#bulkUploadBtn" prefHeight="25.0" prefWidth="105.0" style="-fx-background-color: #364bbf;" text="Bulk Upload" textFill="WHITE">
-                                       <font>
-                                          <Font name="System Bold" size="12.0" />
-                                       </font>
-                                    </Button>
-                                    <Pane layoutX="12.0" layoutY="376.0" prefHeight="123.0" prefWidth="327.0" style="-fx-border-color: black;">
+                                    <Pane layoutX="8.0" layoutY="363.0" prefHeight="123.0" prefWidth="333.0" style="-fx-border-color: black; -fx-background-color: d9d9d9;">
                                        <children>
                                           <Label layoutX="14.0" layoutY="7.0" text="Manually Add Employee">
                                              <font>
@@ -267,14 +267,14 @@
                                           <Label layoutX="59.0" layoutY="34.0" text="Employee ID:" />
                                           <Label layoutX="38.0" layoutY="63.0" text="Employee Name:" />
                                           <Label layoutX="72.0" layoutY="91.0" prefHeight="17.0" prefWidth="56.0" text="Start Date:" />
-                                          <TextField fx:id="emp_id" editable="false" layoutX="136.0" layoutY="30.0" prefHeight="25.0" prefWidth="181.0" />
-                                          <TextField fx:id="emp_name" editable="false" layoutX="136.0" layoutY="59.0" prefHeight="25.0" prefWidth="181.0" />
-                                          <DatePicker fx:id="emp_Start" editable="false" layoutX="136.0" layoutY="88.0" prefHeight="25.0" prefWidth="181.0" />
+                                          <TextField fx:id="emp_id" disable="true" layoutX="136.0" layoutY="30.0" prefHeight="25.0" prefWidth="181.0" />
+                                          <TextField fx:id="emp_name" disable="true" layoutX="136.0" layoutY="59.0" prefHeight="25.0" prefWidth="181.0" />
+                                          <DatePicker fx:id="emp_Start" disable="true" layoutX="136.0" layoutY="88.0" prefHeight="25.0" prefWidth="181.0" />
                                        </children>
                                     </Pane>
-                                    <Pane layoutX="347.0" layoutY="376.0" prefHeight="123.0" prefWidth="366.0" style="-fx-border-color: black;">
+                                    <Pane layoutX="345.0" layoutY="363.0" prefHeight="123.0" prefWidth="371.0" style="-fx-border-color: black; -fx-background-color: d9d9d9;">
                                        <children>
-                                          <TextField fx:id="filePathTextField" editable="false" layoutX="14.0" layoutY="31.0" prefHeight="25.0" prefWidth="241.0" />
+                                          <TextField fx:id="filePathTextField" disable="true" layoutX="14.0" layoutY="31.0" prefHeight="25.0" prefWidth="241.0" />
                                           <Label layoutX="14.0" layoutY="8.0" text="Bulk Upload Employee Data">
                                              <font>
                                                 <Font name="System Bold" size="12.0" />
@@ -293,10 +293,46 @@
                                           <Button fx:id="chooseFile" disable="true" layoutX="263.0" layoutY="31.0" mnemonicParsing="false" onAction="#chooseFile" prefHeight="25.0" prefWidth="89.0" style="-fx-background-color: #364bbf;" text="Choose File" textFill="WHITE" />
                                        </children>
                                     </Pane>
-                                    <Button fx:id="saveEmpBtn" disable="true" layoutX="138.0" layoutY="510.0" mnemonicParsing="false" onAction="#saveEmpBtn" prefHeight="25.0" prefWidth="97.0" style="-fx-background-color: #364bbf;" text="Save" textFill="WHITE" />
-                                    <Button fx:id="cancelEmpBtn" disable="true" layoutX="242.0" layoutY="510.0" mnemonicParsing="false" onAction="#cancelEmpBtn" prefHeight="25.0" prefWidth="97.0" style="-fx-background-color: #364bbf;" text="Cancel" textFill="WHITE" />
-                                    <Button fx:id="upload" disable="true" layoutX="495.0" layoutY="510.0" mnemonicParsing="false" onAction="#upload" prefHeight="25.0" prefWidth="105.0" style="-fx-background-color: #364bbf;" text="Upload" textFill="WHITE" />
-                                    <Button fx:id="cancelBulkBtn" disable="true" layoutX="608.0" layoutY="510.0" mnemonicParsing="false" onAction="#cancelBulkBtn" prefHeight="25.0" prefWidth="105.0" style="-fx-background-color: #364bbf;" text="Cancel" textFill="WHITE" />
+                                    <Pane layoutX="7.0" layoutY="10.0" prefHeight="295.0" prefWidth="709.0" style="-fx-background-color: d9d9d9; -fx-border-color: black;">
+                                       <children>
+                                          <TableView fx:id="empTbl" layoutX="5.0" layoutY="8.0" prefHeight="282.0" prefWidth="695.0">
+                                             <columns>
+                                                <TableColumn fx:id="employeeID" text="Employee ID" />
+                                                <TableColumn fx:id="fullName" prefWidth="180.0" text="Employee Name" />
+                                                <TableColumn fx:id="status" prefWidth="181.0" text="Employment Status" />
+                                                <TableColumn fx:id="startD" minWidth="0.0" prefWidth="143.0" text="Start Date" />
+                                                <TableColumn fx:id="endD" prefWidth="198.0" text="End Date" />
+                                             </columns>
+                                          </TableView>
+                                       </children>
+                                    </Pane>
+                                    <Pane layoutX="7.0" layoutY="310.0" prefHeight="47.0" prefWidth="709.0" style="-fx-background-color: d9d9d9; -fx-border-color: black;">
+                                       <children>
+                                          <Button fx:id="retireEmpBtn" layoutX="7.0" layoutY="9.0" mnemonicParsing="false" onAction="#retireEmpBtn" prefHeight="25.0" prefWidth="105.0" style="-fx-background-color: #364bbf;" text="Retire" textFill="WHITE">
+                                             <font>
+                                                <Font name="System Bold" size="12.0" />
+                                             </font>
+                                          </Button>
+                                          <Button fx:id="addEmpBtn" layoutX="119.0" layoutY="9.0" mnemonicParsing="false" onAction="#addEmpBtn" prefHeight="25.0" prefWidth="105.0" style="-fx-background-color: #364bbf;" text="Add Employee" textFill="WHITE">
+                                             <font>
+                                                <Font name="System Bold" size="12.0" />
+                                             </font>
+                                          </Button>
+                                          <Button fx:id="bulkUploadBtn" layoutX="231.0" layoutY="9.0" mnemonicParsing="false" onAction="#bulkUploadBtn" prefHeight="25.0" prefWidth="105.0" style="-fx-background-color: #364bbf;" text="Bulk Upload" textFill="WHITE">
+                                             <font>
+                                                <Font name="System Bold" size="12.0" />
+                                             </font>
+                                          </Button>
+                                       </children>
+                                    </Pane>
+                                    <Pane layoutX="8.0" layoutY="492.0" prefHeight="47.0" prefWidth="709.0" style="-fx-background-color: d9d9d9; -fx-border-color: black;">
+                                       <children>
+                                          <Button fx:id="saveEmpBtn" disable="true" layoutX="8.0" layoutY="11.0" mnemonicParsing="false" onAction="#saveEmpBtn" prefHeight="25.0" prefWidth="97.0" style="-fx-background-color: #364bbf;" text="Save" textFill="WHITE" />
+                                          <Button fx:id="cancelEmpBtn" disable="true" layoutX="112.0" layoutY="11.0" mnemonicParsing="false" onAction="#cancelEmpBtn" prefHeight="25.0" prefWidth="97.0" style="-fx-background-color: #364bbf;" text="Cancel" textFill="WHITE" />
+                                          <Button fx:id="upload" disable="true" layoutX="481.0" layoutY="11.0" mnemonicParsing="false" onAction="#upload" prefHeight="25.0" prefWidth="105.0" style="-fx-background-color: #364bbf;" text="Upload" textFill="WHITE" />
+                                          <Button fx:id="cancelBulkBtn" disable="true" layoutX="594.0" layoutY="11.0" mnemonicParsing="false" onAction="#cancelBulkBtn" prefHeight="25.0" prefWidth="105.0" style="-fx-background-color: #364bbf;" text="Cancel" textFill="WHITE" />
+                                       </children>
+                                    </Pane>
                                  </children>
                               </Pane>
                            </children></Pane>

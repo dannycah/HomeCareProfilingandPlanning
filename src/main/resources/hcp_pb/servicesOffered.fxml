@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane id="AnchorPane" prefHeight="497.0" prefWidth="528.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="hcp_pb.ServicesOfferedController">
+   <children>
+      <Pane prefHeight="80.0" prefWidth="528.0" style="-fx-background-color: #212c65;">
+         <effect>
+            <DropShadow blurType="ONE_PASS_BOX" />
+         </effect>
+         <children>
+            <Label layoutX="14.0" layoutY="26.0" prefHeight="34.0" prefWidth="351.0" text="Services Cost Adjustments" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="23.0" />
+               </font>
+            </Label>
+            <Label fx:id="lblId" layoutX="437.0" layoutY="41.0" text="." textFill="#212c65" />
+            <Label layoutX="302.0" layoutY="33.0" prefHeight="17.0" prefWidth="204.0" textFill="WHITE" />
+         </children>
+      </Pane>
+      <Pane layoutX="5.0" layoutY="88.0" prefHeight="351.0" prefWidth="517.0" style="-fx-background-color: d9d9d9; -fx-border-color: black;">
+         <children>
+            <TableView fx:id="tblServ" editable="true" layoutX="6.0" layoutY="12.0" prefHeight="328.0" prefWidth="506.0">
+              <columns>
+                <TableColumn fx:id="sID" prefWidth="97.0" text="Service ID" />
+                <TableColumn fx:id="sDesc" prefWidth="283.0" text="Service Description" />
+                  <TableColumn fx:id="sRate" prefWidth="176.0" text="Rate" />
+       
+              </columns>
+            </TableView>
+         </children>
+      </Pane>
+      <Pane layoutX="5.0" layoutY="442.0" prefHeight="45.0" prefWidth="517.0" style="-fx-background-color: d9d9d9; -fx-border-color: black;">
+         <children>
+            <Button fx:id="modServ" layoutX="313.0" layoutY="9.0" mnemonicParsing="false" onAction="#saveService" prefHeight="25.0" prefWidth="92.0" style="-fx-background-color: #364bbf;" text="Save" textFill="WHITE" />
+            <Button fx:id="canModServ" layoutX="416.0" layoutY="9.0" mnemonicParsing="false" onAction="#cancelMod" prefHeight="25.0" prefWidth="92.0" style="-fx-background-color: #364bbf;" text="Cancel" textFill="WHITE" />
+         </children>
+      </Pane>
+   </children>
+</AnchorPane>

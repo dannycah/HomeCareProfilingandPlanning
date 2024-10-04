@@ -1,16 +1,72 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.text.Font?>
+<?import javafx.scene.layout.Pane?>
 
-
-<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/20.0.1">
+<AnchorPane id="AnchorPane" prefHeight="559.0" prefWidth="735.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="hcp_pb.ReportsController">
    <children>
-      <Label layoutX="166.0" layoutY="155.0" text="Under Development">
-         <font>
-            <Font size="30.0" />
-         </font>
-      </Label>
+      <Pane layoutX="15.0" layoutY="16.0" prefHeight="85.0" prefWidth="712.0" style="-fx-background-color: d9d9d9; -fx-border-color: black;">
+         <children>
+            <ComboBox fx:id="reportCombo" layoutX="95.0" layoutY="15.0" prefHeight="25.0" prefWidth="228.0" />
+            <Label layoutX="19.0" layoutY="19.0" text="Report Type:" />
+            <RadioButton fx:id="currentRB" layoutX="97.0" layoutY="49.0" mnemonicParsing="false" selected="true" text="Current Month" />
+            <RadioButton fx:id="specificRB" layoutX="220.0" layoutY="49.0" mnemonicParsing="false" text="Specific Date" />
+            <DatePicker fx:id="reportStart" layoutX="420.0" layoutY="14.0" />
+            <Label layoutX="356.0" layoutY="18.0" text="Start Date:" />
+            <DatePicker fx:id="reportEnd" layoutX="420.0" layoutY="45.0" />
+            <Label layoutX="360.0" layoutY="48.0" text="End Date:" />
+            <Button fx:id="genReportBtn" layoutX="615.0" layoutY="28.0" mnemonicParsing="false" onAction="#genReportBtn" prefHeight="25.0" prefWidth="78.0" text="Generate" />
+         </children>
+         
+        
+         
+      </Pane>
+      <Pane fx:id="caseRepPane" layoutX="15.0" layoutY="107.0" prefHeight="379.0" prefWidth="712.0" style="-fx-background-color: d9d9d9; -fx-border-color: black;">
+         <children>
+            <TableView fx:id="casesRepTbl" layoutX="14.0" layoutY="14.0" prefHeight="357.0" prefWidth="690.0">
+               <columns>
+          <TableColumn fx:id="cName_case" prefWidth="162.3999900817871" text="Client Name" />
+                  <TableColumn fx:id="cDate_case" minWidth="2.399993896484375" prefWidth="110.40003967285156" text="Date Created" />
+                  <TableColumn fx:id="csoCase" prefWidth="199.20001220703125" text="Assigned CSO" />
+                  <TableColumn fx:id="cStat_case" prefWidth="217.59991455078125" text="Status" />
+               </columns></TableView>
+         </children>
+      </Pane>
+      <Pane fx:id="assessmentRepPane" layoutX="15.0" layoutY="107.0" prefHeight="379.0" prefWidth="712.0" style="-fx-background-color: d9d9d9; -fx-border-color: black;" visible="false">
+         <children>
+            <TableView fx:id="assessmentRepTbl" layoutX="14.0" layoutY="14.0" prefHeight="357.0" prefWidth="690.0">
+               <columns>
+                  <TableColumn fx:id="assessName" prefWidth="160.79995346069336" text="Client  Name" />
+                  <TableColumn fx:id="assessDate" prefWidth="127.20002746582031" text="Assessment Date" />
+                  <TableColumn fx:id="assessCSO" prefWidth="160.79998779296875" text="Assigned CSO" />
+                  <TableColumn fx:id="assessRemarks" prefWidth="242.0" text="Remarks" />
+               </columns></TableView>
+         </children>
+      </Pane>
+      <Pane fx:id="clientReppane" layoutX="15.0" layoutY="107.0" prefHeight="379.0" prefWidth="712.0" style="-fx-background-color: d9d9d9; -fx-border-color: black;" visible="false">
+         <children>
+            <TableView fx:id="clientRepTbl" layoutX="14.0" layoutY="14.0" prefHeight="357.0" prefWidth="690.0">
+               <columns>
+                  <TableColumn fx:id="clientRepID" prefWidth="92.79995346069336" text="Client ID" />
+                  <TableColumn fx:id="clientRepName" prefWidth="180.00001525878906" text="Client Name" />
+                  <TableColumn fx:id="clientRepBirth" prefWidth="139.199951171875" text="Birthday" />
+                  <TableColumn fx:id="clientRepLevel" minWidth="0.0" prefWidth="116.00006103515625" text="Level" />
+                  <TableColumn fx:id="clientRepMed" prefWidth="160.80010986328125" text="Medicare" />
+               </columns></TableView>
+         </children>
+      </Pane>
+      <Pane layoutX="15.0" layoutY="492.0" prefHeight="53.0" prefWidth="712.0" style="-fx-background-color: d9d9d9; -fx-border-color: black;">
+         <children>
+            <Button fx:id="extractReportBtn" disable="true" layoutX="513.0" layoutY="14.0" mnemonicParsing="false" onAction="#extractReportBtn" prefHeight="25.0" prefWidth="90.0" text="Extract" />
+            <Button fx:id="printReportBtn" disable="true" layoutX="613.0" layoutY="14.0" mnemonicParsing="false" onAction="#printReportBtn" prefHeight="25.0" prefWidth="90.0" text="Print" />
+         </children>
+      </Pane>
    </children>
 </AnchorPane>

@@ -4,6 +4,9 @@
  */
 package hcp_pb;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.Connection;
@@ -25,6 +28,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 
 import javafx.scene.control.Button;
@@ -98,19 +102,34 @@ public class CreateCaseController implements Initializable {
     @FXML
     private TextField searchKey;
     
+    @FXML
+    private Label createName;
+    
+    @FXML
+    private Label createName1;
+    
+    
     
     @FXML private Button searchCase;
     @FXML
     private Button cancelCaseBtn;
-    private final String DB_URL = "jdbc:mysql://localhost:3306/HCP_PBP";
-    private final String DB_USER = "root";
-    private final String DB_PASSWORD = "!Student1";
+    
+    private static final String IS_OPEN_FILE = "config/isOpen.txt"; // Relative path to isOpen file
+    private static final String DB_CONFIG_FILE = "config/dbConfig.txt"; // Relative path to dbConfig file
+
+    private static Scene scene;
+    private String DB_URL;
+    private String DB_USER;
+    private String DB_PASSWORD;
+    
+    
 
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+           loadDatabaseConfig();
         getTheMaxCid();
           initComboBox();
         searchChange();
@@ -135,6 +154,39 @@ public class CreateCaseController implements Initializable {
             }
         });
 
+    }
+    
+    
+    
+    
+    private void loadDatabaseConfig() {
+        try {
+            File configFile = new File(DB_CONFIG_FILE);
+            if (!configFile.exists()) {
+                // Optionally create a default config file if it doesn't exist
+                
+               // createDefaultConfigFile();
+            }
+
+            // Read the database configuration
+            try (BufferedReader reader = new BufferedReader(new FileReader(configFile))) {
+                DB_URL = reader.readLine(); // Read the first line (URL)
+                DB_USER = reader.readLine(); // Read the second line (username)
+                DB_PASSWORD = reader.readLine(); // Read the third line (password)
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+//            showAlert("Error reading the database configuration.", "Error", Alert.AlertType.ERROR);
+//        
+//            
+            
+                            Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setTitle("Error");
+                alert.setHeaderText(null);
+                alert.setContentText("Error reading the database configuration.");
+//                alert.showAndWait();
+                    System.exit(1); // Exit if an error occurs while reading the file
+        }
     }
 
     private void getTheMaxCid() {
@@ -267,6 +319,9 @@ public class CreateCaseController implements Initializable {
 //        Stage stage = (Stage) cancelCaseBtn.getScene().getWindow();
 //        // Close the stage
 //        stage.close();
+        createName1.setVisible(false);
+ createName.setText("Create a new Case Profile for a client.");
+
         tblCreateCase.setDisable(false);
 
         // Enable ComboBoxes and set to the first selection
@@ -324,58 +379,112 @@ public class CreateCaseController implements Initializable {
 //        
 //    }
 //        
-    @FXML
-    private void createCaseBtn() {
-
-//             //   caseNum.clear();
-//        cID.clear();
-//        fName.clear();
-//        lName.clear();
-//        medi_Care.clear();
-//        mobileNum.clear();
-//        address.clear();
-        // Check if TableView has a selected item before disabling
-        if (tblCreateCase.getSelectionModel().getSelectedItem() != null) {
+ 
+    
+@FXML
+private void createCaseBtn() {
+    String clID = cID.getText(); // Get the client ID from the text field
+    String clN = fName.getText() +" " + lName.getText();
+        
+//        createName
+    // Check if TableView has a selected item before proceeding
+    if (tblCreateCase.getSelectionModel().getSelectedItem() != null) {
+        // Check for active cases for the given client ID
+        if (checkForActiveCase(clID)) {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Active Case Found");
+            alert.setHeaderText(null);
+            alert.setContentText("There is still an active case for this client.");
+            alert.showAndWait();
+        } else {
+            // Proceed with enabling components and setting values
             tblCreateCase.setDisable(true);
 
-            // Enable ComboBoxes and set to the first selection
-            clientStatusCombo.setDisable(false);
-            clientStatusCombo.getSelectionModel().selectFirst();
+            enableComboBoxes();
+            setDatePickersToToday();
 
-            assessmentTypeCombo.setDisable(false);
-            assessmentTypeCombo.getSelectionModel().selectFirst();
-
-            casePriorityCombo.setDisable(false);
-            casePriorityCombo.getSelectionModel().selectFirst();
-
-            csoAssignmentCombo.setDisable(false);
-            csoAssignmentCombo.getSelectionModel().selectFirst();
-
-            // Enable DatePickers and set to today's date
-            LocalDate today = LocalDate.now();
-
-            dateCreated.setDisable(false);
-            dateCreated.setValue(today);
-
-            completionCombo.setDisable(false);
-            completionCombo.setValue(today);
-
-    tblCreateCase.setDisable(true);
             confirmReg.setDisable(false);
             cancelCaseBtn.setDisable(false);
             createCaseBtn.setDisable(true);
-
-        } else {
-            // Optional: Notify user or handle case where no item is selected
-
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setTitle("No Selection");
-            alert.setHeaderText(null);
-            alert.setContentText("A client must be selected.");
-            alert.showAndWait();
+       
+           createName.setText("Creating a new case for client: ");
+           createName1.setVisible(true);
+           createName1.setText(clN);
         }
-
+    } else {
+        // Notify user if no item is selected
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle("No Selection");
+        alert.setHeaderText(null);
+        alert.setContentText("A client must be selected.");
+        alert.showAndWait();
     }
+}
+
+
+
+// Method to check if there's an active case
+private boolean checkForActiveCase(String clID) {
+    boolean hasActiveCase = false;
+    String query = "SELECT assessmentStatus FROM clientcases WHERE clientID = ?";
+
+    try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+         PreparedStatement pstmt = connection.prepareStatement(query)) {
+        
+        // Set the clientID parameter
+        pstmt.setString(1, clID);
+        ResultSet rs = pstmt.executeQuery();
+
+        if (rs.next()) {
+            String status = rs.getString("assessmentStatus");
+            if (!"Closed".equalsIgnoreCase(status)) {
+                hasActiveCase = true; // Active case exists if status is not "Close"
+            }
+        }
+    } catch (SQLException e) {
+        e.printStackTrace(); // Handle exceptions appropriately
+    }
+
+    return hasActiveCase;
+}
+
+
+// Helper method to enable ComboBoxes and set the first selection
+private void enableComboBoxes() {
+    clientStatusCombo.setDisable(false);
+    clientStatusCombo.getSelectionModel().selectFirst();
+
+    assessmentTypeCombo.setDisable(false);
+    assessmentTypeCombo.getSelectionModel().selectFirst();
+
+    casePriorityCombo.setDisable(false);
+    casePriorityCombo.getSelectionModel().selectFirst();
+
+    csoAssignmentCombo.setDisable(false);
+    csoAssignmentCombo.getSelectionModel().selectFirst();
+}
+
+// Helper method to set DatePickers to today's date
+private void setDatePickersToToday() {
+    LocalDate today = LocalDate.now();
+    
+    dateCreated.setDisable(false);
+    dateCreated.setValue(today);
+
+    completionCombo.setDisable(false);
+    completionCombo.setValue(today);
+}
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 //    
 
     
@@ -569,6 +678,10 @@ public class CreateCaseController implements Initializable {
                 Stage stage = (Stage) confirmReg.getScene().getWindow();
                 stage.close();
 
+                
+                	
+		          logAudit("A new case for client " + clientIDText + " has been created", createUser);
+  
 //               FXMLLoader loader = new FXMLLoader(getClass().getResource("Dashboard.fxml"));
 //                Parent root = loader.load();
 //
@@ -586,6 +699,8 @@ public class CreateCaseController implements Initializable {
             confirmReg.setDisable(true);
             cancelCaseBtn.setDisable(true);
             createCaseBtn.setDisable(false);
+            createName1.setVisible(false);
+             createName.setText("Create a new Case Profile for a client.");
             }
 
         } catch (SQLException e) {
@@ -594,5 +709,30 @@ public class CreateCaseController implements Initializable {
         }
 
     }
+    
+    
+    
+        public void logAudit(String logDesc, String useID) {
+        String insertAudit = "INSERT INTO audittrail (logDateTime, logDetails, userID) VALUES (NOW(), ?, ?)";
+
+        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD); PreparedStatement pstmt = conn.prepareStatement(insertAudit)) {
+
+            // Set parameters for the SQL query
+            pstmt.setString(1, logDesc);
+            pstmt.setString(2, useID);
+
+            // Execute the update
+            pstmt.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace(); // Handle the exception as necessary
+        }
+        }
+		
+    
+    
+    
+    
+    
 
 }

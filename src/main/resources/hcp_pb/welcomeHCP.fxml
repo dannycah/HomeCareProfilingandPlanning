@@ -89,10 +89,10 @@
                      </font>
                   </Label>
                   <Label fx:id="regLbl" layoutX="143.0" layoutY="209.0" onMouseClicked="#regLbl" prefHeight="18.0" prefWidth="82.0" text="Register Here!" />
-                  <TextField fx:id="usnField" layoutX="19.0" layoutY="86.0" prefHeight="25.0" prefWidth="212.0" text="janesmith" />
-                  <PasswordField fx:id="pwdField" layoutX="20.0" layoutY="137.0" prefHeight="25.0" prefWidth="212.0" text="pass456" />
+                  <TextField fx:id="usnField" layoutX="19.0" layoutY="86.0" prefHeight="25.0" prefWidth="212.0" />
+                  <PasswordField fx:id="pwdField" layoutX="20.0" layoutY="137.0" prefHeight="25.0" prefWidth="212.0" />
                   <Button fx:id="loginBtn" layoutX="21.0" layoutY="172.0" mnemonicParsing="false" onAction="#loginBtn" prefHeight="25.0" prefWidth="93.0" text="Login" />
-                  <Button fx:id="cancelBtn" layoutX="138.0" layoutY="172.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="93.0" text="Cancel" />
+                  <Button fx:id="cancelBtn" layoutX="138.0" layoutY="172.0" mnemonicParsing="false" onAction="#cancelBtn" prefHeight="25.0" prefWidth="93.0" text="Cancel" />
                </children>
             </Pane>
          </children>

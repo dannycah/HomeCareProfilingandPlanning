@@ -4,6 +4,8 @@
  */
 package hcp_pb;
 
+import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -12,22 +14,41 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.control.Alert;
 
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.stage.Stage;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.font.PDType1Font;
+
+
+import java.awt.Color;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import javafx.application.Platform;
+import javafx.scene.Scene;
+import javafx.stage.FileChooser;
+import javafx.stage.FileChooser.ExtensionFilter;
 /**
  * FXML Controller class
  *
@@ -65,11 +86,22 @@ public class FinaliseCasePlanController implements Initializable {
     private TextArea txtActons;
     
     
+    @FXML
+    private Button canFin;
     
-        private final String DB_URL = "jdbc:mysql://localhost:3306/HCP_PBP";
-    private final String DB_USER = "root";
-    private final String DB_PASSWORD = "!Student1";
-        private String clientName;
+    
+    private static final String IS_OPEN_FILE = "config/isOpen.txt"; // Relative path to isOpen file
+    private static final String DB_CONFIG_FILE = "config/dbConfig.txt"; // Relative path to dbConfig file
+
+    private static Scene scene;
+    private String DB_URL;
+    private String DB_USER;
+    private String DB_PASSWORD;
+    
+    
+    
+    
+    private String clientName;
     private String assessmentNo;
     
       private String ci;
@@ -82,10 +114,52 @@ public class FinaliseCasePlanController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
 //         setClient();
         
-        // TODO
+             loadDatabaseConfig();
        prog.setVisible(false);
         
-    }    
+    }  
+    
+    
+    
+    
+    private void loadDatabaseConfig() {
+        try {
+            File configFile = new File(DB_CONFIG_FILE);
+            if (!configFile.exists()) {
+                // Optionally create a default config file if it doesn't exist
+                
+               // createDefaultConfigFile();
+            }
+
+            // Read the database configuration
+            try (BufferedReader reader = new BufferedReader(new FileReader(configFile))) {
+                DB_URL = reader.readLine(); // Read the first line (URL)
+                DB_USER = reader.readLine(); // Read the second line (username)
+                DB_PASSWORD = reader.readLine(); // Read the third line (password)
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+//            showAlert("Error reading the database configuration.", "Error", Alert.AlertType.ERROR);
+//        
+//            
+            
+                            Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setTitle("Error");
+                alert.setHeaderText(null);
+                alert.setContentText("Error reading the database configuration.");
+//                alert.showAndWait();
+                    System.exit(1); // Exit if an error occurs while reading the file
+        }
+    }
+
+
+    
+    
+      @FXML
+    private void canFin(ActionEvent event) {
+              Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+                stage.close();
+    }
     
     @FXML
     private void genCP(ActionEvent event) {
@@ -123,6 +197,15 @@ public class FinaliseCasePlanController implements Initializable {
                   txtActons.setDisable(false);
                   careplan.setDisable(false);
                   
+                  Platform.runLater(() -> {
+                              Alert assessmentStartedAlert = new Alert(Alert.AlertType.INFORMATION);
+    assessmentStartedAlert.setTitle("Warning");
+    assessmentStartedAlert.setHeaderText(null);
+    assessmentStartedAlert.setContentText("This is an Assessment-based Care Plan\n You can update or edit the details before confirming.");
+    assessmentStartedAlert.showAndWait();
+    return;
+                    });
+                  
             }
         };
 
@@ -134,7 +217,7 @@ public class FinaliseCasePlanController implements Initializable {
         thread.setDaemon(true); // Ensure the thread closes when the application exits
         thread.start();
           
-          
+          confirmBtn.setDisable(false); 
           
           
           
@@ -143,7 +226,9 @@ public class FinaliseCasePlanController implements Initializable {
         generateADLAndDentalInfo();
         
         
-        confirmBtn.setDisable(false);
+
+        
+       
     }
 
 private void generateADLAndDentalInfo() {
@@ -1091,29 +1176,244 @@ private void generateADLAndDentalInfo() {
     }
     
     
+    private static final float MARGIN = 50;
+private static final float PAGE_WIDTH = 600 - 2 * MARGIN; // Adjust according to your page size
+private static final float FONT_SIZE = 12;
+private static final float LEADING = 14.5f;
+     
+    @FXML
+private void confirmBtn(ActionEvent event) {
+    // Show Yes/No confirmation alert
+    Alert confirmationAlert = new Alert(Alert.AlertType.CONFIRMATION);
+    confirmationAlert.setTitle("Confirmation");
+    confirmationAlert.setHeaderText(null);
+    confirmationAlert.setContentText("You are about to complete a Client's Care Plan. Editing will no longer be available upon confirmation. Do you want to proceed?");
     
-      @FXML
-    private void  confirmBtn(ActionEvent event) {
-        // Call the method to generate the PDF
-        
-        
-            Alert noRecordSelectedAlert = new Alert(Alert.AlertType.INFORMATION);
-            noRecordSelectedAlert.setTitle("Confirmation");
-            noRecordSelectedAlert.setHeaderText(null);
-            noRecordSelectedAlert.setContentText("You are about to complete a Client's Care Plan.\n Editing will no longer available upon confirmation");
-            noRecordSelectedAlert.showAndWait();
-            return; // Exit the method if no record is selected
-        
-            
-            
-//                  Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-//        alert.setTitle("Confirmation");
-//        alert.setHeaderText(null);
-//        alert.setContentText("You are about to complete a Client's Care Plan.\n Editing will no longer available upon confirmation");
+    // Show the dialog and wait for user response
+    Optional<ButtonType> result = confirmationAlert.showAndWait();
+    
+    // Proceed if "Yes" was clicked
+    if (result.isPresent() && result.get() == ButtonType.OK) {
+        String goals = capitalizeAndFormat(txtADL.getText());
+        String actions = capitalizeAndFormat(txtActons.getText());
 
+        // Create a FileChooser to select the save location and file name
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Save PDF");
+        fileChooser.getExtensionFilters().add(new ExtensionFilter("PDF Files", "*.pdf"));
+        File selectedFile = fileChooser.showSaveDialog(((Node) event.getSource()).getScene().getWindow());
+
+        if (selectedFile != null) {
+            try (PDDocument document = new PDDocument()) {
+                // Create a new page
+                PDPage page = new PDPage();
+                document.addPage(page);
+
+                // Create a content stream to write to the page
+                try (PDPageContentStream contentStream = new PDPageContentStream(document, page)) {
+                    PDType1Font font = PDType1Font.HELVETICA; // Store the font being used
+                    contentStream.setFont(PDType1Font.HELVETICA_BOLD, FONT_SIZE);
+                    contentStream.setNonStrokingColor(java.awt.Color.BLACK);  // Ensure java.awt.Color is used
+
+                    // Begin the text output on the PDF
+                    contentStream.beginText();
+                    contentStream.setLeading(LEADING);
+                    contentStream.newLineAtOffset(MARGIN, 750);
+
+                    // Add header
+                    contentStream.showText("Sample Company Home Care Provider");
+                    contentStream.newLine();
+                    contentStream.showText("120 Spencer St, Melbourne VIC 3000");
+                    contentStream.newLine();
+                    contentStream.showText("Created By: " + "Case Manager Name");
+                    contentStream.newLine();
+                    contentStream.showText("Date Created: " + LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+                    contentStream.newLine();
+                    contentStream.newLine();
+
+                    // Add section header
+                    contentStream.setFont(PDType1Font.HELVETICA_BOLD, 14);
+                    contentStream.showText("My Plan");
+                    contentStream.newLine();
+
+                    // Add client details
+                    contentStream.setFont(font, FONT_SIZE); // Switch back to normal font
+                    contentStream.showText("Client Number: " + cID.getText());
+                    contentStream.newLine();
+                    contentStream.showText("Client Name: " + cFname.getText());
+                    contentStream.newLine();
+                    contentStream.showText("Client Address: " + cAddress.getText());
+                    contentStream.newLine();
+                    contentStream.showText("Case Manager: " + "John Doe");
+                    contentStream.newLine();
+                    contentStream.showText("Assessed Level: " + "Level 2");
+                    contentStream.newLine();
+                    contentStream.showText("Assessment Date: " + aDate.getValue().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+                    contentStream.newLine();
+                    contentStream.showText("Plan Review: N/A");
+                    contentStream.newLine();
+                    contentStream.showText("Venue: " + aVenue.getText());
+                    contentStream.newLine();
+                    contentStream.newLine();
+
+                    // Add GOALS section
+                    contentStream.setFont(PDType1Font.HELVETICA_BOLD, FONT_SIZE);
+                    contentStream.showText("GOALS:");
+                    contentStream.newLine();
+                    contentStream.setFont(font, FONT_SIZE); // Use normal font for content
+                    wrapText(contentStream, goals, font, FONT_SIZE, PAGE_WIDTH);
+                    contentStream.newLine();
+
+                    // Add ACTION PLAN section
+                    contentStream.newLine();
+                    contentStream.setFont(PDType1Font.HELVETICA_BOLD, FONT_SIZE);
+                    contentStream.showText("ACTION PLAN:");
+                    contentStream.newLine();
+                    contentStream.setFont(font, FONT_SIZE); // Use normal font for content
+                    wrapText(contentStream, actions, font, FONT_SIZE, PAGE_WIDTH);
+                    contentStream.newLine();
+
+                    // Add confirmation section
+                    contentStream.newLine();
+                    contentStream.newLine();
+                    wrapText(contentStream, "Confirmation of the above information and the execution of care service.", font, FONT_SIZE, PAGE_WIDTH);
+                    contentStream.newLine();
+                    contentStream.newLine();
+                    contentStream.newLine();
+
+                    // Add signature section
+                    contentStream.showText("Signature: ________________________   Date: ____________________");
+                    contentStream.newLine();
+                    contentStream.showText("Witness: ________________________   Date: ____________________");
+
+                    // End text
+                    contentStream.endText();
+                }
+
+                // Save the document to the selected file
+                document.save(selectedFile);
+                System.out.println("PDF created successfully at: " + selectedFile.getAbsolutePath());
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        String selectedCase = csID.getText();
+        
+        // Construct the SQL UPDATE query
+        String closeCase = "UPDATE clientcases SET assessmentStatus = 'For Budget' WHERE caseID = ?";
+
+        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+             PreparedStatement preparedStatement = connection.prepareStatement(closeCase)) {
+            
+            // Set the parameter
+            preparedStatement.setString(1, selectedCase);
+            
+            // Execute the update query
+            int clientRowsUpdated = preparedStatement.executeUpdate();
+
+            // Check if the update was successful
+            if (clientRowsUpdated > 0) {
+                // Display success alert
+                Alert successAlert = new Alert(Alert.AlertType.INFORMATION);
+                successAlert.setTitle("Success");
+                successAlert.setHeaderText(null);
+                successAlert.setContentText("Case Closed!");
+                successAlert.showAndWait();
+                
+                
+                
+                  logAudit("A new care plan has been created for client " + clientName , "000000");
+  
+  
+                
+                // Optionally reload cases or update UI
+                // loadMyCases();
+
+                // Close the current window
+                Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+                stage.close();
+
+            } else {
+                // Handle the case where no rows were updated
+                Alert failureAlert = new Alert(Alert.AlertType.WARNING);
+                failureAlert.setTitle("Update Failed");
+                failureAlert.setHeaderText(null);
+                failureAlert.setContentText("No case found with the provided ID.");
+                failureAlert.showAndWait();
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // Optionally show an error alert to the user
+            Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+            errorAlert.setTitle("Database Error");
+            errorAlert.setHeaderText(null);
+            errorAlert.setContentText("An error occurred while updating the case.");
+            errorAlert.showAndWait();
+        }
+    }
+}
+
+    
+    
+
+    
+/**
+ * Capitalizes the first letter of each sentence and ensures proper line breaks.
+ */
+private String capitalizeAndFormat(String input) {
+    String[] sentences = input.split("(?<=\\.)\\s+"); // Split by period followed by spaces
+    StringBuilder formattedText = new StringBuilder();
+
+    for (String sentence : sentences) {
+        String trimmedSentence = sentence.trim();
+        if (!trimmedSentence.isEmpty()) {
+            formattedText.append(Character.toUpperCase(trimmedSentence.charAt(0)))
+                         .append(trimmedSentence.substring(1))
+                         .append("\n"); // Add new line after each sentence
+        }
     }
 
-    
-   
+    return formattedText.toString();
+}
 
+
+private void wrapText(PDPageContentStream contentStream, String text, PDType1Font font, float fontSize, float maxWidth) throws IOException {
+    String[] words = text.split("\\s+");
+    StringBuilder line = new StringBuilder();
+    for (String word : words) {
+        String potentialLine = line + (line.length() == 0 ? "" : " ") + word;
+        float width = font.getStringWidth(potentialLine) / 1000 * fontSize;
+        if (width > maxWidth) {
+            contentStream.showText(line.toString());
+            contentStream.newLine();
+            line = new StringBuilder(word);
+        } else {
+            line.append((line.length() == 0 ? "" : " ") + word);
+        }
+    }
+    if (line.length() > 0) {
+        contentStream.showText(line.toString());
+    }
+}
+   
+    public void logAudit(String logDesc, String useID) {
+        String insertAudit = "INSERT INTO audittrail (logDateTime, logDetails, userID) VALUES (NOW(), ?, ?)";
+
+        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD); PreparedStatement pstmt = conn.prepareStatement(insertAudit)) {
+
+            // Set parameters for the SQL query
+            pstmt.setString(1, logDesc);
+            pstmt.setString(2, useID);
+
+            // Execute the update
+            pstmt.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace(); // Handle the exception as necessary
+        }
+		}
+		
 }

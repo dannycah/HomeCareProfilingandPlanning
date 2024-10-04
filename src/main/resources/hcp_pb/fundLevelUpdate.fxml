@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane id="AnchorPane" prefHeight="478.0" prefWidth="439.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="hcp_pb.FundLevelUpdateController">
+   <children>
+      <Pane prefHeight="80.0" prefWidth="439.0" style="-fx-background-color: #212c65;">
+         <effect>
+            <DropShadow blurType="ONE_PASS_BOX" />
+         </effect>
+         <children>
+            <Label layoutX="14.0" layoutY="26.0" prefHeight="34.0" prefWidth="351.0" text="Funding Level Adjustments" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="23.0" />
+               </font>
+            </Label>
+            <Label fx:id="lblId" layoutX="437.0" layoutY="41.0" text="." textFill="#212c65" />
+         </children>
+      </Pane>
+      <Pane layoutX="9.0" layoutY="88.0" prefHeight="334.0" prefWidth="421.0" style="-fx-background-color: d9d9d9; -fx-border-color: black;">
+         <children>
+            <TableView fx:id="tblFund" layoutX="8.0" layoutY="8.0" prefHeight="316.0" prefWidth="403.0">
+               <columns>
+                               <TableColumn fx:id="levelID" prefWidth="100" text="Level ID" />
+                  <TableColumn fx:id="dailyFund" prefWidth="100" text="Daily Rate" />
+                  <TableColumn fx:id="fortnightlyFund" prefWidth="100" text="Fortnighly Rate" />
+                 <TableColumn fx:id="monthlyFund" prefWidth="100" text="Monthly Rate" />
+               </columns>
+            </TableView>
+         </children>
+      </Pane>
+      <Pane layoutX="9.0" layoutY="425.0" prefHeight="45.0" prefWidth="421.0" style="-fx-background-color: d9d9d9; -fx-border-color: black;">
+         <children>
+            <Button fx:id="saveFund" layoutX="215.0" layoutY="9.0" mnemonicParsing="false" onAction="#saveFund" prefHeight="25.0" prefWidth="92.0" style="-fx-background-color: #364bbf;" text="Save" textFill="WHITE" />
+            <Button fx:id="cancelFund" layoutX="318.0" layoutY="9.0" mnemonicParsing="false" onAction="#cancelFund" prefHeight="25.0" prefWidth="92.0" style="-fx-background-color: #364bbf;" text="Cancel" textFill="WHITE" />
+         </children>
+      </Pane>
+   </children>
+</AnchorPane>

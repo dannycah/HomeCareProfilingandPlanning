@@ -10,39 +10,31 @@
 <?import javafx.scene.effect.DropShadow?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
-<?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" prefHeight="580.0" prefWidth="679.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="hcp_pb.CreateCaseController">
+<AnchorPane id="AnchorPane" prefHeight="580.0" prefWidth="670.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="hcp_pb.CreateCaseController">
     <children>
-        <Pane prefHeight="80.0" prefWidth="682.0" style="-fx-background-color: #212c65;">
+        <Pane prefHeight="80.0" prefWidth="672.0" style="-fx-background-color: #212c65;">
             <effect>
                 <DropShadow blurType="ONE_PASS_BOX" />
             </effect>
             <children>
-                <Label layoutX="14.0" layoutY="26.0" prefHeight="34.0" prefWidth="351.0" text="New Case" textFill="WHITE">
+                <Label layoutX="14.0" layoutY="26.0" prefHeight="34.0" prefWidth="351.0" text="Create a new case" textFill="WHITE">
                     <font>
                         <Font name="System Bold" size="23.0" />
                     </font>
                 </Label>
                 <Label fx:id="lblId" layoutX="437.0" layoutY="41.0" text="." textFill="#212c65" />
-                <Label layoutX="471.0" layoutY="25.0" prefHeight="17.0" prefWidth="204.0" text="Create a new Case Profile for client" textFill="WHITE" />
-                <Label fx:id="namelbl" layoutX="471.0" layoutY="41.0" prefHeight="17.0" prefWidth="204.0" text="Danica Balibalos, 4567586" textFill="WHITE" visible="false" />
+                <Label fx:id="createName" layoutX="447.0" layoutY="25.0" prefHeight="17.0" prefWidth="204.0" text="Create a new Case Profile for client" textFill="WHITE" />
+                <Label fx:id="namelbl" layoutX="447.0" layoutY="42.0" prefHeight="17.0" prefWidth="204.0" text="Danica Balibalos, 4567586" textFill="WHITE" visible="false" />
+            <Label fx:id="createName1" layoutX="475.0" layoutY="44.0" prefHeight="19.0" prefWidth="175.0" text="Name" textFill="WHITE" visible="false">
+               <font>
+                  <Font name="System Bold" size="13.0" />
+               </font>
+            </Label>
             </children>
         </Pane>
-        <TableView fx:id="tblCreateCase" layoutX="12.0" layoutY="123.0" prefHeight="170.0" prefWidth="658.0">
-            <columns>
-                <TableColumn fx:id="clientID" prefWidth="140.0" text="Client Number" />
-                <TableColumn fx:id="clientName" prefWidth="115.20001220703125" text="Client Name" />
-                 <TableColumn fx:id="mediCare" prefWidth="216.79998779296875" text="Medicare ID" />
-                <TableColumn fx:id="fundingLevel" prefWidth="216.79998779296875" text="Funding Level" />
-            </columns>
-        </TableView>
-        <TextField fx:id="searchKey" layoutX="12.0" layoutY="91.0" prefHeight="25.0" prefWidth="255.0" promptText="Search Client" />
-        <Button fx:id="searchCase" layoutX="274.0" layoutY="91.0" mnemonicParsing="false" onAction="#searchCase" prefHeight="17.0" prefWidth="82.0" style="-fx-background-color: #364bbf;" text="Search" textFill="WHITE" />
-        <Label layoutX="381.0" layoutY="95.0" prefHeight="17.0" prefWidth="117.0" text="Case Number:" />
-        <TextField fx:id="caseNum" disable="true" editable="false" layoutX="467.0" layoutY="91.0" prefHeight="26.0" prefWidth="204.0" />
-        <Pane layoutX="12.0" layoutY="313.0" prefHeight="255.0" prefWidth="308.0" style="-fx-background-color: d9d9d9; -fx-border-color: black;">
+        <Pane layoutX="7.0" layoutY="314.0" prefHeight="258.0" prefWidth="308.0" style="-fx-background-color: d9d9d9; -fx-border-color: black;">
             <children>
                 <Label layoutX="31.0" layoutY="54.0" prefHeight="17.0" prefWidth="117.0" text="First Name:" />
                 <Label layoutX="31.0" layoutY="87.0" prefHeight="17.0" prefWidth="117.0" text="Last Name:" />
@@ -60,14 +52,7 @@
                 <TextField fx:id="address" editable="false" layoutX="96.0" layoutY="211.0" prefHeight="25.0" prefWidth="193.0" />
             </children>
         </Pane>
-        <Line endX="555.0" layoutX="114.0" layoutY="302.0" startX="-100.0" />
-        <Label layoutX="373.0" layoutY="351.0" prefHeight="17.0" prefWidth="100.0" text="Client  Status:" />
-        <Label layoutX="373.0" layoutY="382.0" prefHeight="17.0" prefWidth="82.0" text="Date Created:" />
-        <ComboBox fx:id="clientStatusCombo" disable="true" layoutX="461.0" layoutY="347.0" prefHeight="25.0" prefWidth="193.0" />
-        <DatePicker fx:id="dateCreated" disable="true" layoutX="461.0" layoutY="378.0" prefHeight="25.0" prefWidth="193.0" />
-        <Label layoutX="389.0" layoutY="320.0" prefHeight="17.0" prefWidth="117.0" text="Case Type:" />
-        <ComboBox fx:id="assessmentTypeCombo" disable="true" layoutX="461.0" layoutY="316.0" prefHeight="25.0" prefWidth="193.0" />
-        <Pane layoutX="329.0" layoutY="415.0" prefHeight="106.0" prefWidth="340.0" style="-fx-border-color: black; -fx-background-color: d9d9d9;">
+        <Pane layoutX="324.0" layoutY="417.0" prefHeight="106.0" prefWidth="340.0" style="-fx-border-color: black; -fx-background-color: d9d9d9;">
             <children>
                 <Label layoutX="76.0" layoutY="11.0" prefHeight="17.0" prefWidth="47.0" text="Priority:" />
                 <Label layoutX="25.0" layoutY="41.0" prefHeight="17.0" prefWidth="110.0" text="CSO Assignment:" />
@@ -77,8 +62,42 @@
                 <DatePicker fx:id="completionCombo" disable="true" layoutX="134.0" layoutY="69.0" prefHeight="25.0" prefWidth="193.0" />
             </children>
         </Pane>
-        <Button fx:id="createCaseBtn" layoutX="329.0" layoutY="535.0" mnemonicParsing="false" onAction="#createCaseBtn" prefHeight="26.0" prefWidth="100.0" style="-fx-background-color: #364bbf;" text="Create" textFill="WHITE" />
-        <Button fx:id="confirmReg" disable="true" layoutX="439.0" layoutY="535.0" mnemonicParsing="false" onAction="#confirmReg" prefHeight="26.0" prefWidth="110.0" style="-fx-background-color: #364bbf;" text="Confirm" textFill="WHITE" />
-        <Button fx:id="cancelCaseBtn" disable="true" layoutX="558.0" layoutY="535.0" mnemonicParsing="false" onAction="#cancelCaseBtn" prefHeight="26.0" prefWidth="110.0" style="-fx-background-color: #364bbf;" text="Cancel" textFill="WHITE" />
+      <Pane layoutX="7.0" layoutY="88.0" prefHeight="44.0" prefWidth="657.0" style="-fx-background-color: d9d9d9; -fx-border-color: black;">
+         <children>
+              <TextField fx:id="searchKey" layoutX="5.0" layoutY="10.0" prefHeight="25.0" prefWidth="255.0" promptText="Search Client" />
+              <Button fx:id="searchCase" layoutX="267.0" layoutY="10.0" mnemonicParsing="false" onAction="#searchCase" prefHeight="17.0" prefWidth="82.0" style="-fx-background-color: #364bbf;" text="Search" textFill="WHITE" />
+              <Label layoutX="374.0" layoutY="14.0" prefHeight="17.0" prefWidth="117.0" text="Case Number:" />
+              <TextField fx:id="caseNum" editable="false" layoutX="460.0" layoutY="10.0" prefHeight="26.0" prefWidth="185.0" />
+         </children>
+      </Pane>
+      <Pane layoutX="7.0" layoutY="137.0" prefHeight="172.0" prefWidth="657.0" style="-fx-background-color: d9d9d9; -fx-border-color: black;">
+         <children>
+              <TableView fx:id="tblCreateCase" layoutX="4.0" layoutY="7.0" prefHeight="160.0" prefWidth="646.0">
+                  <columns>
+                      <TableColumn fx:id="clientID" prefWidth="140.0" text="Client Number" />
+                      <TableColumn fx:id="clientName" prefWidth="115.20001220703125" text="Client Name" />
+                       <TableColumn fx:id="mediCare" prefWidth="216.79998779296875" text="Medicare ID" />
+                      <TableColumn fx:id="fundingLevel" prefWidth="216.79998779296875" text="Funding Level" />
+                  </columns>
+              </TableView>
+         </children>
+      </Pane>
+      <Pane layoutX="324.0" layoutY="527.0" prefHeight="44.0" prefWidth="340.0" style="-fx-background-color: d9d9d9; -fx-border-color: black;">
+         <children>
+              <Button fx:id="createCaseBtn" layoutX="16.0" layoutY="9.0" mnemonicParsing="false" onAction="#createCaseBtn" prefHeight="26.0" prefWidth="88.0" style="-fx-background-color: #364bbf;" text="Create" textFill="WHITE" />
+              <Button fx:id="confirmReg" disable="true" layoutX="127.0" layoutY="9.0" mnemonicParsing="false" onAction="#confirmReg" prefHeight="26.0" prefWidth="88.0" style="-fx-background-color: #364bbf;" text="Confirm" textFill="WHITE" />
+              <Button fx:id="cancelCaseBtn" disable="true" layoutX="235.0" layoutY="9.0" mnemonicParsing="false" onAction="#cancelCaseBtn" prefHeight="26.0" prefWidth="88.0" style="-fx-background-color: #364bbf;" text="Cancel" textFill="WHITE" />
+         </children>
+      </Pane>
+      <Pane layoutX="324.0" layoutY="314.0" prefHeight="99.0" prefWidth="340.0" style="-fx-background-color: d9d9d9; -fx-border-color: BLACK;">
+         <children>
+              <Label layoutX="41.0" layoutY="40.0" prefHeight="17.0" prefWidth="100.0" text="Client  Status:" />
+              <Label layoutX="41.0" layoutY="69.0" prefHeight="17.0" prefWidth="82.0" text="Date Created:" />
+              <ComboBox fx:id="clientStatusCombo" disable="true" layoutX="129.0" layoutY="36.0" prefHeight="25.0" prefWidth="193.0" />
+              <DatePicker fx:id="dateCreated" disable="true" layoutX="129.0" layoutY="65.0" prefHeight="25.0" prefWidth="193.0" />
+              <Label layoutX="57.0" layoutY="11.0" prefHeight="17.0" prefWidth="117.0" text="Case Type:" />
+              <ComboBox fx:id="assessmentTypeCombo" disable="true" layoutX="129.0" layoutY="7.0" prefHeight="25.0" prefWidth="193.0" />
+         </children>
+      </Pane>
     </children>
 </AnchorPane>

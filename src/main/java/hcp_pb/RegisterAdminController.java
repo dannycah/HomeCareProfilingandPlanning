@@ -4,6 +4,9 @@
  */
 package hcp_pb;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.Connection;
@@ -31,6 +34,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import javax.crypto.SecretKey;
 
 /**
  * FXML Controller class
@@ -70,17 +74,53 @@ public class RegisterAdminController implements Initializable {
     @FXML
     private Button clearButton;
 
-    private static final String DB_URL = "jdbc:mysql://localhost:3306/HCP_PBP";
-    private static final String DB_USER = "root";
-    private static final String DB_PASSWORD = "!Student1";
+    private static final String IS_OPEN_FILE = "config/isOpen.txt"; // Relative path to isOpen file
+    private static final String DB_CONFIG_FILE = "config/dbConfig.txt"; // Relative path to dbConfig file
+
+    private static Scene scene;
+    private String DB_URL;
+    private String DB_USER;
+    private String DB_PASSWORD;
 
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+             loadDatabaseConfig();
         getTheMaxUid();
          bDay.setValue(LocalDate.now());
+    }
+    
+    
+    private void loadDatabaseConfig() {
+        try {
+            File configFile = new File(DB_CONFIG_FILE);
+            if (!configFile.exists()) {
+                // Optionally create a default config file if it doesn't exist
+                
+               // createDefaultConfigFile();
+            }
+
+            // Read the database configuration
+            try (BufferedReader reader = new BufferedReader(new FileReader(configFile))) {
+                DB_URL = reader.readLine(); // Read the first line (URL)
+                DB_USER = reader.readLine(); // Read the second line (username)
+                DB_PASSWORD = reader.readLine(); // Read the third line (password)
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+//            showAlert("Error reading the database configuration.", "Error", Alert.AlertType.ERROR);
+//        
+//            
+            
+                            Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setTitle("Error");
+                alert.setHeaderText(null);
+                alert.setContentText("Error reading the database configuration.");
+//                alert.showAndWait();
+                    System.exit(1); // Exit if an error occurs while reading the file
+        }
     }
 
     @FXML
@@ -113,22 +153,36 @@ public class RegisterAdminController implements Initializable {
             return;
         }
 
+        
+        // Encrypt the password
+        String encryptedPassword;
+        try {
+            SecretKey key = EncryptionUtil.getKeyFromBytes(EncryptionUtil.getKeyBytes());
+            encryptedPassword = EncryptionUtil.encrypt(pass, key);
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Encryption Error", "An error occurred while encrypting the password.");
+            return;
+        }
+        
+        
+        
         //insert to db
         String insertUser = "INSERT INTO userAccounts (userID, employeeID, fName, lName, bDay, userEmail, userMobile, userAddress, userZip, roleID, userName, userPass,isActive) "
                 + "VALUES ('" + uid + "','" + empID + "', '" + firstName + "', '" + lastName + "', "
                 + "'" + birthDate + "', '" + email + "', "
                 + "'" + mobile + "', '" + addr + "', '" + zip + "', "
-                + "'" + role + "', '" + user + "', '" + pass + "','1')";
+                + "'" + role + "', '" + user + "', '" + encryptedPassword + "','1')";
 
-        String fullName = firstName + " " + lastName;
-        String insertEmp = "INSERT INTO employeeList (employeeId, fullname, activeFlag) "
-                + "VALUES ('" + empID + "','" + fullName + "','1')";
+//        String fullName = firstName + " " + lastName;
+//        String insertEmp = "INSERT INTO employeeList (employeeId, fullname, activeFlag) "
+//                + "VALUES ('" + empID + "','" + fullName + "','1')";
 
         try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD); Statement stmt = conn.createStatement()) {
 
             // Execute the query
             int rowsAffected = stmt.executeUpdate(insertUser);
-              int empRowsAffected = stmt.executeUpdate(insertEmp);
+           //   int empRowsAffected = stmt.executeUpdate(insertEmp);
             
             if (rowsAffected > 0) {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -136,6 +190,11 @@ public class RegisterAdminController implements Initializable {
                 alert.setHeaderText(null);
                 alert.setContentText("System Administrator Created");
                 alert.showAndWait();
+                
+                  logAudit("A System Administrator Account has been Created", uid);
+  
+                
+                
 
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("welcomeHCP.fxml"));
                 Parent root = loader.load();
@@ -263,5 +322,24 @@ public class RegisterAdminController implements Initializable {
             e.printStackTrace();
         }
     }
+    
+    
+        public void logAudit(String logDesc, String useID) {
+        String insertAudit = "INSERT INTO audittrail (logDateTime, logDetails, userID) VALUES (NOW(), ?, ?)";
+
+        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD); PreparedStatement pstmt = conn.prepareStatement(insertAudit)) {
+
+            // Set parameters for the SQL query
+            pstmt.setString(1, logDesc);
+            pstmt.setString(2, useID);
+
+            // Execute the update
+            pstmt.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace(); // Handle the exception as necessary
+        }
+		}
+		
 
 }

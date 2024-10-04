@@ -4,6 +4,10 @@
  */
 package hcp_pb;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -35,6 +39,7 @@ import javafx.stage.Stage;
 import javafx.scene.control.ProgressIndicator;
 import javafx.concurrent.Task;
 import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 
 /**
@@ -45,10 +50,17 @@ import javafx.scene.layout.AnchorPane;
 public class AssessmentFormController implements Initializable {
 
     //db connections
-    private static final String DB_URL = "jdbc:mysql://localhost:3306/HCP_PBP";
-    private static final String DB_USER = "root";
-    private static final String DB_PASSWORD = "!Student1";
 
+    private static final String IS_OPEN_FILE = "config/isOpen.txt"; // Relative path to isOpen file
+    private static final String DB_CONFIG_FILE = "config/dbConfig.txt"; // Relative path to dbConfig file
+
+    private static Scene scene;
+    private String DB_URL;
+    private String DB_USER;
+    private String DB_PASSWORD;
+    
+    
+    
     //closing
     @FXML
     private Button completeAssessment;
@@ -1126,12 +1138,12 @@ public class AssessmentFormController implements Initializable {
     
     
     //Secondary Qustion 6/
-    @FXML
-    private CheckBox ckTaxiVoucher;
-    @FXML
-    private CheckBox ckShoppingAssist;
-    @FXML
-    private CheckBox ckDocAptAssist;
+//    @FXML
+//    private CheckBox ckTaxiVoucher;
+//    @FXML
+//    private CheckBox ckShoppingAssist;
+//    @FXML
+//    private CheckBox ckDocAptAssist;
 
     //Secondary Qustion 6/
     @FXML
@@ -1174,45 +1186,45 @@ public class AssessmentFormController implements Initializable {
     @FXML
     private Button btnNextNDP;
 
-    // Contact Info/
+   
     @FXML
-    private Pane paneClientContact;
-    @FXML
-    private TextField txtPrimaryContact;
-    @FXML
-    private TextField txtPrimaryRelationship;
-    @FXML
-    private TextField txtPrimaryEmail;
-    @FXML
-    private TextField txtPrimaryPhone;
-    @FXML
-    private TextField txtSecondaryContact;
-    @FXML
-    private TextField txtSecondaryRelationship;
-    @FXML
-    private TextField txtSecondaryEmail;
-    @FXML
-    private TextField txtSecondaryPhone;
-    @FXML
-    private TextField txtMedPractitioner;
-    @FXML
-    private TextField txtPracticePhone;
-    @FXML
-    private TextField txtPracticeAddress;
-    @FXML
-    private TextField txtMedPharma;
-    @FXML
-    private TextField txtPharmaPhone;
-    @FXML
-    private TextField txtPharmaAddress;
-    @FXML
-    private TextField txtPharmaEmail;
-    @FXML
-    private TextField txtPracticeEmail;
-    @FXML
-    private Button btnBackClientContact;
-    @FXML
-    private Button btnNextClientContact;
+    private Pane paneComplete;
+//    @FXML
+//    private TextField txtPrimaryContact;
+//    @FXML
+//    private TextField txtPrimaryRelationship;
+//    @FXML
+//    private TextField txtPrimaryEmail;
+//    @FXML
+//    private TextField txtPrimaryPhone;
+//    @FXML
+//    private TextField txtSecondaryContact;
+//    @FXML
+//    private TextField txtSecondaryRelationship;
+//    @FXML
+//    private TextField txtSecondaryEmail;
+//    @FXML
+//    private TextField txtSecondaryPhone;
+//    @FXML
+//    private TextField txtMedPractitioner;
+//    @FXML
+//    private TextField txtPracticePhone;
+//    @FXML
+//    private TextField txtPracticeAddress;
+//    @FXML
+//    private TextField txtMedPharma;
+//    @FXML
+//    private TextField txtPharmaPhone;
+//    @FXML
+//    private TextField txtPharmaAddress;
+//    @FXML
+//    private TextField txtPharmaEmail;
+//    @FXML
+//    private TextField txtPracticeEmail;
+//    @FXML
+//    private Button btnBackClientContact;
+//    @FXML
+//    private Button btnNextClientContact;
 
     @FXML
     private Pane paneAssessD;
@@ -1411,7 +1423,7 @@ public class AssessmentFormController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
+           loadDatabaseConfig();
         
    
         getTheMaxAssessID();
@@ -1480,6 +1492,40 @@ public class AssessmentFormController implements Initializable {
            
            
        }
+       
+       
+       
+           
+    private void loadDatabaseConfig() {
+        try {
+            File configFile = new File(DB_CONFIG_FILE);
+            if (!configFile.exists()) {
+                // Optionally create a default config file if it doesn't exist
+                
+               // createDefaultConfigFile();
+            }
+
+            // Read the database configuration
+            try (BufferedReader reader = new BufferedReader(new FileReader(configFile))) {
+                DB_URL = reader.readLine(); // Read the first line (URL)
+                DB_USER = reader.readLine(); // Read the second line (username)
+                DB_PASSWORD = reader.readLine(); // Read the third line (password)
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+//            showAlert("Error reading the database configuration.", "Error", Alert.AlertType.ERROR);
+//        
+//            
+            
+                            Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setTitle("Error");
+                alert.setHeaderText(null);
+                alert.setContentText("Error reading the database configuration.");
+//                alert.showAndWait();
+                    System.exit(1); // Exit if an error occurs while reading the file
+        }
+    }
+
 
     private void initComboDate() {
         
@@ -2434,6 +2480,10 @@ private void PHygienge_BtnGrp() {
         clientDetsPane.setVisible(false);
         paneClientHygiene.setVisible(true);
         startAssesmentBtn.setDisable(true);
+        lblPersonalHygiene.setDisable(false);
+        
+        
+        logAudit("A new assessment has been started (Case No: "+caseN+")", csonumb);
     }
 
     @FXML
@@ -2566,6 +2616,7 @@ private void PHygienge_BtnGrp() {
 
         paneClientHygiene.setVisible(false);
         paneOralHygiene.setVisible(true);
+        lblOralHygiene.setDisable(false);
     }
 
     @FXML
@@ -2641,6 +2692,8 @@ private void PHygienge_BtnGrp() {
 
         paneOralHygiene.setVisible(false);
         paneToileting.setVisible(true);
+        lblToileting.setDisable(false);
+        
     }
 
     @FXML
@@ -2726,6 +2779,7 @@ private void PHygienge_BtnGrp() {
         }
         paneToileting.setVisible(false);
         paneMobilityNeeds.setVisible(true);
+        lblMobility.setDisable(false);
     }
 
     @FXML
@@ -2847,6 +2901,8 @@ private void PHygienge_BtnGrp() {
 
         paneMobilityNeeds.setVisible(false);
         paneMobilityNeeds1.setVisible(true);
+        lblOtherMobility.setDisable(false);
+        
     }
 
     @FXML
@@ -2921,6 +2977,8 @@ private void PHygienge_BtnGrp() {
 
         paneMobilityNeeds1.setVisible(false);
         paneNutritionalNeeds.setVisible(true);
+        lblNutrition.setDisable(false);
+        
     }
 
     @FXML
@@ -3027,6 +3085,8 @@ private void PHygienge_BtnGrp() {
 
         paneNutritionalNeeds.setVisible(false);
         paneSkinIntegrityNeeds.setVisible(true);
+        lblSkinIntegrity.setDisable(false);
+        
     }
 
     @FXML
@@ -3116,6 +3176,7 @@ private void PHygienge_BtnGrp() {
         }
         paneSkinIntegrityNeeds.setVisible(false);
         paneCMHBN.setVisible(true);
+        lblMentalHealth.setDisable(false);
     }
 
     @FXML
@@ -3188,12 +3249,15 @@ private void PHygienge_BtnGrp() {
         }
         paneCMHBN.setVisible(false);
         paneMPMN.setVisible(true);
+             lblMedication.setDisable(false);
+   
     }
 
     @FXML
     private void btnBackMPMN(ActionEvent event) {
         paneCMHBN.setVisible(true);
         paneMPMN.setVisible(false);
+        lblMedication.setDisable(false);
 
     }
 
@@ -3307,6 +3371,8 @@ private void PHygienge_BtnGrp() {
 
         paneMPMN.setVisible(false);
         panePMN.setVisible(true);
+        lblPainManagement.setDisable(false);
+        
     }
 
     @FXML
@@ -3372,12 +3438,14 @@ private void PHygienge_BtnGrp() {
         }
         panePMN.setVisible(false);
         paneClientHousing.setVisible(true);
+          lvlHousing.setDisable(false);
     }
 
     @FXML
     private void btnBackClientHousing(ActionEvent event) {
         panePMN.setVisible(true);
         paneClientHousing.setVisible(false);
+      
 
     }
 
@@ -3437,12 +3505,14 @@ private void PHygienge_BtnGrp() {
 
         paneClientHousing.setVisible(false);
         paneMHEN.setVisible(true);
+          lblHouseEnvironment.setDisable(false);
     }
 
     @FXML
     private void btnBackMHEN(ActionEvent event) {
         paneClientHousing.setVisible(true);
         paneMHEN.setVisible(false);
+      
 
     }
 
@@ -3480,9 +3550,19 @@ private void PHygienge_BtnGrp() {
         String canDrive = q5_Selected != null ? q5_Selected.getText() : null;
 
         // Now move the taxi, shopping, and appointment assist strings after canDrive
-        String taxiVoucher = ckTaxiVoucher.isSelected() ? "Yes" : "No";
-        String shoppingAssist = ckShoppingAssist.isSelected() ? "Yes" : "No";
-        String docAptAssist = ckDocAptAssist.isSelected() ? "Yes" : "No";
+        String taxiVoucher = rdoTaxiVoucher.isSelected() ? "Yes" : "No";
+        String shoppingAssist = rdoShoppingAssist.isSelected() ? "Yes" : "No";
+        String docAptAssist = rdoDocAptAssist.isSelected() ? "Yes" : "No";
+
+//    @FXML
+//    private RadioButton rdoTaxiVoucher;
+//    @FXML
+//    private RadioButton rdoShoppingAssist;
+//    @FXML
+//    private RadioButton rdoDocAptAssist;
+//    @FXML
+//    private RadioButton rdoOtherAssist;
+//    private ToggleGroup HE1SQ6_toggleGroup;
 
         // Check if assessmentID exists
         String checkAssessmentExistenceQuery = "SELECT COUNT(*) FROM clientassessment WHERE assessmentID = '" + assessmentID + "'";
@@ -3590,12 +3670,14 @@ private void PHygienge_BtnGrp() {
 
         paneMHEN.setVisible(false);
         paneNDP.setVisible(true);
+                lblEndOfLife.setDisable(false);
     }
 
     @FXML
     private void btnBackNDP(ActionEvent event) {
         paneMHEN.setVisible(true);
         paneNDP.setVisible(false);
+
 
     }
 
@@ -3646,53 +3728,54 @@ private void PHygienge_BtnGrp() {
         }
 
         paneNDP.setVisible(false);
-        paneClientContact.setVisible(true);
+        paneComplete.setVisible(true);
+        lblContactInfo.setDisable(false); //change to complete assessment
     }
 
     @FXML
     private void btnBackClientContact(ActionEvent event) {
         paneNDP.setVisible(true);
-        paneClientContact.setVisible(false);
+        paneComplete.setVisible(false);
 
     }
 
-    @FXML
-    private void btnNextClientContact(ActionEvent event) {
-
-        // Collecting form input values
-        String primaryContact = txtPrimaryContact.getText();
-        String primaryRelationship = txtPrimaryRelationship.getText();
-        String primaryEmail = txtPrimaryEmail.getText();
-        String primaryPhone = txtPrimaryPhone.getText();
-        String secondaryContact = txtSecondaryContact.getText();
-        String secondaryRelationship = txtSecondaryRelationship.getText();
-        String secondaryEmail = txtSecondaryEmail.getText();
-        String secondaryPhone = txtSecondaryPhone.getText();
-        String medPractitioner = txtMedPractitioner.getText();
-        String practicePhone = txtPracticePhone.getText();
-        String practiceAddress = txtPracticeAddress.getText();
-        String medPharma = txtMedPharma.getText();
-        String pharmaPhone = txtPharmaPhone.getText();
-        String pharmaAddress = txtPharmaAddress.getText();
-        String pharmaEmail = txtPharmaEmail.getText();
-        String practiceEmail = txtPracticeEmail.getText();
-
-        String clientContact = "INSERT INTO clientContact (clientID, primaryContact, primaryRelationship, primaryPhone, primaryEmail, secondaryContact, secondaryRelationship, secondaryPhone, secondaryEmail, medPractitioner, practicePhone, practiceAddress, practiceEmail, medPharma, pharmaPhone, pharmaAddress, pharmaEmail) "
-                + "VALUES ('200001', '" + primaryContact + "', '" + primaryRelationship + "', '" + primaryPhone + "', '"
-                + primaryEmail + "', '" + secondaryContact + "', '" + secondaryRelationship + "', '" + secondaryPhone + "', '"
-                + secondaryEmail + "', '" + medPractitioner + "', '" + practicePhone + "', '" + practiceAddress + "', '"
-                + practiceEmail + "', '" + medPharma + "', '" + pharmaPhone + "', '" + pharmaAddress + "', '" + pharmaEmail + "')";
-
-        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD); Statement stmt = conn.createStatement()) {
-            int rowsAffected = stmt.executeUpdate(clientContact);
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-
-        }
-        paneClientContact.setVisible(false);
-        paneClientContact.setVisible(true);
-    }
+//    @FXML
+//    private void btnNextClientContact(ActionEvent event) {
+//
+//        // Collecting form input values
+//        String primaryContact = txtPrimaryContact.getText();
+//        String primaryRelationship = txtPrimaryRelationship.getText();
+//        String primaryEmail = txtPrimaryEmail.getText();
+//        String primaryPhone = txtPrimaryPhone.getText();
+//        String secondaryContact = txtSecondaryContact.getText();
+//        String secondaryRelationship = txtSecondaryRelationship.getText();
+//        String secondaryEmail = txtSecondaryEmail.getText();
+//        String secondaryPhone = txtSecondaryPhone.getText();
+//        String medPractitioner = txtMedPractitioner.getText();
+//        String practicePhone = txtPracticePhone.getText();
+//        String practiceAddress = txtPracticeAddress.getText();
+//        String medPharma = txtMedPharma.getText();
+//        String pharmaPhone = txtPharmaPhone.getText();
+//        String pharmaAddress = txtPharmaAddress.getText();
+//        String pharmaEmail = txtPharmaEmail.getText();
+//        String practiceEmail = txtPracticeEmail.getText();
+//
+//        String clientContact = "INSERT INTO clientContact (clientID, primaryContact, primaryRelationship, primaryPhone, primaryEmail, secondaryContact, secondaryRelationship, secondaryPhone, secondaryEmail, medPractitioner, practicePhone, practiceAddress, practiceEmail, medPharma, pharmaPhone, pharmaAddress, pharmaEmail) "
+//                + "VALUES ('200001', '" + primaryContact + "', '" + primaryRelationship + "', '" + primaryPhone + "', '"
+//                + primaryEmail + "', '" + secondaryContact + "', '" + secondaryRelationship + "', '" + secondaryPhone + "', '"
+//                + secondaryEmail + "', '" + medPractitioner + "', '" + practicePhone + "', '" + practiceAddress + "', '"
+//                + practiceEmail + "', '" + medPharma + "', '" + pharmaPhone + "', '" + pharmaAddress + "', '" + pharmaEmail + "')";
+//
+//        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD); Statement stmt = conn.createStatement()) {
+//            int rowsAffected = stmt.executeUpdate(clientContact);
+//
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//
+//        }
+//        paneClientContact.setVisible(false);
+//        paneClientContact.setVisible(true);
+//    }
 
     @FXML
     private void lblClientInfo(MouseEvent event) {
@@ -3710,7 +3793,7 @@ private void PHygienge_BtnGrp() {
         paneClientHousing.setVisible(false);
         paneMHEN.setVisible(false);
         paneNDP.setVisible(false);
-        paneClientContact.setVisible(false);
+        paneComplete.setVisible(false);
     }
 
     @FXML
@@ -3729,7 +3812,7 @@ private void PHygienge_BtnGrp() {
         paneClientHousing.setVisible(false);
         paneMHEN.setVisible(false);
         paneNDP.setVisible(false);
-        paneClientContact.setVisible(false);
+        paneComplete.setVisible(false);
     }
 
     @FXML
@@ -3748,7 +3831,7 @@ private void PHygienge_BtnGrp() {
         paneClientHousing.setVisible(false);
         paneMHEN.setVisible(false);
         paneNDP.setVisible(false);
-        paneClientContact.setVisible(false);
+        paneComplete.setVisible(false);
     }
 
     @FXML
@@ -3767,7 +3850,7 @@ private void PHygienge_BtnGrp() {
         paneClientHousing.setVisible(false);
         paneMHEN.setVisible(false);
         paneNDP.setVisible(false);
-        paneClientContact.setVisible(false);
+        paneComplete.setVisible(false);
     }
 
     @FXML
@@ -3786,7 +3869,7 @@ private void PHygienge_BtnGrp() {
         paneClientHousing.setVisible(false);
         paneMHEN.setVisible(false);
         paneNDP.setVisible(false);
-        paneClientContact.setVisible(false);
+        paneComplete.setVisible(false);
     }
 
     @FXML
@@ -3805,7 +3888,7 @@ private void PHygienge_BtnGrp() {
         paneClientHousing.setVisible(false);
         paneMHEN.setVisible(false);
         paneNDP.setVisible(false);
-        paneClientContact.setVisible(false);
+        paneComplete.setVisible(false);
     }
 
     @FXML
@@ -3824,7 +3907,7 @@ private void PHygienge_BtnGrp() {
         paneClientHousing.setVisible(false);
         paneMHEN.setVisible(false);
         paneNDP.setVisible(false);
-        paneClientContact.setVisible(false);
+        paneComplete.setVisible(false);
     }
 
     @FXML
@@ -3843,7 +3926,7 @@ private void PHygienge_BtnGrp() {
         paneClientHousing.setVisible(false);
         paneMHEN.setVisible(false);
         paneNDP.setVisible(false);
-        paneClientContact.setVisible(false);
+        paneComplete.setVisible(false);
     }
 
     @FXML
@@ -3862,7 +3945,7 @@ private void PHygienge_BtnGrp() {
         paneClientHousing.setVisible(false);
         paneMHEN.setVisible(false);
         paneNDP.setVisible(false);
-        paneClientContact.setVisible(false);
+        paneComplete.setVisible(false);
     }
 
     @FXML
@@ -3881,7 +3964,7 @@ private void PHygienge_BtnGrp() {
         paneClientHousing.setVisible(false);
         paneMHEN.setVisible(false);
         paneNDP.setVisible(false);
-        paneClientContact.setVisible(false);
+        paneComplete.setVisible(false);
     }
 
     @FXML
@@ -3900,7 +3983,7 @@ private void PHygienge_BtnGrp() {
         paneClientHousing.setVisible(false);
         paneMHEN.setVisible(false);
         paneNDP.setVisible(false);
-        paneClientContact.setVisible(false);
+        paneComplete.setVisible(false);
     }
 
     @FXML
@@ -3919,7 +4002,7 @@ private void PHygienge_BtnGrp() {
         paneClientHousing.setVisible(true);
         paneMHEN.setVisible(false);
         paneNDP.setVisible(false);
-        paneClientContact.setVisible(false);
+        paneComplete.setVisible(false);
     }
 
     @FXML
@@ -3938,7 +4021,7 @@ private void PHygienge_BtnGrp() {
         paneClientHousing.setVisible(false);
         paneMHEN.setVisible(true);
         paneNDP.setVisible(false);
-        paneClientContact.setVisible(false);
+        paneComplete.setVisible(false);
     }
 
     @FXML
@@ -3957,7 +4040,7 @@ private void PHygienge_BtnGrp() {
         paneClientHousing.setVisible(false);
         paneMHEN.setVisible(false);
         paneNDP.setVisible(true);
-        paneClientContact.setVisible(false);
+        paneComplete.setVisible(false);
     }
 
     @FXML
@@ -3976,7 +4059,7 @@ private void PHygienge_BtnGrp() {
         paneClientHousing.setVisible(false);
         paneMHEN.setVisible(false);
         paneNDP.setVisible(false);
-        paneClientContact.setVisible(true);
+        paneComplete.setVisible(true);
     }
 
 
@@ -4019,6 +4102,10 @@ private void completeAssessment(ActionEvent event) {
     } catch (SQLException e) {
         e.printStackTrace();
     }
+    
+    logAudit("A new assessment has been completed (Case No: "+caseN+")", csonumb);
+    
+    
 }
 
         
@@ -4026,7 +4113,22 @@ private void completeAssessment(ActionEvent event) {
         
         
         
-        
+    public void logAudit(String logDesc, String useID) {
+        String insertAudit = "INSERT INTO audittrail (logDateTime, logDetails, userID) VALUES (NOW(), ?, ?)";
+
+        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD); PreparedStatement pstmt = conn.prepareStatement(insertAudit)) {
+
+            // Set parameters for the SQL query
+            pstmt.setString(1, logDesc);
+            pstmt.setString(2, useID);
+
+            // Execute the update
+            pstmt.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace(); // Handle the exception as necessary
+        }
+    }        
         
         
         
