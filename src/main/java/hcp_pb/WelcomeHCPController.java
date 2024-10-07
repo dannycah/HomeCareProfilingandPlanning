@@ -117,7 +117,7 @@ public class WelcomeHCPController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         loadDatabaseConfig();
-        getTheMaxUid();
+//        getTheMaxUid();
         bDay.setValue(LocalDate.now());
 
         roleCombo.setItems(FXCollections.observableArrayList("System Administrator", "Case Manager", "Care Service Officer"));
@@ -327,7 +327,7 @@ public class WelcomeHCPController implements Initializable {
 
     @FXML
     private void regLbl(MouseEvent event) {
-
+ getTheMaxUid();
         loginPanel.setVisible(false);
         regPanel.setVisible(true);
     }
@@ -624,7 +624,7 @@ public class WelcomeHCPController implements Initializable {
 
     @FXML
     private void cancelRegBtn(ActionEvent event) {
-
+       clearRegFields();
         loginPanel.setVisible(true);
         regPanel.setVisible(false);
 
