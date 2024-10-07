@@ -154,9 +154,7 @@ public class BudgetViewerController implements Initializable {
         try {
             File configFile = new File(DB_CONFIG_FILE);
             if (!configFile.exists()) {
-                // Optionally create a default config file if it doesn't exist
-                
-               // createDefaultConfigFile();
+     
             }
 
             // Read the database configuration
@@ -167,9 +165,7 @@ public class BudgetViewerController implements Initializable {
             }
         } catch (IOException e) {
             e.printStackTrace();
-//            showAlert("Error reading the database configuration.", "Error", Alert.AlertType.ERROR);
-//        
-//            
+
             
                             Alert alert = new Alert(Alert.AlertType.WARNING);
                 alert.setTitle("Error");

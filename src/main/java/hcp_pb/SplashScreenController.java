@@ -37,8 +37,9 @@ public class SplashScreenController implements Initializable {
     private String DB_URL;
     private String DB_USER;
     private String DB_PASSWORD;
+    private String DB_NAME;
 
-    private final String dbCreateSQL = "CREATE DATABASE IF NOT EXISTS HCP_PBP";
+//    private final String dbCreateSQL = "CREATE DATABASE IF NOT EXISTS "+DB_NAME;
     private final String TABLE_FUNDING_LEVEL = "CREATE TABLE IF NOT EXISTS fundingLevel ("
             + "levelID VARCHAR(20) PRIMARY KEY, "
             + "dailyFund DECIMAL(10, 2), "
@@ -562,9 +563,12 @@ public class SplashScreenController implements Initializable {
                         // Pause for visual effect
                         Thread.sleep(2000);
 
+
                         // Step 2: Check if the database exists, and create it if not
-                        if (!databaseExists(sqlConnection, "hcp_pbp")) {
+                        if (!databaseExists(sqlConnection, DB_NAME)) {
+                       
                             try (Statement statement = sqlConnection.createStatement()) {
+                              String dbCreateSQL = "CREATE DATABASE IF NOT EXISTS "+DB_NAME;
                                 statement.executeUpdate(dbCreateSQL); // Create the database
                             }
                         }
@@ -573,7 +577,7 @@ public class SplashScreenController implements Initializable {
                         try (Connection dbConnection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
                             if (dbConnection != null) {
                                 Platform.runLater(() -> lblProgress.setText("Checking database schema..."));
-                                System.out.println("HCP_PBP Database Connection Successful!");
+                                System.out.println(DB_NAME+" Database Connection Successful!");
 
                                 // Pause for visual effect
                                 Thread.sleep(2000);
@@ -708,9 +712,7 @@ public class SplashScreenController implements Initializable {
         try {
             File configFile = new File(DB_CONFIG_FILE);
             if (!configFile.exists()) {
-                // Optionally create a default config file if it doesn't exist
-
-                // createDefaultConfigFile();
+        
             }
 
             // Read the database configuration
@@ -718,12 +720,12 @@ public class SplashScreenController implements Initializable {
                 DB_URL = reader.readLine(); // Read the first line (URL)
                 DB_USER = reader.readLine(); // Read the second line (username)
                 DB_PASSWORD = reader.readLine(); // Read the third line (password)
+                DB_NAME = reader.readLine(); // Read the fourth line (dbname)
+                
             }
         } catch (IOException e) {
             e.printStackTrace();
-//            showAlert("Error reading the database configuration.", "Error", Alert.AlertType.ERROR);
-//        
-//            
+     
 
             Alert alert = new Alert(Alert.AlertType.WARNING);
             alert.setTitle("Error");
@@ -739,70 +741,6 @@ public class SplashScreenController implements Initializable {
     
     
     
-
-//    @Override
-//    public void initialize(URL url, ResourceBundle rb) {
-//        lblProgress.setText("Connecting to database...");
-//        barProgress.setProgress(ProgressBar.INDETERMINATE_PROGRESS);
-//
-//        // Perform database setup in a separate thread
-//        new Thread(() -> {
-//            // Connect to MySQL server
-//            try (Connection sqlConnection = DriverManager.getConnection(MYSQL_URL, USER_NAME, PASSWORD)) {
-//                if (sqlConnection != null) {
-//                    System.out.println("MySQL Connection Successful!");
-//                    
-//                    // Create database if it does not exist
-//                    if (!databaseExists(sqlConnection, "HCP_PBP")) {
-//                        try (Statement statement = sqlConnection.createStatement()) {
-//                            statement.executeUpdate(dbCreateSQL);
-//                        }
-//                    }
-//                    
-//                    // Connect to the specific database
-//                    try (Connection dbConnection = DriverManager.getConnection(DB_URL, USER_NAME, PASSWORD)) {
-//                        if (dbConnection != null) {
-//                            System.out.println("HCP_PBP Database Connection Successful!");
-//                            
-//                            // Create tables if they do not exist
-//                            try (Statement statement = dbConnection.createStatement()) {
-//                                statement.executeUpdate(TABLE_FUNDING_LEVEL);
-//                                statement.executeUpdate(TABLE_USER_ACCOUNTS);
-//                                statement.executeUpdate(TABLE_EMPLOYEE_LIST);
-//                                statement.executeUpdate(TABLE_AUDIT_TRAIL);
-//                                statement.executeUpdate(TABLE_CLIENT_DATA);
-//                                statement.executeUpdate(TABLE_CLIENT_CONTACT);
-//                                statement.executeUpdate(TABLE_CLIENT_CASES);
-//                                statement.executeUpdate(TABLE_CLIENT_ASSESSMENT);
-//                                statement.executeUpdate(TABLE_CLIENT_HYGIENE);
-//                                statement.executeUpdate(TABLE_CLIENT_TOILETING);
-//                                statement.executeUpdate(TABLE_CLIENT_MOBILITY);
-//                                statement.executeUpdate(TABLE_CLIENT_HEALTH);
-//                                statement.executeUpdate(TABLE_CLIENT_HOUSING);
-//                                statement.executeUpdate(TABLE_CLIENT_TRANSPORT);
-//                                statement.executeUpdate(TABLE_NEAR_DEATH_PREFERENCES);
-//                                statement.executeUpdate(TABLE_CARE_PLAN);
-//                                statement.executeUpdate(TABLE_SERVICE_PROVIDED);
-//                                statement.executeUpdate(TABLE_BUDGET_PLAN);
-//                                System.out.println("Tables Created Successfully!");
-//                                
-//                                Platform.runLater(() -> {
-//                                    lblProgress.setText("Setup Complete!");
-//                                    barProgress.setProgress(1.0);
-//                                });
-//                            }
-//                        } else {
-//                            Platform.runLater(() -> lblProgress.setText("Failed to connect to HCP_PBP Database."));
-//                        }
-//                    }
-//                } else {
-//                    Platform.runLater(() -> lblProgress.setText("Failed to connect to MySQL Server."));
-//                }
-//            } catch (SQLException e) {
-//                handleSQLException(e);
-//            }
-//        }).start();
-//    }
     // Method to check if a database exists
     private boolean databaseExists(Connection connection, String dbName) throws SQLException {
         try (ResultSet dbData = connection.getMetaData().getCatalogs()) {
@@ -830,11 +768,11 @@ private void initData() {
          Statement stmt = conn.createStatement()) {
 
         // UPSERT for fundingLevel
-        String upsertFundingLevel = "INSERT INTO hcp_pbp.fundingLevel (levelID, dailyFund, fortnightlyFund, monthlyFund, dementiaFlag) VALUES "
+        String upsertFundingLevel = "INSERT INTO fundingLevel (levelID, dailyFund, fortnightlyFund, monthlyFund, dementiaFlag) VALUES "
                 + "('Level 0', 0.00, 0.00, 0.00, 0), "
                 + "('Level 1', 29.01, 406.14, 812.28, 0), "
                 + "('Level 2', 51.02, 714.28, 1428.56, 0), "
-                + "('Level 3', 111.04, 1554.56, 0.00, 0), "
+                + "('Level 3', 111.04, 1554.56, 3442.24, 0), "
                 + "('Level 4', 168.33, 2356.62, 4713.24, 0) "
                 + "ON DUPLICATE KEY UPDATE dailyFund = VALUES(dailyFund), "
                 + "fortnightlyFund = VALUES(fortnightlyFund), "
@@ -844,7 +782,7 @@ private void initData() {
         stmt.executeUpdate(upsertFundingLevel);
 
         // UPSERT for userRoles
-        String upsertUserRoles = "INSERT INTO hcp_pbp.userRoles (roleID, roleDesc, dateAdded) VALUES "
+        String upsertUserRoles = "INSERT INTO userRoles (roleID, roleDesc, dateAdded) VALUES "
                 + "(1, 'Case Manager', CURDATE()), "
                 + "(2, 'Care Services Officer', CURDATE()), "
                 + "(3, 'System Administrator', CURDATE()) "
@@ -853,7 +791,7 @@ private void initData() {
         stmt.executeUpdate(upsertUserRoles);
 
         // UPSERT for serviceoffered
-        String upsertServiceOffered = "INSERT INTO hcp_pbp.serviceoffered (serviceID, servicedesc, dayshift, eveningshift, satShift, sunShift, holidayShift, satNight, sunNight, holidayNight) VALUES "
+        String upsertServiceOffered = "INSERT INTO serviceoffered (serviceID, servicedesc, dayshift, eveningshift, satShift, sunShift, holidayShift, satNight, sunNight, holidayNight) VALUES "
                 + "('PCA', 'Personal Care Assistance', 67.00, 76.00, 99.00, 121.00, 153.00, 108.00, 133.00, 175.00), "
                 + "('CA', 'Community Access', 67.00, 76.00, 99.00, 121.00, 153.00, 108.00, 133.00, 175.00), "
                 + "('MP', 'Meal Preparation', 67.00, 76.00, 99.00, 121.00, 153.00, 108.00, 133.00, 175.00), "

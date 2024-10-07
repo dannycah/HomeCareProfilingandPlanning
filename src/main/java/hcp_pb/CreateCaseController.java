@@ -98,22 +98,21 @@ public class CreateCaseController implements Initializable {
     private Button createCaseBtn;
     @FXML
     private Button confirmReg;
-    
+
     @FXML
     private TextField searchKey;
-    
+
     @FXML
     private Label createName;
-    
+
     @FXML
     private Label createName1;
-    
-    
-    
-    @FXML private Button searchCase;
+
+    @FXML
+    private Button searchCase;
     @FXML
     private Button cancelCaseBtn;
-    
+
     private static final String IS_OPEN_FILE = "config/isOpen.txt"; // Relative path to isOpen file
     private static final String DB_CONFIG_FILE = "config/dbConfig.txt"; // Relative path to dbConfig file
 
@@ -121,24 +120,20 @@ public class CreateCaseController implements Initializable {
     private String DB_URL;
     private String DB_USER;
     private String DB_PASSWORD;
-    
-    
 
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-           loadDatabaseConfig();
+        loadDatabaseConfig();
         getTheMaxCid();
-          initComboBox();
+        initComboBox();
         searchChange();
 
-        
-        
         dateCreated.setValue(LocalDate.now());
         completionCombo.setValue(LocalDate.now());
-      
+
         clientID.setCellValueFactory(new PropertyValueFactory<>("cID"));
         clientName.setCellValueFactory(new PropertyValueFactory<>("fullName"));
         mediCare.setCellValueFactory(new PropertyValueFactory<>("mediCare"));
@@ -155,17 +150,12 @@ public class CreateCaseController implements Initializable {
         });
 
     }
-    
-    
-    
-    
+
     private void loadDatabaseConfig() {
         try {
             File configFile = new File(DB_CONFIG_FILE);
             if (!configFile.exists()) {
-                // Optionally create a default config file if it doesn't exist
-                
-               // createDefaultConfigFile();
+
             }
 
             // Read the database configuration
@@ -176,16 +166,13 @@ public class CreateCaseController implements Initializable {
             }
         } catch (IOException e) {
             e.printStackTrace();
-//            showAlert("Error reading the database configuration.", "Error", Alert.AlertType.ERROR);
-//        
-//            
-            
-                            Alert alert = new Alert(Alert.AlertType.WARNING);
-                alert.setTitle("Error");
-                alert.setHeaderText(null);
-                alert.setContentText("Error reading the database configuration.");
+
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Error");
+            alert.setHeaderText(null);
+            alert.setContentText("Error reading the database configuration.");
 //                alert.showAndWait();
-                    System.exit(1); // Exit if an error occurs while reading the file
+            System.exit(1); // Exit if an error occurs while reading the file
         }
     }
 
@@ -206,14 +193,11 @@ public class CreateCaseController implements Initializable {
             e.printStackTrace();
         }
     }
-    
-    
-    
-     @FXML
+
+    @FXML
     private void searchCase(ActionEvent event) {
-        
-          
-           // Get the search term from the text field
+
+        // Get the search term from the text field
         String ssSearch = searchKey.getText().trim();
 
         cID.clear();
@@ -222,22 +206,18 @@ public class CreateCaseController implements Initializable {
         medi_Care.clear();
         mobileNum.clear();
         address.clear();
-    
+
         bDay.setValue(LocalDate.now());
 
         if (!ssSearch.isEmpty()) {
             // Construct the SQL query with the search term
 
+            String searchClient = "SELECT clientID, CONCAT(fName, ' ', lName) AS fullName, clientMedicare, levelID FROM clientdata "
+                    + "WHERE clientID LIKE '%" + ssSearch + "%' "
+                    + "OR lName LIKE '%" + ssSearch + "%' "
+                    + "OR fName LIKE '%" + ssSearch + "%' "
+                    + "OR clientMedicare LIKE '%" + ssSearch + "%' ";
 
-
-   String searchClient = "SELECT clientID, CONCAT(fName, ' ', lName) AS fullName, clientMedicare, levelID FROM clientdata "
-           + "WHERE clientID LIKE '%" + ssSearch + "%' "
-           + "OR lName LIKE '%" + ssSearch + "%' "
-              + "OR fName LIKE '%" + ssSearch + "%' "
-            + "OR clientMedicare LIKE '%" + ssSearch + "%' "  ;
-           
-                     
-            
             try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD); Statement statement = connection.createStatement()) {
 
                 // Execute the query
@@ -251,11 +231,10 @@ public class CreateCaseController implements Initializable {
 
                 // Populate the TableView with search results
                 while (resultSet.next()) {
-                    int cID= resultSet.getInt("clientID");
+                    int cID = resultSet.getInt("clientID");
                     String fullName = resultSet.getString("fullName");
                     String fundLevel = resultSet.getString("levelID");
                     String mediCare = resultSet.getString("clientMedicare");
-                  
 
                     // Create a Clients object
                     CreateCase css = new CreateCase(cID, fullName, fundLevel, mediCare);
@@ -275,7 +254,7 @@ public class CreateCaseController implements Initializable {
                     alert.showAndWait();
 
                     // Optionally, call a method to load all clients
-                          loadDataFromDatabase();
+                    loadDataFromDatabase();
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -289,38 +268,16 @@ public class CreateCaseController implements Initializable {
             alert.showAndWait();
 
             // Optionally, call a method to load all clients
-                  loadDataFromDatabase();
+            loadDataFromDatabase();
         }
     }
-        
-        
-        
-        
-        
-        
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
 
     @FXML
     private void cancelCaseBtn() {
         // Get the current stage (window)
-//        Stage stage = (Stage) cancelCaseBtn.getScene().getWindow();
-//        // Close the stage
-//        stage.close();
+
         createName1.setVisible(false);
- createName.setText("Create a new Case Profile for a client.");
+        createName.setText("Create a new Case Profile for a client.");
 
         tblCreateCase.setDisable(false);
 
@@ -353,142 +310,99 @@ public class CreateCaseController implements Initializable {
 
     }
 
-//                @FXML
-//    private void clearCaseBtn() {
-//  
-//             //   caseNum.clear();
-//        cID.clear();
-//        fName.clear();
-//        lName.clear();
-//        medi_Care.clear();
-//        mobileNum.clear();
-//        address.clear();
-//
-//        // Set ComboBox to the first selection
-//        clientStatusCombo.getSelectionModel().selectFirst();
-//        assessmentTypeCombo.getSelectionModel().selectFirst();
-//        casePriorityCombo.getSelectionModel().selectFirst();
-//        csoAssignmentCombo.getSelectionModel().selectFirst();
-//
-//        // Set DatePicker to today's date
-//        LocalDate today = LocalDate.now();
-//        bDay.setValue(today);
-//        dateCreated.setValue(today);
-//        completionCombo.setValue(today);
-//        
-//        
-//    }
-//        
- 
     
-@FXML
-private void createCaseBtn() {
-    String clID = cID.getText(); // Get the client ID from the text field
-    String clN = fName.getText() +" " + lName.getText();
-        
+    @FXML
+    private void createCaseBtn() {
+        String clID = cID.getText(); // Get the client ID from the text field
+        String clN = fName.getText() + " " + lName.getText();
+
 //        createName
-    // Check if TableView has a selected item before proceeding
-    if (tblCreateCase.getSelectionModel().getSelectedItem() != null) {
-        // Check for active cases for the given client ID
-        if (checkForActiveCase(clID)) {
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setTitle("Active Case Found");
-            alert.setHeaderText(null);
-            alert.setContentText("There is still an active case for this client.");
-            alert.showAndWait();
+        // Check if TableView has a selected item before proceeding
+        if (tblCreateCase.getSelectionModel().getSelectedItem() != null) {
+            // Check for active cases for the given client ID
+            if (checkForActiveCase(clID)) {
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setTitle("Active Case Found");
+                alert.setHeaderText(null);
+                alert.setContentText("There is still an active case for this client.");
+                alert.showAndWait();
+            } else {
+                // Proceed with enabling components and setting values
+                tblCreateCase.setDisable(true);
+
+                enableComboBoxes();
+                setDatePickersToToday();
+
+                confirmReg.setDisable(false);
+                cancelCaseBtn.setDisable(false);
+                createCaseBtn.setDisable(true);
+
+                createName.setText("Creating a new case for client: ");
+                createName1.setVisible(true);
+                createName1.setText(clN);
+            }
         } else {
-            // Proceed with enabling components and setting values
-            tblCreateCase.setDisable(true);
-
-            enableComboBoxes();
-            setDatePickersToToday();
-
-            confirmReg.setDisable(false);
-            cancelCaseBtn.setDisable(false);
-            createCaseBtn.setDisable(true);
-       
-           createName.setText("Creating a new case for client: ");
-           createName1.setVisible(true);
-           createName1.setText(clN);
+            // Notify user if no item is selected
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("No Selection");
+            alert.setHeaderText(null);
+            alert.setContentText("A client must be selected.");
+            alert.showAndWait();
         }
-    } else {
-        // Notify user if no item is selected
-        Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setTitle("No Selection");
-        alert.setHeaderText(null);
-        alert.setContentText("A client must be selected.");
-        alert.showAndWait();
     }
-}
-
-
 
 // Method to check if there's an active case
-private boolean checkForActiveCase(String clID) {
-    boolean hasActiveCase = false;
-    String query = "SELECT assessmentStatus FROM clientcases WHERE clientID = ?";
+    private boolean checkForActiveCase(String clID) {
+        boolean hasActiveCase = false;
+        String query = "SELECT assessmentStatus FROM clientcases WHERE clientID = ?";
 
-    try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
-         PreparedStatement pstmt = connection.prepareStatement(query)) {
-        
-        // Set the clientID parameter
-        pstmt.setString(1, clID);
-        ResultSet rs = pstmt.executeQuery();
+        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD); PreparedStatement pstmt = connection.prepareStatement(query)) {
 
-        if (rs.next()) {
-            String status = rs.getString("assessmentStatus");
-            if (!"Closed".equalsIgnoreCase(status)) {
-                hasActiveCase = true; // Active case exists if status is not "Close"
+            // Set the clientID parameter
+            pstmt.setString(1, clID);
+            ResultSet rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                String status = rs.getString("assessmentStatus");
+                if (!"Closed".equalsIgnoreCase(status)) {
+                    hasActiveCase = true; // Active case exists if status is not "Close"
+                }
             }
+        } catch (SQLException e) {
+            e.printStackTrace(); // Handle exceptions appropriately
         }
-    } catch (SQLException e) {
-        e.printStackTrace(); // Handle exceptions appropriately
+
+        return hasActiveCase;
     }
 
-    return hasActiveCase;
-}
-
-
 // Helper method to enable ComboBoxes and set the first selection
-private void enableComboBoxes() {
-    clientStatusCombo.setDisable(false);
-    clientStatusCombo.getSelectionModel().selectFirst();
+    private void enableComboBoxes() {
+        clientStatusCombo.setDisable(false);
+        clientStatusCombo.getSelectionModel().selectFirst();
 
-    assessmentTypeCombo.setDisable(false);
-    assessmentTypeCombo.getSelectionModel().selectFirst();
+        assessmentTypeCombo.setDisable(false);
+        assessmentTypeCombo.getSelectionModel().selectFirst();
 
-    casePriorityCombo.setDisable(false);
-    casePriorityCombo.getSelectionModel().selectFirst();
+        casePriorityCombo.setDisable(false);
+        casePriorityCombo.getSelectionModel().selectFirst();
 
-    csoAssignmentCombo.setDisable(false);
-    csoAssignmentCombo.getSelectionModel().selectFirst();
-}
+        csoAssignmentCombo.setDisable(false);
+        csoAssignmentCombo.getSelectionModel().selectFirst();
+    }
 
 // Helper method to set DatePickers to today's date
-private void setDatePickersToToday() {
-    LocalDate today = LocalDate.now();
-    
-    dateCreated.setDisable(false);
-    dateCreated.setValue(today);
+    private void setDatePickersToToday() {
+        LocalDate today = LocalDate.now();
 
-    completionCombo.setDisable(false);
-    completionCombo.setValue(today);
-}
+        dateCreated.setDisable(false);
+        dateCreated.setValue(today);
 
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+        completionCombo.setDisable(false);
+        completionCombo.setValue(today);
+    }
+
 //    
-
-    
-        private void searchChange() {
+    private void searchChange() {
         // Add a listener to usersID to call loadUserData when its value changes
         searchKey.textProperty().addListener(new ChangeListener<String>() {
             @Override
@@ -499,8 +413,7 @@ private void setDatePickersToToday() {
             }
         });
     }
-    
-    
+
     public void loadDataFromDatabase() {
         // SQL query
         String query = "SELECT clientID, CONCAT(fName, ' ', lName) AS fullName, clientMedicare, levelID FROM clientdata";
@@ -551,7 +464,6 @@ private void setDatePickersToToday() {
                         LocalDate birthday = LocalDate.parse(birthdayStr);
                         bDay.setValue(birthday);
 
-//           aEMail.getText();
                     }
 
                 }
@@ -570,14 +482,6 @@ private void setDatePickersToToday() {
         }
     }
 
-//
-//   String caseNumValue = caseNum.getText();
-//    String cIDValue = cID.getText();
-//    String fNameValue = fName.getText();
-//    String lNameValue = lName.getText();
-//    String eMailValue = eMail.getText();
-//    String mobileNumValue = mobileNum.getText();
-//    String addressValue = address.getText();
     private void initComboBox() {
 
         // Initialize position combo box
@@ -623,7 +527,7 @@ private void setDatePickersToToday() {
 
     public void setCreateUser(String createUser) {
         this.createUser = createUser;
-      //  System.out.println("Create User received: " + createUser);  // For debugging purposes
+        //  System.out.println("Create User received: " + createUser);  // For debugging purposes
     }
 
     @FXML
@@ -632,11 +536,6 @@ private void setDatePickersToToday() {
         // Retrieve text from TextFields
         String caseNumberText = caseNum.getText();
         String clientIDText = cID.getText();
-//    String firstNameText = fName.getText();
-//    String lastNameText = lName.getText();
-//    String medicareIDText = medi_Care.getText();
-//    String mobileNumberText = mobileNum.getText();
-//    String addressText = address.getText();
 
         // Retrieve values from ComboBoxes
         String clientStatus = clientStatusCombo.getValue();
@@ -644,8 +543,7 @@ private void setDatePickersToToday() {
         String casePriority = casePriorityCombo.getValue();
         String csoAssignment = csoAssignmentCombo.getValue();
 
-        // Retrieve values from DatePickers
-//    LocalDate bDayValue = bDay.getValue();
+
         LocalDate dateCreatedValue = dateCreated.getValue();
         LocalDate completionDateValue = completionCombo.getValue();
 
@@ -653,10 +551,6 @@ private void setDatePickersToToday() {
         String csoID = csoAssignmentValue.substring(0, 5); // 
         String csoName = csoAssignmentValue.substring(8);
 
-//        //validate input (call validateinput method)
-//        if (!validateInput(firstName, lastName, email, mobile, addr, mediCare, eContactName, eRelation, eMob, email)) {
-//            return;
-//        }
         //insert to db
         String regClient = "INSERT INTO clientcases (caseID, caseType, casePriority, caseAssignment, caseDate, clientType, clientID,userID, assessmentStatus, createUser ) "
                 + "VALUES ('" + caseNumberText + "','" + assessmentType + "', '" + casePriority + "', "
@@ -678,29 +572,15 @@ private void setDatePickersToToday() {
                 Stage stage = (Stage) confirmReg.getScene().getWindow();
                 stage.close();
 
-                
-                	
-		          logAudit("A new case for client " + clientIDText + " has been created", createUser);
-  
-//               FXMLLoader loader = new FXMLLoader(getClass().getResource("Dashboard.fxml"));
-//                Parent root = loader.load();
-//
-//                Scene scene = new Scene(root);
-//                Stage stage = (Stage) saveNewClientBtn.getScene().getWindow();
-//                stage.setScene(scene);
-//                stage.setResizable(false);
-//                stage.setWidth(680);  // Set the width 
-//                stage.setHeight(520);
-//                stage.show();
+                logAudit("A new case for client " + clientIDText + " has been created", createUser);
 
 
-
-    tblCreateCase.setDisable(false);
-            confirmReg.setDisable(true);
-            cancelCaseBtn.setDisable(true);
-            createCaseBtn.setDisable(false);
-            createName1.setVisible(false);
-             createName.setText("Create a new Case Profile for a client.");
+                tblCreateCase.setDisable(false);
+                confirmReg.setDisable(true);
+                cancelCaseBtn.setDisable(true);
+                createCaseBtn.setDisable(false);
+                createName1.setVisible(false);
+                createName.setText("Create a new Case Profile for a client.");
             }
 
         } catch (SQLException e) {
@@ -709,10 +589,8 @@ private void setDatePickersToToday() {
         }
 
     }
-    
-    
-    
-        public void logAudit(String logDesc, String useID) {
+
+    public void logAudit(String logDesc, String useID) {
         String insertAudit = "INSERT INTO audittrail (logDateTime, logDetails, userID) VALUES (NOW(), ?, ?)";
 
         try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD); PreparedStatement pstmt = conn.prepareStatement(insertAudit)) {
@@ -727,12 +605,6 @@ private void setDatePickersToToday() {
         } catch (SQLException e) {
             e.printStackTrace(); // Handle the exception as necessary
         }
-        }
-		
-    
-    
-    
-    
-    
+    }
 
 }

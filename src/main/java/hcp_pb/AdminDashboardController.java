@@ -1259,8 +1259,6 @@ public class AdminDashboardController implements Initializable, CloseCallBack {
                     if (rowsUpdated > 0) {
                         System.out.println("Reset details updated successfully for user ID: " + userID);
 
-                        // Disable all TextField components
-//empID.setDisable(true);
                         Fname.setDisable(true);
                         Lname.setDisable(true);
                         Address.setDisable(true);
@@ -1268,22 +1266,14 @@ public class AdminDashboardController implements Initializable, CloseCallBack {
                         Email.setDisable(true);
                         Zip.setDisable(true);
                         usnField.setDisable(true);
-
-// Disable DatePicker
                         Bday.setDisable(true);
-
-// Disable ComboBox
                         roleCombo.setDisable(true);
-
-// Disable Button components
                         resetPassBtn.setDisable(true);
                         updateUser.setDisable(false);
                         deactUser.setDisable(false);
                         cancelUpdate.setDisable(true);
                         saveUpdate.setDisable(true);
-
-// Disable TableView
-                        tblUser.setDisable(false);
+                       tblUser.setDisable(false);
 
                     } else {
                         System.out.println("No user found with ID: " + userID);

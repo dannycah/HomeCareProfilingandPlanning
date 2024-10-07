@@ -572,9 +572,7 @@ public class DashboardController implements Initializable {
         initTables();
         initReports();
 
-       // loadDatabaseConfig();
-
-     
+        // loadDatabaseConfig();
         loadBudgetClientDatabase();
         loadCases();
         loadClients();
@@ -661,17 +659,7 @@ public class DashboardController implements Initializable {
             }
         }
 //---
-//        
-//             if (! tblBudget.getItems().isEmpty()) {
-//            // Select the first item in the TableView
-//             tblBudget.getSelectionModel().selectFirst();
-//            try {
-//                // Manually trigger the row selection handler to load details
-//                handleClientSelect(null);
-//            } catch (SQLException ex) {
-//                Logger.getLogger(DashboardController.class.getName()).log(Level.SEVERE, "Error handling initial row selection", ex);
-//            }
-//        }
+
 
         //CSO budgetclient table
         // Set up the mouse click event handler for the TableView
@@ -708,26 +696,22 @@ public class DashboardController implements Initializable {
                         CloseWindow.setHeaderText(null);
                         CloseWindow.setContentText("You are about to turn off the system.");
                         CloseWindow.showAndWait();
-                        
-                          logAudit( headerLbl.getText().substring(3)  + " have successfully logged-in", userID);
+
+                        logAudit(headerLbl.getText().substring(3) + " have successfully logged-in", userID);
 
                         try (Connection c = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD); Statement s = c.createStatement()) {
                             //String ID = userHolder.getText(); // Retrieve the current user ID from userHolder
                             // Prepare the SQL statement to update the active status of the user
                             String sql = "UPDATE userAccounts SET stats = '1' WHERE userID = '" + userID + "'";
-                            
 
                             // Execute the update statement
                             int row = s.executeUpdate(sql);
-                          
 
                         } catch (SQLException ex) {
 
                         }
 
                         System.out.println("Logging out...");
-                        
-                        
 
                     });
                 }
@@ -766,73 +750,7 @@ public class DashboardController implements Initializable {
         }
     }
 
-//    public void passID(){
-//        String userOut = userHolder.getText();
-//         FXMLLoader loader = new FXMLLoader(getClass().getResource("WelcomeHCP.fxml"));
-//       // Parent root = loader.load();
-//       
-//               // Get the controller and pass the data
-//        WelcomeHCPController welcomeHCP = loader.getController();
-//        welcomeHCP.setUserID(userOut);
-//       
-//        
-//    }
-//    public void loadbudget() {
-//
-//        String selectedClient = txtCli.getText();
-//
-//        String clientBudgetQuery = "SELECT "
-//                + "bs.clientID, "
-//                + "MAX(bs.caseID) AS maxCaseID, "
-//                + "bs.serviceID, "
-//                + "so.servicedesc AS CareDesc, "
-//                + "SUM(bs.counter) AS totalCounter, "
-//                + "so.dayshift as shiftCost "
-//                + "FROM budget_staging bs "
-//                + "JOIN serviceoffered so ON bs.serviceID = so.serviceID "
-//                + "JOIN clientcases cc ON bs.caseID = cc.caseID "
-//                + "WHERE bs.clientID = '" + selectedClient + "' "
-//                + "AND cc.assessmentStatus = 'For Budget' "
-//                + "GROUP BY bs.clientID, bs.serviceID, so.servicedesc, cc.assessmentStatus, so.dayshift "
-//                + "HAVING SUM(bs.counter) > 1 "
-//                + "ORDER BY bs.serviceID;";
-//
-////
-//        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD); Statement statement = connection.createStatement(); ResultSet resultSet = statement.executeQuery(clientBudgetQuery)) {
-//
-//            // Clear existing data
-//            tblBudget.getItems().clear();
-//
-//            // Process the result set and populate the TableView
-//            while (resultSet.next()) {
-//                String desc = resultSet.getString("CareDesc");
-//                int unitStage = resultSet.getInt("totalCounter");
-//                int units = 0;  // Declare units outside so it's accessible later
-//
-//                if (unitStage == 1) {
-//                    units = 2;
-//                } else if (unitStage >= 2) {
-//                    units = 3;
-//                } else {
-//                    units = 0;
-//                }
-//
-//                txtCaseID.setText(resultSet.getString("maxCaseID"));
-//
-//                double tCost = resultSet.getDouble("shiftCost");
-//                double tCare = tCost * units;
-//
-//                // Create a CreateCase object
-//                BudgetEntry budgets = new BudgetEntry(desc, units, tCare);
-//
-//                // Add the CreateCase object to the TableView
-//                tblBudget.getItems().add(budgets);
-//            }
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
-//
-//    }
+
     public void loadbudget() {
         String selectedClient = txtCli.getText();
 
@@ -883,49 +801,7 @@ public class DashboardController implements Initializable {
         }
     }
 
-// Method to add the context menu to tblBudget
-//private void addContextMenuToBudgetTable() {
-//    // Create the Context Menu
-//    ContextMenu contextMenu = new ContextMenu();
-//
-//    // Create MenuItems
-//    MenuItem deleteItem = new MenuItem("Delete Selected");
-//    MenuItem addItem = new MenuItem("Add Service");
-//
-//    // Add MenuItems to ContextMenu
-//    contextMenu.getItems().addAll(deleteItem, addItem);
-//
-//    // Disable menu items if the table is empty or no item is selected
-//    tblBudget.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
-//        boolean isEmpty = tblBudget.getItems().isEmpty();
-//        deleteItem.setDisable(isEmpty || newSelection == null);
-//        addItem.setDisable(isEmpty);
-//    });
-//
-//    // Handle Delete Action
-//    deleteItem.setOnAction(event -> {
-//        BudgetEntry selectedItem = tblBudget.getSelectionModel().getSelectedItem();
-//        if (selectedItem != null) {
-//            tblBudget.getItems().remove(selectedItem);
-//        }
-//    });
-//
-//    // Handle Hello Action
-//    addItem.setOnAction(event -> {
-//        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-//        alert.setTitle("Message");
-//        alert.setHeaderText(null);
-//        alert.setContentText("Hello");
-//        alert.showAndWait();
-//    });
-//
-//    // Show ContextMenu on right-click
-//    tblBudget.setOnMouseClicked(event -> {
-//        if (event.getButton() == MouseButton.SECONDARY) {
-//            contextMenu.show(tblBudget, event.getScreenX(), event.getScreenY());
-//        }
-//    });
-//}
+
     private void addContextMenuToBudgetTable() {
         // Create the Context Menu
         ContextMenu contextMenu = new ContextMenu();
@@ -1058,115 +934,7 @@ public class DashboardController implements Initializable {
         }
     }
 
-/////----------------------------------------------------------------not working
-//private void addContextMenuToBudgetTable() {
-//    // Create the Context Menu
-//    ContextMenu contextMenu = new ContextMenu();
-//    MenuItem deleteItem = new MenuItem("Delete Selected");
-//    MenuItem helloItem = new MenuItem("Say Hello");
-//    contextMenu.getItems().addAll(deleteItem, helloItem);
-//
-//    // Disable menu items if the table is empty or no item is selected
-//    tblBudget.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
-//        boolean isEmpty = tblBudget.getItems().isEmpty();
-//        deleteItem.setDisable(isEmpty || newSelection == null);
-//        helloItem.setDisable(isEmpty);
-//    });
-//
-//    // Handle Delete Action
-//    deleteItem.setOnAction(event -> {
-//        BudgetEntry selectedItem = tblBudget.getSelectionModel().getSelectedItem();
-//        if (selectedItem != null) {
-//            tblBudget.getItems().remove(selectedItem);
-//        }
-//    });
-//
-//    // Handle Hello Action
-//    helloItem.setOnAction(event -> {
-////        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-////        alert.setTitle("Message");
-////        alert.setHeaderText(null);
-////        alert.setContentText("Hello");
-////        alert.showAndWait();
-//
-//        // Enable table editing
-//        tblBudget.setEditable(true);
-//
-//        // Create and configure the descColumn
-//        TableColumn<BudgetEntry, String> descColumn = new TableColumn<>("Description");
-//        descColumn.setCellValueFactory(new PropertyValueFactory<>("description"));
-//
-//        // Fetch service descriptions from the database
-//        ObservableList<String> serviceDescriptions = loadServiceDescriptions();
-//
-//        // Set the cell factory for the descColumn to be a ComboBoxTableCell
-//        descColumn.setCellFactory(ComboBoxTableCell.forTableColumn(serviceDescriptions));
-//        descColumn.setEditable(true); // Make column editable
-//
-//        // Handle selection of a service description
-//        descColumn.setOnEditCommit(event1 -> {
-//            BudgetEntry entry = event1.getRowValue();
-//            String selectedDesc = event1.getNewValue();
-//            entry.setDescription(selectedDesc);
-//        });
-//
-//        // Units column (user input)
-//        TableColumn<BudgetEntry, Integer> unitsColumn = new TableColumn<>("Units");
-//        unitsColumn.setCellValueFactory(new PropertyValueFactory<>("units"));
-//        unitsColumn.setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
-//        unitsColumn.setEditable(true);
-//        unitsColumn.setOnEditCommit(event1 -> {
-//            BudgetEntry entry = event1.getRowValue();
-//            entry.setNumUnits(event1.getNewValue());
-//        });
-//
-//        // Total cost column (user input)
-//        TableColumn<BudgetEntry, Double> costColumn = new TableColumn<>("Total Cost");
-//        costColumn.setCellValueFactory(new PropertyValueFactory<>("totalCost"));
-//        costColumn.setCellFactory(TextFieldTableCell.forTableColumn(new DoubleStringConverter()));
-//        costColumn.setEditable(true);
-//        costColumn.setOnEditCommit(event1 -> {
-//            BudgetEntry entry = event1.getRowValue();
-//            entry.setTotal(event1.getNewValue());
-//        });
-//
-//        // Add the columns to the table if they are not already present
-//        if (tblBudget.getColumns().isEmpty()) {
-//            tblBudget.getColumns().addAll(descColumn, unitsColumn, costColumn);
-//        }
-//
-//        // Add a blank row to let the user enter new values
-//     //   tblBudget.getItems().add(new BudgetEntry("", 0, 0.0));
-//    });
-//
-//    // Show ContextMenu on right-click
-//    tblBudget.setOnMouseClicked(event -> {
-//        if (event.getButton() == MouseButton.SECONDARY) {
-//            contextMenu.show(tblBudget, event.getScreenX(), event.getScreenY());
-//        }
-//    });
-//}
-//
-//    // Load service description from the database
-//private ObservableList<String> loadServiceDescriptions() {
-//    ObservableList<String> serviceDescriptions = FXCollections.observableArrayList();
-//
-//    String serviceQuery = "SELECT servicedesc FROM serviceoffered";
-//    try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
-//         Statement statement = connection.createStatement();
-//         ResultSet resultSet = statement.executeQuery(serviceQuery)) {
-//
-//        while (resultSet.next()) {
-//            String serviceDesc = resultSet.getString("servicedesc");
-//            serviceDescriptions.add(serviceDesc);
-//        }
-//    } catch (SQLException e) {
-//        e.printStackTrace();
-//    }
-//
-//    return serviceDescriptions;
-//}
-//    
+
     public void loadBudgetClientDatabase() {
         // SQL query
         String query = "SELECT cc.caseID as bCaseID, cd.clientID, CONCAT(cd.fName, ' ', cd.lName) AS fullName "
@@ -1220,13 +988,7 @@ public class DashboardController implements Initializable {
                         txtcname.setText(resultSet.getString("fullName"));
                         txtCdob.setText(resultSet.getString("clientBday"));
                         txtFlevel.setText(resultSet.getString("levelID"));
-//                        txtCdate.setText(LocalDate.now().toString());
-//
-//                        txtPby.setText(usersname);
-//                        if (birthdayStr != null && !birthdayStr.isEmpty()) {
-//                            LocalDate birthday = LocalDate.parse(birthdayStr);
-//                            aBday.setValue(birthday);
-//                        }
+
                     }
                 }
             }
@@ -1251,8 +1013,8 @@ public class DashboardController implements Initializable {
 
         // SQL query with parameter placeholder
         String clientFundQuery = "SELECT fl.dailyFund AS daily, fl.monthlyFund AS monthly, cd.levelID AS cID "
-                + "FROM hcp_pbp.fundinglevel fl "
-                + "JOIN hcp_pbp.clientData cd ON fl.levelID = cd.levelID "
+                + "FROM fundinglevel fl "
+                + "JOIN clientData cd ON fl.levelID = cd.levelID "
                 + "WHERE cd.clientID = ?";
 
         double careManValue = 0.00; // Default value, will be replaced by DB value if found
@@ -1314,13 +1076,8 @@ public class DashboardController implements Initializable {
                         txtPby.setText(usersname);
 
                         loadbudget();
-                        
-                        
-                          logAudit("A new budget plan has been ge erated for client: " + txt, userID);
-                          
-  
-  
-                        
+
+                        logAudit("A new budget plan has been ge erated for client: " + txt, userID);
 
                         GenBudget.setDisable(true);
                         tblBudgetClient.setDisable(true);
@@ -1449,10 +1206,9 @@ public class DashboardController implements Initializable {
                     assessmentStartedAlert.setHeaderText(null);
                     assessmentStartedAlert.setContentText("Budget has been Created.");
                     assessmentStartedAlert.showAndWait();
-                    
-                      logAudit("A generated budget for client: " + scid + " has been confirmed", userID);
-  
-  
+
+                    logAudit("A generated budget for client: " + scid + " has been confirmed", userID);
+
                 });
 
                 // Continue with the rest of the method
@@ -1501,73 +1257,7 @@ public class DashboardController implements Initializable {
         }
     }
 
-//    public void setUser(String userID) throws SQLException {
-//        this.userID = userID;
-//        System.out.println("Setting User Details: userID=" + userID);
-//        userHolder.setText(userID);
-//
-//        String query = "SELECT userID, roleID FROM userAccounts WHERE userID = ?";
-//        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD); PreparedStatement statement = connection.prepareStatement(query)) {
-//            statement.setString(1, userID); // Set the parameter for the userID
-//            try (ResultSet resultSet = statement.executeQuery()) {
-//                if (resultSet.next()) {
-//                    String roleID = resultSet.getString("roleID");
-//                    System.out.println("Setting User Details: roleID=" + roleID);
-//                    updateUIForRole(roleID);
-//                }
-//            }
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
-//    }
-//    
-//        public void setUser(String userID) {
-//    
-//    //Encryption - FDV
-//    
-////     public void setUser(String userID) {
-////        this.userID = userID;
-////        System.out.println("Setting User Details: userID=" + userID);
-////        //userHolder.setText(userID);
-////
-////        String query = "SELECT userID, roleID FROM userAccounts WHERE userID = ?";
-////       
-////        // Run database query on a background thread to avoid blocking the JavaFX Application Thread
-////        new Thread(() -> {
-////            try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
-////                 PreparedStatement statement = connection.prepareStatement(query)) {
-////                statement.setString(1, userID); // Set the parameter for the userID
-////
-////                try (ResultSet resultSet = statement.executeQuery()) {
-////                    if (resultSet.next()) {
-////                        String roleID = resultSet.getString("roleID");
-////                        System.out.println("Setting User Details: roleID=" + roleID);
-////                        // Update UI safely on the JavaFX Application Thread
-////                        Platform.runLater(() -> updateUIForRole(roleID));
-////                    } else {
-////                        Platform.runLater(() -> handleNoUserFound());
-////                    }
-////                }
-////            } catch (SQLException e) {
-////                e.printStackTrace();
-////                Platform.runLater(() -> handleDatabaseError(e));
-////            }
-////        
-////        }).start();
-//    }
-//        
-//     
-//
-//
-//    private void handleNoUserFound() {
-//        // Handle case where no user was found with the provided userID
-//        System.err.println("No user found with userID: " + userID);
-//    }
-//
-//    private void handleDatabaseError(SQLException e) {
-//        // Handle database errors
-//        System.err.println("Database error occurred: " + e.getMessage());
-//    }+
+
     private void searchCasesChange() {
         // Add a listener to usersID to call loadUserData when its value changes
         aCaseSearch.textProperty().addListener(new ChangeListener<String>() {
@@ -1718,20 +1408,7 @@ public class DashboardController implements Initializable {
 
     }
 
-//    @FXML
-//    private void reassignBtn(ActionEvent event) {
-//
-//String aStats = assessmentStats.getText();
-//if (!aStats.equals("Not Started")) {
-//    // Display a message if the assessment has already been started
-//    Alert assessmentStartedAlert = new Alert(Alert.AlertType.INFORMATION);
-//    assessmentStartedAlert.setTitle("Warning");
-//    assessmentStartedAlert.setHeaderText(null);
-//    assessmentStartedAlert.setContentText("The assessment has either already completed or started and cannot be updated at the moment.");
-//    assessmentStartedAlert.showAndWait();
-//    return; // Exit the method if the assessment is not "Not Started"
-//}
-//    }
+
     @FXML
     private void finaliseBtn(ActionEvent event) {
 
@@ -1831,10 +1508,8 @@ public class DashboardController implements Initializable {
         finaliseBtn.setDisable(false);
         loadCases();
         casesTbl.setDisable(false);
-        
-          logAudit("Client case No: " + CN + " has been updated", userID);
-  
-  
+
+        logAudit("Client case No: " + CN + " has been updated", userID);
 
     }
 
@@ -1867,7 +1542,7 @@ public class DashboardController implements Initializable {
         }
 
     }
-//String currentUser = "";
+
 
     public void loadMyCases() {
         String currentUser = userHolder.getText(); // Retrieve the current user ID from userHolder
@@ -1913,7 +1588,7 @@ public class DashboardController implements Initializable {
 
                     // Calculate the total number of days between createDate and today
                     long cAge = ChronoUnit.DAYS.between(createDate, today);
-//System.out.println(cAge);
+                    //System.out.println(cAge);
                     // Create a MyCases object
                     MyCases myCase = new MyCases(caseID, clientID, clientName, caseType, casePriority, cAge);
 
@@ -1964,47 +1639,7 @@ public class DashboardController implements Initializable {
 //        
     }
 
-//    
-//   private void loadMyCases() {
-//    // SQL query with a placeholder for userID
-//    String query = "SELECT cc.caseID AS cID, " +
-//                   "CONCAT(cd.fName, ' ', cd.lName) AS fullName, " +
-//                   "cc.caseType AS caseType, " +
-//                   "cc.casePriority AS casePriority, " +
-//                   "CONCAT(ua.fName, ' ', ua.lName) AS assignedCSO " +
-//                   "FROM clientCases cc " +
-//                   "JOIN clientData cd ON cc.clientID = cd.clientID " +
-//                   "JOIN userAccounts ua ON cc.userID = ua.userID " +
-//                   "WHERE cc.userID = ?";  
-//
-//    try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
-//         PreparedStatement statement = connection.prepareStatement(query)) {
-//
-//        // Set the userID parameter
-//        statement.setString(1, userID); 
-//
-//        try (ResultSet resultSet = statement.executeQuery()) {
-//            // Clear existing data
-//            myCaseTbl.getItems().clear();
-//
-//            // Process the result set and populate the TableView
-//            while (resultSet.next()) {
-//                int c_case_ID = resultSet.getInt("cID");
-//                String c_client_Name = resultSet.getString("fullName");
-//                String c_case_Type = resultSet.getString("caseType");
-//                String c_case_Priority = resultSet.getString("casePriority");
-//
-//                // Create a MyCases object
-//                MyCases myCase = new MyCases(c_case_ID, c_client_Name, c_case_Type, c_case_Priority);
-//
-//                // Add the MyCases object to the TableView
-//                myCaseTbl.getItems().add(myCase);
-//            }
-//        }
-//    } catch (SQLException e) {
-//        e.printStackTrace();
-//    }
-//}
+
     private void handleRowSelect(MouseEvent event) throws SQLException {
         if (event == null || event.getClickCount() == 1) { // Single-click detection
             Cases selectedCase = casesTbl.getSelectionModel().getSelectedItem();
@@ -2146,48 +1781,7 @@ public class DashboardController implements Initializable {
         }
     }
 
-//    private void loadClientDetails(int clientID) {
-//        String query = "SELECT * FROM clientData WHERE clientID = ?";
-//        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD); PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-//
-//            preparedStatement.setInt(1, clientID);
-//            try (ResultSet resultSet = preparedStatement.executeQuery()) {
-//                if (resultSet.next()) {
-//                    aClientID.setText(resultSet.getString("clientID"));
-//                    aFname.setText(resultSet.getString("fName"));
-//                    aLname.setText(resultSet.getString("lName"));
-//                    aMedicare.setText(resultSet.getString("clientMedicare"));
-//                    aAddress.setText(resultSet.getString("clientAddress"));
-//                    aMobile.setText(resultSet.getString("clientMobile"));
-//                    // aEmail.setText(resultSet.getString("clientEmail"));
-//
-//                    String birthdayStr = resultSet.getString("clientBday");
-//                    if (birthdayStr != null && !birthdayStr.isEmpty()) {
-//                        LocalDate birthday = LocalDate.parse(birthdayStr);
-//                        aBday.setValue(birthday);
-//                        
-//                        
-//                  aEContact.setText(resultSet.getString("emergencyContactPerson"));
-//              aERelation.setText(resultSet.getString("relationship"));
-//         aEMobile.setText(resultSet.getString("emergencyContactNumber"));
-////           aEMail.getText();
-//                        
-////                            aEContact.setText(resultSet.getString("econtact"));
-//////              aERelation.setText(resultSet.getString("erelationship"));
-//////         aEMobile.setText(resultSet.getString("ePhone"));
-//////           aEMail.setText(resultSet.getString("eemail"));
-//////                        
-////                                   
-//                        
-//                        
-//                    }
-//
-//                }
-//            }
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
-//    }
+
     private void loadClientDetails(int clientID) {
         String clientDataQuery = "SELECT * FROM clientData WHERE clientID = ?";
         String clientContactQuery = "SELECT * FROM clientContact WHERE clientID = ?";
@@ -2349,96 +1943,7 @@ public class DashboardController implements Initializable {
         }
     }
 
-//    public void setUser(String userID) throws SQLException {
-//        this.userID = userID;
-//        String query = "SELECT userID, roleID FROM userAccounts WHERE username = ?";
-//        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD); PreparedStatement statement = connection.prepareStatement(query)) {
-//            statement.setString(1, userID);  // Set the parameter for the username
-//            try (ResultSet resultSet = statement.executeQuery()) {
-//                if (resultSet.next()) {
-//                    String roleID = resultSet.getString("roleID");
-////                userDetails.setRoleID(roleID);  // Set the roleID in userDetails
-//                    System.out.println("Setting User Details:  roleID=" + roleID);
-//                    
-//                    if ("1".equals(roleID)) {
-//                        headerLbl.setText("Hi Case Manager!");
-//                        csoPane.setVisible(false);
-//                        cmPane.setVisible(true);
-//
-//                    }
-//                    if ("2".equals(roleID)) {
-//                        headerLbl.setText("Hi Care Service Officer!");
-//                        csoPane.setVisible(true);
-//                        cmPane.setVisible(false);
-//
-//                    }
-//
-//                }
-//            }
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
-//    }
-//     public void setUserDetails(String userID, String roleID) {
-//    
-//        
-//         this.userDetails = new UserDetails(userID, roleID);
-//        
-//        
-//        updateRoleLabel();  
-//        setDashboardControls();
-//       
-//    }
-//    private void updateRoleLabel() {
-//        String roleText;
-//        String roleID = userDetails.getRoleID();
-//
-//        if ("1".equals(roleID)) {
-//            roleText = "Hi Case Manager!";
-//        } else if ("2".equals(roleID)) {
-//            roleText = "Hi Care Service Officer!";
-//        } else {
-//            roleText = "System Administrator!";
-//        }
-//
-//        headerLbl.setText(roleText);
-//    }
-//
-//    private void setDashboardControls() {
-//        String roleID = userDetails.getRoleID();
-//
-//        boolean isCaseManager = "1".equals(roleID);
-//        boolean isCareServiceOfficer = "2".equals(roleID);
-//
-//        // Update visibility based on role
-//        csoPane.setVisible(true);
-//        cmPane.setVisible(false);
-//    }
-//    
-// private void updateRoleLabel() {
-//    String roleText;
-//    switch (userDetails.getRoleID()) {
-//        case "1":
-//            roleText = "Hi Case Manager!";
-//            break;
-//        case "2":
-//            roleText = "Hi Care Service Officer!";
-//            break;
-//        default:
-//            roleText = "System Administrator!";
-//            break;
-//    }
-//    headerLbl.setText(roleText);
-//}
-//
-//private void setDashboardControls() {
-//    boolean isCaseManager = "1".equals(userDetails.getRoleID());
-//    boolean isCareServiceOfficer = "2".equals(userDetails.getRoleID());
-//
-//    // Update visibility based on role
-//    csoPane.setVisible(isCareServiceOfficer);
-//    cmPane.setVisible(isCaseManager);
-//}
+
     @FXML
     private void dashboardLbl(MouseEvent event) {
 
@@ -2499,8 +2004,8 @@ public class DashboardController implements Initializable {
             stage.setScene(new Scene(root));
             stage.setResizable(false);
 
-//                                                stage.setWidth(679);  // Set the width 
-//                                                stage.setHeight(580); // Set the height
+//             stage.setWidth(679);  // Set the width 
+//             stage.setHeight(580); // Set the height
             stage.showAndWait(); // Wait for the dialog to close before continuing with main window
         } catch (IOException e) {
             e.printStackTrace();
@@ -2530,8 +2035,8 @@ public class DashboardController implements Initializable {
             stage.setScene(new Scene(root));
             stage.setResizable(false);
 
-//                                                stage.setWidth(679);  // Set the width 
-//                                                stage.setHeight(580); // Set the height
+//           stage.setWidth(679);  // Set the width 
+//           stage.setHeight(580); // Set the height
             stage.showAndWait(); // Wait for the dialog to close before continuing with main window
         } catch (IOException e) {
             e.printStackTrace();
@@ -2594,28 +2099,7 @@ public class DashboardController implements Initializable {
         }
     }
 
-//    @FXML
-//    private void budgetPlanLbl(MouseEvent event) {
-//
-//        try {
-//            // Load the FXML file
-//            FXMLLoader loader = new FXMLLoader(getClass().getResource("budgetPlan.fxml"));
-//            Parent root = loader.load();
-//
-//            // Create a new stage
-//            Stage stage = new Stage();
-//            stage.initModality(Modality.APPLICATION_MODAL);
-//            stage.setTitle("HCP - Budget Planning");
-//            stage.setScene(new Scene(root));
-//            stage.setResizable(false);
-////                                                stage.setWidth(679);  // Set the width 
-////                                                stage.setHeight(580); // Set the height
-//
-//            stage.showAndWait(); // Wait for the dialog to close before continuing with main window
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//    }
+
     //CSO
     @FXML
     private void csoDashboardLbl(MouseEvent event) {
@@ -2769,7 +2253,7 @@ public class DashboardController implements Initializable {
                 || ERRelation == null || ERRelation.isEmpty()
                 || ERMobile == null || ERMobile.isEmpty()
                 || mobileValue == null || mobileValue.isEmpty()
-                 || Zips == null || Zips.isEmpty()
+                || Zips == null || Zips.isEmpty()
                 || EREMail == null || EREMail.isEmpty()) {
 
             Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -2790,23 +2274,18 @@ public class DashboardController implements Initializable {
             alert.showAndWait();
             return;
         }
-        
-        
-        
-            if (!mobileValue.matches("\\d{10}")) {
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Error");
-                alert.setHeaderText(null);
-                alert.setContentText("Mobile number must contain 10 digits");
-                alert.showAndWait();
-                return;
 
-            }
-            
-            
-            
-                   // Validate mobile field as numeric
-    
+        if (!mobileValue.matches("\\d{10}")) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText(null);
+            alert.setContentText("Mobile number must contain 10 digits");
+            alert.showAndWait();
+            return;
+
+        }
+
+        // Validate mobile field as numeric
         if (!ERMobile.matches(numeric)) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error");
@@ -2815,59 +2294,50 @@ public class DashboardController implements Initializable {
             alert.showAndWait();
             return;
         }
-        
-        
-        
-            if (!ERMobile.matches("\\d{10}")) {
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Error");
-                alert.setHeaderText(null);
-                alert.setContentText("Mobile number must contain 10 digits");
-                alert.showAndWait();
-                return;
 
-            }
+        if (!ERMobile.matches("\\d{10}")) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText(null);
+            alert.setContentText("Mobile number must contain 10 digits");
+            alert.showAndWait();
+            return;
 
-      String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@"
-                    + "(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
+        }
 
-            if (emailValue == null || !emailValue.matches(emailRegex)) {
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Error");
-                alert.setHeaderText(null);
-                alert.setContentText("Please enter a valid email address.");
-                alert.showAndWait();
-                return;
+        String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@"
+                + "(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
 
-            }
-            
-         
+        if (emailValue == null || !emailValue.matches(emailRegex)) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText(null);
+            alert.setContentText("Please enter a valid email address.");
+            alert.showAndWait();
+            return;
 
-            if (EREMail == null || !emailValue.matches(emailRegex)) {
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Error");
-                alert.setHeaderText(null);
-                alert.setContentText("Please enter a valid email address.");
-                alert.showAndWait();
-                return;
+        }
 
-            }
+        if (EREMail == null || !emailValue.matches(emailRegex)) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText(null);
+            alert.setContentText("Please enter a valid email address.");
+            alert.showAndWait();
+            return;
 
+        }
 
+        if (!Zips.matches("\\d{4}")) {
 
-            if (!Zips.matches("\\d{4}")) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText(null);
+            alert.setContentText("Zip code must contain 4 digits.");
+            alert.showAndWait();
+            return;
 
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Error");
-                alert.setHeaderText(null);
-                alert.setContentText("Zip code must contain 4 digits.");
-                alert.showAndWait();
-                return;
-
-            }
-        
-        
-        
+        }
 
         // Construct the SQL UPDATE query
         String updateClient = "UPDATE clientData SET fName = '" + fnameValue + "', lName = '" + lnameValue + "', clientMedicare = '" + medicareValue + "',clientZip = '" + Zips + "', clientAddress = '" + addressValue + "', clientMobile = '" + mobileValue + "',"
@@ -2886,10 +2356,8 @@ public class DashboardController implements Initializable {
                 successAlert.setHeaderText(null);
                 successAlert.setContentText("Client record updated successfully.");
                 successAlert.showAndWait();
-                
-                  logAudit("A client record with clientID: " + clientIDValue + " has been updated", userID);
-  
-  
+
+                logAudit("A client record with clientID: " + clientIDValue + " has been updated", userID);
 
                 loadClients();
             }
@@ -2976,16 +2444,13 @@ public class DashboardController implements Initializable {
                 if (response == ButtonType.OK) {
 
                     try (Connection c = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD); Statement s = c.createStatement()) {
-//String ID = userHolder.getText(); // Retrieve the current user ID from userHolder
-                        // Prepare the SQL statement to update the active status of the user
+
                         String sql = "UPDATE userAccounts SET stats = '1' WHERE userID = '" + userID + "'";
 
                         // Execute the update statement
                         int row = s.executeUpdate(sql);
-                                      
-                             
-                              
-                                  logAudit( headerLbl.getText().substring(3)  + " have successfully logged-out", userID);
+
+                        logAudit(headerLbl.getText().substring(3) + " have successfully logged-out", userID);
 
                     } catch (SQLException e) {
                         e.printStackTrace();
@@ -3085,9 +2550,9 @@ public class DashboardController implements Initializable {
         bDay.setValue(LocalDate.now());
 
         if (!ssSearch.isEmpty()) {
-            // Construct the SQL query with the search term
+      
 
-//            String searchCases = 
+
             String searchCases = "SELECT cc.caseID AS cID, CONCAT(cd.fName, ' ', cd.lName) AS fullName, cc.caseType AS caseType, assessmentStatus AS caseStats, CONCAT(ua.fName, ' ', ua.lName) AS assignedCSO FROM clientCases cc JOIN clientData cd ON cc.clientID = cd.clientID JOIN userAccounts ua ON cc.userID = ua.userID "
                     + "WHERE cc.caseID LIKE '%" + ssSearch + "%' "
                     + "OR cd.lName LIKE '%" + ssSearch + "%' "
@@ -3168,16 +2633,6 @@ public class DashboardController implements Initializable {
         showUnderDevelopmentAlert();
     }
 
-//          @FXML
-//    private void reassignBtn(ActionEvent event) {
-//
-//        showUnderDevelopmentAlert();
-//    }
-//            @FXML
-//    private void finaliseBtn(ActionEvent event) {
-//
-//        showUnderDevelopmentAlert();
-//    }
     @FXML
     private void aDeactClient(ActionEvent event) {
 
@@ -3205,7 +2660,7 @@ public class DashboardController implements Initializable {
 
                     String selectedID = aClientID.getText();
 
-// Construct the SQL UPDATE query
+
                     String deactClient = "UPDATE clientData SET isActive = '0' WHERE clientID = '" + selectedID + "'";
 
 ////        String updateQuery = "UPDATE clientData SET clientID =  '" + clientIDValue + "', fName = '" + fnameValue + "', lName = '" + lnameValue + "', clientMedicare = '" + medicareValue + "', clientAddress = '" + addressValue + "', clientMobile = '" + mobileValue + "', clientEmail = '" + emailValue + "', clientBday = '" + bdayValue + "' WHERE clientID = '" + clientIDValue + "'";
@@ -3222,11 +2677,8 @@ public class DashboardController implements Initializable {
                             successAlert.setContentText("Client deactivated successfully.");
                             successAlert.showAndWait();
 
-                              logAudit("A client with ClientID: " + selectedID + " has been deactivated", userID);
-  
-  
-  
-                            
+                            logAudit("A client with ClientID: " + selectedID + " has been deactivated", userID);
+
                             loadClients();
                         }
 
@@ -3385,12 +2837,10 @@ public class DashboardController implements Initializable {
                 successAlert.setContentText("Case has been closed!.");
                 successAlert.showAndWait();
 
-                  logAudit("A client case with Case No: " + clID + " has been closed", userID);
-  
-  
+                logAudit("A client case with Case No: " + clID + " has been closed", userID);
+
                 loadMyCases();
-                
-                
+
             }
 
         } catch (SQLException e) {
@@ -3444,7 +2894,7 @@ public class DashboardController implements Initializable {
                     + "OR cc.caseType LIKE '%" + searchCase + "%' "
                     + "OR cc.casePriority LIKE '%" + searchCase + "%'";
 
-            //       "SELECT caseID,clientID CONCAT(fname, ' ', lname) AS fullName, caseType FROM clientdata WHERE fName LIKE '%" + searchC + "%' OR lName LIKE '%" + searchC + "%' OR clientID LIKE '%" + searchC + "%' OR clientMedicare LIKE '%" + searchC + "%'";
+            // "SELECT caseID,clientID CONCAT(fname, ' ', lname) AS fullName, caseType FROM clientdata WHERE fName LIKE '%" + searchC + "%' OR lName LIKE '%" + searchC + "%' OR clientID LIKE '%" + searchC + "%' OR clientMedicare LIKE '%" + searchC + "%'";
             try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD); Statement statement = connection.createStatement()) {
 
                 // Execute the query
@@ -3677,7 +3127,6 @@ public class DashboardController implements Initializable {
             + "WHERE caseDate >= CURDATE() - INTERVAL 7 DAY "
             + "GROUP BY assessmentStatus";
 
- 
     public void updateWeeklyCasesGraph() {
         // Clear previous data in case it exists
         weeklyCasesGraph.getData().clear();
@@ -3733,28 +3182,22 @@ public class DashboardController implements Initializable {
         if ("Cases Reports".equals(reportCombo.getValue())) {
             // Call the method to load cases based on the selected radio button
             loadCaseReports();
-            
-          logAudit("A Case Report has been generated", userID);
-  
+
+            logAudit("A Case Report has been generated", userID);
 
         } else if ("Assessment Reports".equals(reportCombo.getValue())) {
             // Call the method to load cases based on the selected radio button
             loadAssessmentReports();
-            
-                logAudit("An Assessment Report has been generated", userID);
-  
+
+            logAudit("An Assessment Report has been generated", userID);
 
         } else if ("Client Reports".equals(reportCombo.getValue())) {
             // Call the method to load cases based on the selected radio button
             loadClientReports();
-            
-                logAudit("A Client Report has been generated", userID);
-  
+
+            logAudit("A Client Report has been generated", userID);
 
         }
-        
-        
-  
 
     }
 
@@ -3855,9 +3298,8 @@ public class DashboardController implements Initializable {
                 alert.setContentText("PDF generated successfully and saved to:\n" + selectedFile.getAbsolutePath());
                 alert.showAndWait();
 
-                  logAudit(reportCombo.getValue()+ "has been extracted and saved to" + selectedFile.getAbsolutePath(), userID);
-  
-                
+                logAudit(reportCombo.getValue() + "has been extracted and saved to" + selectedFile.getAbsolutePath(), userID);
+
                 handleClearTabs();
                 resetRadio();
                 genReportBtn.setDisable(false);
@@ -3981,9 +3423,8 @@ public class DashboardController implements Initializable {
                         successAlert.setHeaderText(null);
                         successAlert.setContentText("Printing completed successfully.");
                         successAlert.showAndWait();
-                        
-                           logAudit(reportCombo.getValue()+ "was successfully printed", userID);
-                                   
+
+                        logAudit(reportCombo.getValue() + "was successfully printed", userID);
 
                         handleClearTabs();
                         resetRadio();
@@ -4107,8 +3548,8 @@ public class DashboardController implements Initializable {
     }
 
     private void initTables() {
-        
-           careDesc.setCellValueFactory(new PropertyValueFactory<>("description"));
+
+        careDesc.setCellValueFactory(new PropertyValueFactory<>("description"));
         numUnits.setCellValueFactory(new PropertyValueFactory<>("numUnits"));
         totalCare.setCellValueFactory(new PropertyValueFactory<>("total"));
 
@@ -4130,7 +3571,7 @@ public class DashboardController implements Initializable {
 
         bClientID.setCellValueFactory(new PropertyValueFactory<>("bcid"));
         bClientName.setCellValueFactory(new PropertyValueFactory<>("bcname"));
-        
+
         cName_case.setCellValueFactory(new PropertyValueFactory<>("cName_case"));
         cDate_case.setCellValueFactory(new PropertyValueFactory<>("cDate_case"));
         csoCase.setCellValueFactory(new PropertyValueFactory<>("csoCase"));
@@ -4336,8 +3777,8 @@ public class DashboardController implements Initializable {
             e.printStackTrace(); // Handle exceptions appropriately
         }
     }
-    
-        public void logAudit(String logDesc, String useID) {
+
+    public void logAudit(String logDesc, String useID) {
         String insertAudit = "INSERT INTO audittrail (logDateTime, logDetails, userID) VALUES (NOW(), ?, ?)";
 
         try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD); PreparedStatement pstmt = conn.prepareStatement(insertAudit)) {
@@ -4352,9 +3793,6 @@ public class DashboardController implements Initializable {
         } catch (SQLException e) {
             e.printStackTrace(); // Handle the exception as necessary
         }
-		}
-		
-    
-    
+    }
 
 }

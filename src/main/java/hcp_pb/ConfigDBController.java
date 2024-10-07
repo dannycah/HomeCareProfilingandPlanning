@@ -60,9 +60,12 @@ public class ConfigDBController implements Initializable {
 
         // Write the details to dbConfig.txt
         writeDatabaseConfig(dbUrl, dbNM, dbUser, dbPassword);
-writeDatabaseInitConfig(dbUrl,dbUser,dbPassword);
+        writeDatabaseInitConfig(dbUrl,dbUser,dbPassword);
         // Close the program and set isOpen to 0
         closeProgram();
+        
+        
+        
     }
 
     @FXML
@@ -72,6 +75,7 @@ writeDatabaseInitConfig(dbUrl,dbUser,dbPassword);
         String dbNM = dbName.getText().trim();
         String dbUser = txtUser.getText().trim();
         String dbPassword = txtPass.getText().trim();
+   
 
         // Validate that none of the fields are null or empty
         if (dbUrl.isEmpty() || dbNM.isEmpty() || dbUser.isEmpty() || dbPassword.isEmpty()) {
@@ -133,6 +137,7 @@ writeDatabaseInitConfig(dbUrl,dbUser,dbPassword);
             writer.write("jdbc:mysql://" + dbUrl + ":3306/" + dbNM + "\n"); // Write the URL
             writer.write(dbUser + "\n"); // Write the username
             writer.write(dbPassword + "\n"); // Write the password
+             writer.write(dbNM + "\n"); // Write the db name
             showAlert("Database configuration is successful.\n Please re-run the Program.", "Success", Alert.AlertType.INFORMATION);
         } catch (IOException e) {
             showAlert("Error writing to configuration file: " + e.getMessage(), "Error", Alert.AlertType.ERROR);

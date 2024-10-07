@@ -27,6 +27,7 @@ public class App extends Application {
     private String DB_URL; // Database URL
     private String DB_USER; // Database username
     private String DB_PASSWORD; // Database password
+    private String DB_NAME; // Database name
 
     @Override
     public void start(Stage stage) {
@@ -75,6 +76,7 @@ public class App extends Application {
                 DB_URL = reader.readLine(); // Read the first line (URL)
                 DB_USER = reader.readLine(); // Read the second line (username)
                 DB_PASSWORD = reader.readLine(); // Read the third line (password)
+                DB_NAME = reader.readLine(); // Read the fourth line (dbname)
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -88,6 +90,7 @@ public class App extends Application {
             writer.write("jdbc:mysql://localhost:3306/yourDatabaseName\n"); // Replace with your DB URL
             writer.write("yourUsername\n"); // Replace with your DB username
             writer.write("yourPassword\n"); // Replace with your DB password
+            writer.write("yourDatabaseName\n"); // Replace with your DB password
         } catch (IOException e) {
             e.printStackTrace();
             showAlert("Error creating default configuration file.", "Error", Alert.AlertType.ERROR);

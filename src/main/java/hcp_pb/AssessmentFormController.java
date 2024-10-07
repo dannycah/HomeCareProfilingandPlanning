@@ -61,15 +61,12 @@ public class AssessmentFormController implements Initializable {
     
     
     
-    //closing
-    @FXML
+     @FXML
     private Button completeAssessment;
     @FXML
     private Button cancelAssess;
     @FXML 
-            private TextArea remarks;
-    
-    
+    private TextArea remarks;
     @FXML
     private Label headerLbl;
     @FXML
@@ -86,8 +83,6 @@ public class AssessmentFormController implements Initializable {
     private Label reportsLbl;
     @FXML
     private Pane mainPanel;
-
-    // Side Labels/ 
     @FXML
     private Label lblClientInfo;
     @FXML
@@ -118,8 +113,6 @@ public class AssessmentFormController implements Initializable {
     private Label lblEndOfLife;
     @FXML
     private Label lblContactInfo;
-
-    //Client and Assessment Details
     @FXML
     private TextField caseNo;
     @FXML
@@ -148,8 +141,6 @@ public class AssessmentFormController implements Initializable {
     private Button startAssesmentBtn;
     @FXML
     private TextField assessNo;
-
-    //Personal Hygiene/  
     @FXML
     private Pane paneClientHygiene;
     //Question 1/
