@@ -660,7 +660,6 @@ public class DashboardController implements Initializable {
         }
 //---
 
-
         //CSO budgetclient table
         // Set up the mouse click event handler for the TableView
         tblBudgetClient.setOnMouseClicked(event -> {
@@ -750,25 +749,38 @@ public class DashboardController implements Initializable {
         }
     }
 
-
     public void loadbudget() {
         String selectedClient = txtCli.getText();
 
         String clientBudgetQuery = "SELECT "
-                + "bs.clientID, "
-                + "MAX(bs.caseID) AS maxCaseID, "
-                + "bs.serviceID, "
-                + "so.servicedesc AS CareDesc, "
-                + "SUM(bs.counter) AS totalCounter, "
-                + "so.dayshift as shiftCost "
-                + "FROM budget_staging bs "
-                + "JOIN serviceoffered so ON bs.serviceID = so.serviceID "
-                + "JOIN clientcases cc ON bs.caseID = cc.caseID "
-                + "WHERE bs.clientID = '" + selectedClient + "' "
-                + "AND cc.assessmentStatus = 'For Budget' "
-                + "GROUP BY bs.clientID, bs.serviceID, so.servicedesc, cc.assessmentStatus, so.dayshift "
-                + "HAVING SUM(bs.counter) > 1 "
-                + "ORDER BY bs.serviceID;";
+                + "    bs.clientID, "
+                + "    bs.serviceID, "
+                + "    so.servicedesc AS CareDesc, "
+                + "    so.dayshift AS shiftCost, "
+                + "    MAX(bs.counter) AS totalCounter, "
+                + "    MAX(bs.caseID) AS maxCaseID "
+                + "FROM "
+                + "    budget_staging bs "
+                + "JOIN "
+                + "    serviceoffered so ON bs.serviceID = so.serviceID "
+                + "JOIN "
+                + "    clientcases cc ON bs.caseID = cc.caseID "
+                + "WHERE "
+                + "    bs.clientID = " + selectedClient + " "
+                + "    AND cc.assessmentStatus = 'For Budget' "
+                + "    AND bs.caseID = (SELECT MAX(caseID) "
+                + "                     FROM budget_staging "
+                + "                     WHERE clientID = bs.clientID) "
+                + "GROUP BY "
+                + "    bs.clientID, "
+                + "    bs.serviceID, "
+                + "    so.servicedesc, "
+                + "    so.dayshift "
+                + "HAVING "
+                + "    MAX(bs.counter) >= 1 "
+                + "ORDER BY "
+                + "    bs.serviceID;";
+
 
         try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD); Statement statement = connection.createStatement(); ResultSet resultSet = statement.executeQuery(clientBudgetQuery)) {
 
@@ -800,7 +812,6 @@ public class DashboardController implements Initializable {
             e.printStackTrace();
         }
     }
-
 
     private void addContextMenuToBudgetTable() {
         // Create the Context Menu
@@ -933,7 +944,6 @@ public class DashboardController implements Initializable {
             return dayShiftValue;
         }
     }
-
 
     public void loadBudgetClientDatabase() {
         // SQL query
@@ -1257,7 +1267,6 @@ public class DashboardController implements Initializable {
         }
     }
 
-
     private void searchCasesChange() {
         // Add a listener to usersID to call loadUserData when its value changes
         aCaseSearch.textProperty().addListener(new ChangeListener<String>() {
@@ -1408,7 +1417,6 @@ public class DashboardController implements Initializable {
 
     }
 
-
     @FXML
     private void finaliseBtn(ActionEvent event) {
 
@@ -1543,7 +1551,6 @@ public class DashboardController implements Initializable {
 
     }
 
-
     public void loadMyCases() {
         String currentUser = userHolder.getText(); // Retrieve the current user ID from userHolder
 
@@ -1638,7 +1645,6 @@ public class DashboardController implements Initializable {
         aCMCombo.getSelectionModel().selectFirst();
 //        
     }
-
 
     private void handleRowSelect(MouseEvent event) throws SQLException {
         if (event == null || event.getClickCount() == 1) { // Single-click detection
@@ -1781,7 +1787,6 @@ public class DashboardController implements Initializable {
         }
     }
 
-
     private void loadClientDetails(int clientID) {
         String clientDataQuery = "SELECT * FROM clientData WHERE clientID = ?";
         String clientContactQuery = "SELECT * FROM clientContact WHERE clientID = ?";
@@ -1805,6 +1810,8 @@ public class DashboardController implements Initializable {
                         if (birthdayStr != null && !birthdayStr.isEmpty()) {
                             LocalDate birthday = LocalDate.parse(birthdayStr);
                             aBday.setValue(birthday);
+                            aFundLevelCombo.setValue(resultSet.getString("levelID"));
+
                         }
                     }
                 }
@@ -1834,7 +1841,7 @@ public class DashboardController implements Initializable {
                 preparedStatement.setInt(1, clientID);
                 try (ResultSet resultSet = preparedStatement.executeQuery()) {
                     if (resultSet.next()) {
-                        aFundLevelCombo.setValue(resultSet.getString("levelID"));
+                        // aFundLevelCombo.setValue(resultSet.getString("levelID"));
                         aCMCombo.setValue(Integer.toString(resultSet.getInt("userID"))); // need to replace with cm name
 
                         refCode.setText(resultSet.getString("referralCode"));
@@ -1843,7 +1850,7 @@ public class DashboardController implements Initializable {
 //                        // Clear contact fields if no client contact data is found
                         refCode.clear();
                         aOutcome.clear();
-                        aFundLevelCombo.setValue("Not Assessed");
+                        //   aFundLevelCombo.setValue("Not Assessed");
                         aCMCombo.setValue("Not Assigned");
 //                        aEMobile.clear();
 //                        aEMail.clear();
@@ -1942,7 +1949,6 @@ public class DashboardController implements Initializable {
             cmPane.setVisible(false);
         }
     }
-
 
     @FXML
     private void dashboardLbl(MouseEvent event) {
@@ -2099,7 +2105,6 @@ public class DashboardController implements Initializable {
         }
     }
 
-
     //CSO
     @FXML
     private void csoDashboardLbl(MouseEvent event) {
@@ -2242,6 +2247,7 @@ public class DashboardController implements Initializable {
         String ERMobile = aEMobile.getText();
         String EREMail = aEMail.getText();
         String Zips = aZip.getText();
+        String level = aFundLevelCombo.getValue();
 
 // Validate required fields
         if (fnameValue == null || fnameValue.isEmpty()
@@ -2341,7 +2347,7 @@ public class DashboardController implements Initializable {
 
         // Construct the SQL UPDATE query
         String updateClient = "UPDATE clientData SET fName = '" + fnameValue + "', lName = '" + lnameValue + "', clientMedicare = '" + medicareValue + "',clientZip = '" + Zips + "', clientAddress = '" + addressValue + "', clientMobile = '" + mobileValue + "',"
-                + "emergencyContactPerson = '" + ERContact + "', emergencyContactNumber = '" + ERMobile + "', relationship = '" + ERRelation + "',clientBday = '" + bdayValue + "' WHERE clientID = '" + clientIDValue + "'";
+                + "emergencyContactPerson = '" + ERContact + "', emergencyContactNumber = '" + ERMobile + "', relationship = '" + ERRelation + "',clientBday = '" + bdayValue + "',levelID = '" + level + "' WHERE clientID = '" + clientIDValue + "'";
 
 ////        String updateQuery = "UPDATE clientData SET clientID =  '" + clientIDValue + "', fName = '" + fnameValue + "', lName = '" + lnameValue + "', clientMedicare = '" + medicareValue + "', clientAddress = '" + addressValue + "', clientMobile = '" + mobileValue + "', clientEmail = '" + emailValue + "', clientBday = '" + bdayValue + "' WHERE clientID = '" + clientIDValue + "'";
         try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD); Statement statement = connection.createStatement()) {
@@ -2550,8 +2556,6 @@ public class DashboardController implements Initializable {
         bDay.setValue(LocalDate.now());
 
         if (!ssSearch.isEmpty()) {
-      
-
 
             String searchCases = "SELECT cc.caseID AS cID, CONCAT(cd.fName, ' ', cd.lName) AS fullName, cc.caseType AS caseType, assessmentStatus AS caseStats, CONCAT(ua.fName, ' ', ua.lName) AS assignedCSO FROM clientCases cc JOIN clientData cd ON cc.clientID = cd.clientID JOIN userAccounts ua ON cc.userID = ua.userID "
                     + "WHERE cc.caseID LIKE '%" + ssSearch + "%' "
@@ -2659,7 +2663,6 @@ public class DashboardController implements Initializable {
                     // If the user confirms, perform the deactivation
 
                     String selectedID = aClientID.getText();
-
 
                     String deactClient = "UPDATE clientData SET isActive = '0' WHERE clientID = '" + selectedID + "'";
 

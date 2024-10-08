@@ -2425,13 +2425,13 @@ private void PHygienge_BtnGrp() {
     private void startAssesmentBtn(ActionEvent event) {
 
 //             String aID = assessNo.getText();
-//        String ID = cID.getText();
+        clientID = cID.getText();
         String CSO = csoName.getText();
  
         
         String av = aVenue.getValue().toString();
         String ov = aVenueOthers.getText();
-        System.out.println(caseN);
+        System.out.println("This is clientID: "+clientID);
 
         String asessDate = aDate.getValue() != null ? aDate.getValue().toString() : "";
 //     //Create an entry to Assessment Table
